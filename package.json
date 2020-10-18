@@ -9,7 +9,6 @@
     "express": "^4.17.1",
     "markedjs": "^10.0.0",
     "mongoose": "^5.10.9",
-    "prettier": "^2.1.2",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-scripts": "3.4.3"
@@ -34,5 +33,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "prettier": "^2.1.2"
   }
 }
