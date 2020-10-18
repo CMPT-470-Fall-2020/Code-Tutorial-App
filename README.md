@@ -1,8 +1,11 @@
 # CMPT 470 Learning Project
-This repostory will contain all code for our semester long project. I have created the necessary files
-using `Create-React-App`. There are several commands in the README. Please take a look at them. The most
-important one seems to be `yarn start`. Additionally, `Create-React-App` uses `yarn` instead of `npm`. 
-They are similar.
+This repostory will contain all code for our semester long project. 
+
+# Setting up the project after cloning
+Whenever we install a library with `npm`, the code for the library is saved in a folder called `node-modules`. That folder has a large size and is almost always not included within the git repo to save space and make it faster to clone. When you clone this repository, you will need to run the command `npm install` within the root folder of the project(i.e. the folder which contains this README). This will install all libraries necessary(`React`, `mongoose`, `express` and so on...) and create a new folder called `node-modules`.
+
+# Readme Contents
+I have created the basic files using `Create-React-App`. There are several commands in the README. Please take a look at them. The most important one seems to be `npm start`. Additionally, `Create-React-App` uses `yarn` instead of `npm` by default. `yarn`  is an alternative to `npm` and it accomplishes the same job. Since we are all somewhat familiar with `npm`, I have converted the project from using `yarn` by default to `npm`.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
@@ -10,7 +13,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 In the project directory, you can run:
 
-### `yarn start`
+### `npm start`
 
 Runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
@@ -18,12 +21,12 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
 
-### `yarn test`
+### `npm test`
 
 Launches the test runner in the interactive watch mode.<br />
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `yarn build`
+### `npm build`
 
 Builds the app for production to the `build` folder.<br />
 It correctly bundles React in production mode and optimizes the build for the best performance.
@@ -33,7 +36,7 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `yarn eject`
+### `npm eject`
 
 **Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
@@ -71,4 +74,4 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 
 ### `yarn build` fails to minify
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#yarn-run-build-fails-to-minify
