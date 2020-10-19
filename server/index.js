@@ -1,9 +1,9 @@
 const express = require('express');
 var app = express();
-const port = 3001;
+const port = 4000;
 
-app.get('/', (req, res) => {
-  res.send('Hello World from the backend server!')
+app.get('/hello', (req, res) => {
+  res.json({message: 'Hello World from the backend server!'})
 })
 
 app.listen(port, ()=> {
