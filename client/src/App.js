@@ -1,8 +1,20 @@
-import React from 'react';
+import React, {Component} from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-function App() {
+class App extends Component{
+  // This is the component state which holds the text sent in by our express backend.
+  state = {message:"no message"}
+  componentDidMount(){
+		fetch("/hello")
+			.then(result => {
+					console.log(result)
+					return result.json()
+			})
+		  .then(jsonResp => this.setState({message:jsonResp.message}))
+  	}
+
+  render(){
   return (
     <div className="App">
       <header className="App-header">
@@ -19,8 +31,10 @@ function App() {
           Learn React
         </a>
       </header>
+      	  <p>{this.state.message}</p>
     </div>
   );
+  }
 }
 
 export default App;
