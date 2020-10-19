@@ -4,7 +4,7 @@
   "description": "Backend server for our learning application.",
   "main": "index.js",
   "scripts": {
-  	"start": "node index.js",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -14,6 +14,8 @@
   "author": "200IQ",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "markedjs": "^10.0.0",
+    "mongoose": "^5.10.9"
   }
 }
