@@ -6,7 +6,6 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
-    "express": "^4.17.1",
     "markedjs": "^10.0.0",
     "mongoose": "^5.10.9",
     "react": "^16.14.0",
