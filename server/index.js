@@ -1,9 +1,22 @@
+const path = require('path')
 const express = require('express');
 var app = express();
-const port = 4000;
+const port = process.env.PORT || 4000;
+
+/* THIS IS AN EXAMPLE OF HOW OUR FILES WILL BE SERVED WHEN WE UPLOAD TO GCP
+app.use(express.static(path.join(__dirname, "..","client", "build")));
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, "..","client", "build", "index.html"))
+})
+*/
+
+app.get('/', (req, res) => {
+  res.json({message: 'Hello World from the backend server on the "/" route!'})
+})
 
 app.get('/hello', (req, res) => {
-  res.json({message: 'Hello World from the backend server!'})
+  res.json({message: 'Hello World from the backend server on the "/hello" route!'})
 })
 
 app.listen(port, ()=> {
