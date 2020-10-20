@@ -11,7 +11,8 @@ export default function Header() {
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="mr-auto">
                 <Nav.Link href="/">Home</Nav.Link>
-                <Nav.Link href="/Tutorial">Tutorial</Nav.Link>
+                <Nav.Link href="/Tutorial">Tutorials Dashboard</Nav.Link>
+                <Nav.Link href="/CodePlayground">Code Playground</Nav.Link>
                 </Nav>
             </Navbar.Collapse>
         </Navbar>
