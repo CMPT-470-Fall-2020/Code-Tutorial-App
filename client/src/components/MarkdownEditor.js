@@ -16,7 +16,7 @@ export default class MarkupEditor extends Component {
     render() {
         return (
             <React.Fragment>
-                <section>
+                <section style={sectionStyle}>
                     <h1 style={headerStyle}>Markdown Editor</h1>
                     <Button variant="primary" style={saveStyle}>Save</Button>
 
@@ -41,9 +41,13 @@ export default class MarkupEditor extends Component {
     }
 }
 
+const sectionStyle = {
+    marginBottom: '0.5%'
+}
+
 const headerStyle = {
     fontSize: '20px',
-    margin:'2% 1% 0% 1%',
+    marginTop:'2%',
     fontFamily: 'Arial, Helvetica, sans-serif',
     display: 'inline-block'
 }
@@ -51,7 +55,7 @@ const headerStyle = {
 const saveStyle = {
     padding: '3px',
     float: 'right',
-    margin:'2% 1% 0% 1%',
+    margin:'2% 0% 0% 1%',
     fontFamily: 'Arial, Helvetica, sans-serif',
     backgroundColor: '#343a40'
 }
@@ -62,9 +66,8 @@ const options = {
 }
 
 const previewStyle = {
-    resize: 'none',
-    margin: '1%',
     padding: '1%',
+    resize: 'none',
     border: '1px solid black',
     minHeight: '100px'
 }
