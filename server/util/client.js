@@ -38,6 +38,7 @@ class Interpreter {
     this.sockStatus = false;
     // Flag indicating whether we are waiting for a response from the server
     this.isWaiting = false;
+    // The current hash
     this.currentHash = undefined;
     // The socket used to make a connection
     this.socket = new net.Socket();
@@ -94,8 +95,19 @@ class Interpreter {
     this.socket.destroy();
   }
 
-  send(data) {
-    this.msgQueue.push(data);
-    this.queueLen += 1;
+  runCode(data) {
+    let codeObj = { type: "RUN", code: data };
+    let codeHash = this.calcHash(data);
+    // If the socket is not open yet or we are waiting for a message response,
+    // append the new message to the message queue.
+    if (!this.sockStatus || this.isWaiting) {
+      this.msgQueue.addMessage([codeHash, codeObj]);
+    } else {
+      // If not busy, send off code object to server and return code hash
+      this.isWaiting = true;
+      this.currentHash = hash;
+      this.socket.write(JSON.stringify(codeObj));
+    }
+    return codeHash;
   }
 }
