@@ -1,4 +1,5 @@
-var net = require("net");
+const net = require("net");
+const crypto = require("crypto");
 
 class Queue {
   constructor() {
@@ -26,8 +27,6 @@ class Queue {
   }
 }
 
-
-
 class Interpreter {
   constructor(portNum, interpName, eventEmitter) {
     this.name = interpName;
@@ -39,6 +38,7 @@ class Interpreter {
     this.sockStatus = false;
     // Flag indicating whether we are waiting for a response from the server
     this.isWaiting = false;
+    this.currentHash = undefined;
     // The socket used to make a connection
     this.socket = new net.Socket();
 
@@ -61,6 +61,13 @@ class Interpreter {
     });
   }
 
+  calcHash(codeStr) {
+    currTime = Date.Now().toString();
+    hashInputStr = currTime + this.interpName + codeStr;
+    uniqueHash = crypto.createHash("sha256").update(hashInputStr).digest("hex");
+    return uniqueHash;
+  }
+
   recv_data(data) {
     if (this.queueLen > 0) {
       let val = this.msgQueue.shift();
@@ -68,6 +75,7 @@ class Interpreter {
       this.socket.write(val);
     }
   }
+
   isLive() {
     return this.sockStatus;
   }
