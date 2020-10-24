@@ -8,14 +8,27 @@ class InterpreterManager{
 		this.instances = {};
 	}
 	
-	getInterpInstance(username, instanceName){
+	userExists(userName){
 		if (username in this.instances){
-			if (instanceName in this.instances[username]){
-				return this.instances[username][instanceName]
+			return true;
+		}
+		return false;
+	}
+
+	interpInstanceExists(userName, instanceName){
+		if (this.userExists(userName) && instanceName in this.instances[username]){
+				return true;
+		}
+		return false;
+	}
+	
+	getInterpInstance(userName, instanceName){
+		if (this.userExists(userName)){
+			if (this.interpInstanceExists(userName, instanceName)){
+				return this.instances[username][instanceName];
 			}else{
 				return INTERPDNE;
 			}
-			
 		}
 		return USERDNE;
 	}
