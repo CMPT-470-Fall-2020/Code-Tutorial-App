@@ -13,7 +13,7 @@ class Queue {
   }
 
   addMessage(msg) {
-    this.msgQueue.push(data);
+    this.msgQueue.push(msg);
     this.queueLen += 1;
   }
 
@@ -46,9 +46,12 @@ class Interpreter {
       console.log("client on port: ", portNum, " connected!");
       this.sockStatus = true;
       if (!this.msgQueue.isEmpty()) {
+        // Retrieve next message
+        let [hash, msg] = this.msgQueue.getMessage();
+
         this.isWaiting = true;
-        msg = this.msgQueue.getMessage();
-        this.socket.write(val);
+        this.currentHash = hash;
+        this.socket.write(JSON.stringify(msg));
       }
     });
 
@@ -61,19 +64,26 @@ class Interpreter {
     });
   }
 
-  calcHash(codeStr) {
-    currTime = Date.Now().toString();
-    hashInputStr = currTime + this.interpName + codeStr;
-    uniqueHash = crypto.createHash("sha256").update(hashInputStr).digest("hex");
-    return uniqueHash;
+  recv_data(data) {
+    // Send out data
+    this.emitter.emit(this.currentHash, data);
+
+    if (!this.msgQueue.isEmpty()) {
+      let [hash, msg] = this.msgQueue.getMessage();
+      this.isWaiting = true;
+      this.currentHash = hash;
+      this.socket.write(JSON.stringify(msg));
+    }
   }
 
-  recv_data(data) {
-    if (this.queueLen > 0) {
-      let val = this.msgQueue.shift();
-      this.queueLen -= 1;
-      this.socket.write(val);
-    }
+  calcHash(codeStr) {
+    let currTime = Date.now().toString();
+    let hashInputStr = currTime + this.interpName + codeStr;
+    let uniqueHash = crypto
+      .createHash("sha256")
+      .update(hashInputStr)
+      .digest("hex");
+    return uniqueHash;
   }
 
   isLive() {
