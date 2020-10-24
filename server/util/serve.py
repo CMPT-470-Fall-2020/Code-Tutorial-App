@@ -9,7 +9,7 @@ SOCKET = socket.socket(
 
 # get local machine name
 HOSTNAME = '127.0.0.1'
-PORTNUM = 8007
+PORTNUM = sys.argv[1]
 # bind to the port
 SOCKET.bind((HOSTNAME, PORTNUM))
 
@@ -39,15 +39,12 @@ while True:
 
         out = open("stdout", 'r')
         err = open('stderr', 'r')
-        print(json.dumps({"stdout": out.read(), "stderr": err.read() }))
+        output = json.dumps({"stdout": out.read(), "stderr": err.read()})
         out.close()
         err.close()
 
-        clientsocket.send(b'RESPONSE!')
+        clientsocket.send(bytes(output, 'utf-8'))
 
     elif command['type'] == "KILL":
         clientsocket.close()
         sys.exit()
-
-
-
