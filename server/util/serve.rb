@@ -1,8 +1,9 @@
+#! /usr/bin/env ruby
 require 'socket'
 require 'json'
 require 'stringio'
 
-server = TCPServer.open(5555)  
+server = TCPServer.open(ARGV[0])  
 
 loop {
     client = server.accept       
