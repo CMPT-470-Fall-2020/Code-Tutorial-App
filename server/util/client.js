@@ -138,3 +138,5 @@ class Interpreter {
     return codeHash;
   }
 }
+
+module.exports.Interpreter = Interpreter;
