@@ -74,6 +74,7 @@ class InterpreterManager{
 				default:
 						console.log("Language does not exist")
 		}
+
 	  	child.on("exit", (code, signal) => {
 	  		// Return the port number on exit
 			this.ports.push(portNum);
