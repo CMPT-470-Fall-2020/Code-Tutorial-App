@@ -9,8 +9,9 @@ const INTERPDNE = "INTERPDNE";
 const INTERPEXISTS = "INTERPEXISTS";
 
 class InterpreterManager {
-  constructor() {
+  constructor(emitter) {
     this.instances = {};
+    this.emitter = emitter;
     this.ports = [];
 
     // There are 65,536 TCP ports in total
