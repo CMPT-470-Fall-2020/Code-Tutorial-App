@@ -51,10 +51,6 @@ class Interpreter {
     		this.sendMsg();
     })
 
-    this.socket.on("data", (data) => {
-      this.recv_data(data);
-    });
-
     // If an "error" event is emitted, the connection could not be established.
     // Src: https://stackoverflow.com/questions/25791436/reconnect-net-socket-nodejs
     this.socket.on("error", () =>{
@@ -70,6 +66,10 @@ class Interpreter {
 		// TODO: Signal to return port number!
 		console.log("Failed to connect after", this.retryAttempNum)
     })
+
+    this.socket.on("data", (data) => {
+      this.recv_data(data);
+    });
 
     this.socket.on("close", () =>{
     	console.log("close called")
@@ -89,20 +89,12 @@ class Interpreter {
         this.currentHash = hash;
         this.socket.write(JSON.stringify(msg));
       }
-    });
-
-    this.socket.on("data", (data) => {
-      this.recv_data(data);
-    });
-
-    this.socket.on("close", function () {
-      console.log("Connection closed");
-    });
   }
 
   recv_data(data) {
     // Send out data
     this.emitter.emit(this.currentHash, data);
+    console.log("received",data.toString('utf-8'));
 
     if (!this.msgQueue.isEmpty()) {
       let [hash, msg] = this.msgQueue.getMessage();
