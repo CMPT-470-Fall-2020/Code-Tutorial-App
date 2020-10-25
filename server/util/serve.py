@@ -9,7 +9,7 @@ SOCKET = socket.socket(
 
 # get local machine name
 HOSTNAME = '127.0.0.1'
-PORTNUM = sys.argv[1]
+PORTNUM = int(sys.argv[1])
 # bind to the port
 SOCKET.bind((HOSTNAME, PORTNUM))
 
