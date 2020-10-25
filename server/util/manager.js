@@ -61,7 +61,7 @@ class InterpreterManager {
     }
 
     if (this.interpInstanceExists(userName, interpName)) {
-      return INTERPEXISTS;
+      return this.instances[userName][interpName];
     }
 
     // Retrieve the port number for the server
