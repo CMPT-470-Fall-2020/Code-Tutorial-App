@@ -80,5 +80,11 @@ class InterpreterManager {
       // Return the port number on exit
       this.ports.push(portNum);
     });
+
+    newInterp = Interpreter(portNum, interpName, emitter);
+    // Add the interpreter instance
+    this.instances[userName][interpName] = newInterp;
+    // Return the interpreter instance to the user
+    return newInterp;
   }
 }
