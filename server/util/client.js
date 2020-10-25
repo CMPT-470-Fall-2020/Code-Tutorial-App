@@ -46,55 +46,55 @@ class Interpreter {
     this.maxRetryAttempt = 10;
 
     this.socket.on("connect", () => {
-    		this.sockStatus = true;
-    		console.log(`Connected to server on port ${portNum}!`);
-    		this.sendMsg();
-    })
+      this.sockStatus = true;
+      console.log(`Connected to server on port ${portNum}!`);
+      this.sendMsg();
+    });
 
     // If an "error" event is emitted, the connection could not be established.
     // Src: https://stackoverflow.com/questions/25791436/reconnect-net-socket-nodejs
-    this.socket.on("error", () =>{
-    	// If we are not connected to a server, attempt to connect again
-		if (!this.sockStatus && (this.retryAttempNum < this.maxRetryAttempt)){
-			console.log("Trying to reconnect!", this.retryAttempNum);
-			this.retryAttempNum += 1;
-			// Retry to connect in 0.5 seconds
-			setTimeout(() => {
-				this.socket.connect(portNum, "127.0.0.1")
-			}, 500);
-		}
-		// TODO: Signal to return port number!
-		console.log("Failed to connect after", this.retryAttempNum)
-    })
+    this.socket.on("error", () => {
+      // If we are not connected to a server, attempt to connect again
+      if (!this.sockStatus && this.retryAttempNum < this.maxRetryAttempt) {
+        console.log("Trying to reconnect!", this.retryAttempNum);
+        this.retryAttempNum += 1;
+        // Retry to connect in 0.5 seconds
+        setTimeout(() => {
+          this.socket.connect(portNum, "127.0.0.1");
+        }, 500);
+      }
+      // TODO: Signal to return port number!
+      console.log("Failed to connect after", this.retryAttempNum);
+    });
 
     this.socket.on("data", (data) => {
       this.recv_data(data);
     });
 
-    this.socket.on("close", () =>{
-    	console.log("close called")
-		// TODO: Signal to return port number!
-    })
+    this.socket.on("close", () => {
+      console.log("close called");
+      // TODO: Signal to return port number!
+    });
 
-	console.log("Trying to connect for first time!")
-	this.socket.connect(portNum, "127.0.0.1")
-	}
+    console.log("Trying to connect for first time!");
+    this.socket.connect(portNum, "127.0.0.1");
+  }
 
-  sendMsg(){
-      if (!this.msgQueue.isEmpty()) {
-        // Retrieve next message
-        let [hash, msg] = this.msgQueue.getMessage();
+  sendMsg() {
+    if (!this.msgQueue.isEmpty()) {
+      // Retrieve next message
+      let [hash, msg] = this.msgQueue.getMessage();
 
-        this.isWaiting = true;
-        this.currentHash = hash;
-        this.socket.write(JSON.stringify(msg));
-      }
+      this.isWaiting = true;
+      this.currentHash = hash;
+      this.socket.write(JSON.stringify(msg));
+    }
   }
 
   recv_data(data) {
     // Send out data
     this.emitter.emit(this.currentHash, data);
-    console.log("received",data.toString('utf-8'));
+    console.log("received", data.toString("utf-8"));
 
     if (!this.msgQueue.isEmpty()) {
       let [hash, msg] = this.msgQueue.getMessage();
