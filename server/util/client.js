@@ -42,10 +42,45 @@ class Interpreter {
     this.currentHash = undefined;
     // The socket used to make a connection
     this.socket = new net.Socket();
+    this.retryAttempNum = 0;
+    this.maxRetryAttempt = 10;
 
-    this.socket.connect(portNum, "127.0.0.1", () => {
-      console.log("client on port: ", portNum, " connected!");
-      this.sockStatus = true;
+    this.socket.on("connect", () => {
+    		this.sockStatus = true;
+    		console.log(`Connected to server on port ${portNum}!`);
+    		this.sendMsg();
+    })
+
+    this.socket.on("data", (data) => {
+      this.recv_data(data);
+    });
+
+    // If an "error" event is emitted, the connection could not be established.
+    // Src: https://stackoverflow.com/questions/25791436/reconnect-net-socket-nodejs
+    this.socket.on("error", () =>{
+    	// If we are not connected to a server, attempt to connect again
+		if (!this.sockStatus && (this.retryAttempNum < this.maxRetryAttempt)){
+			console.log("Trying to reconnect!", this.retryAttempNum);
+			this.retryAttempNum += 1;
+			// Retry to connect in 0.5 seconds
+			setTimeout(() => {
+				this.socket.connect(portNum, "127.0.0.1")
+			}, 500);
+		}
+		// TODO: Signal to return port number!
+		console.log("Failed to connect after", this.retryAttempNum)
+    })
+
+    this.socket.on("close", () =>{
+    	console.log("close called")
+		// TODO: Signal to return port number!
+    })
+
+	console.log("Trying to connect for first time!")
+	this.socket.connect(portNum, "127.0.0.1")
+	}
+
+  sendMsg(){
       if (!this.msgQueue.isEmpty()) {
         // Retrieve next message
         let [hash, msg] = this.msgQueue.getMessage();
