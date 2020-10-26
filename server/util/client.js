@@ -81,11 +81,13 @@ class Interpreter {
     this.sockStatus = false;
     // Flag indicating whether we are waiting for a response from the server
     this.isWaiting = false;
-    // The current hash
+    // The current hash of the message for which we are waiting for a response to
     this.currentHash = undefined;
     // The socket used to make a connection
     this.socket = new net.Socket();
+    // The number of attempts tried to connect
     this.retryAttempNum = 0;
+    // Max number of attempts tried
     this.maxRetryAttempt = 10;
 
     this.socket.on("connect", () => {
@@ -151,12 +153,7 @@ class Interpreter {
     this.emitter.emit(this.currentHash, data);
     console.log("received", data.toString("utf-8"));
 
-    if (!this.msgQueue.isEmpty()) {
-      let [hash, msg] = this.msgQueue.getMessage();
-      this.isWaiting = true;
-      this.currentHash = hash;
-      this.socket.write(JSON.stringify(msg));
-    }
+    this.sendMsg();
   }
 
   /**
@@ -214,9 +211,7 @@ class Interpreter {
       this.msgQueue.addMessage([codeHash, codeObj]);
     } else {
       // If not busy, send off code object to server and return code hash
-      this.isWaiting = true;
-      this.currentHash = hash;
-      this.socket.write(JSON.stringify(codeObj));
+      this.sendMsg();
     }
     return codeHash;
   }
