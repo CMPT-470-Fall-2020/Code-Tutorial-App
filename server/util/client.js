@@ -1,58 +1,6 @@
 const net = require("net");
+const { MessageQueue } = require("./message_queue");
 const crypto = require("crypto");
-
-/**
- * Class used to represent a queue of messages to be sent to the language server.
- *
- * @class Queue
- */
-class Queue {
-  /**
-   * Creates an instance of Queue.
-   * @memberof Queue
-   */
-  constructor() {
-    // Queue containing all messages
-    this.msgQueue = [];
-    this.queueLen = 0;
-  }
-
-  /**
-   * Check if the queue is empty.
-   *
-   * @return {boolean} True or false indicating if the queue is empty.
-   * @memberof Queue
-   */
-  isEmpty() {
-    return this.queueLen == 0;
-  }
-
-  /**
-   * Add a new message to the queue.
-   *
-   * @param {string} msg Message to be added to the queue.
-   * @memberof Queue
-   */
-  addMessage(msg) {
-    this.msgQueue.push(msg);
-    this.queueLen += 1;
-  }
-
-  /**
-   * Get the next message from the queue.
-   *
-   * @return {string | undefined} Either a string containing the message or undefined if queue is empty.
-   * @memberof Queue
-   */
-  getMessage() {
-    if (this.queueLen > 0) {
-      let msg = this.msgQueue.shift();
-      this.queueLen -= 1;
-      return msg;
-    }
-    return undefined;
-  }
-}
 
 /**
  * Class representing a single instance of an interpreter client.
@@ -73,7 +21,7 @@ class Interpreter {
    */
   constructor(portNum, interpName, eventEmitter) {
     this.name = interpName;
-    this.msgQueue = new Queue();
+    this.msgQueue = new MessageQueue();
     // Event emitter used to notify server when a request is completed and result
     // can be sent back to caller
     this.emitter = eventEmitter;
