@@ -30,13 +30,13 @@ class Interpreter {
     // can be sent back to caller
     this.emitter = eventEmitter;
     // The current hash of the message for which we are waiting for a response to
-    this.currentHash = undefined;
+    this.currentHash = "";
     // The socket used to make a connection
     this.socket = new net.Socket();
 
     // FLAGS
     // Indicate that the socket is still open
-    this.sockStatus = false;
+    this.connStatus = false;
     // Flag indicating whether we are waiting for a response from the server
     this.isWaiting = false;
     // The number of attempts tried to connect
@@ -58,15 +58,12 @@ class Interpreter {
     this.serverProcess.on("close", () => {
       // TODO: Add better closing message
       if (this.currentHash.length != 0) {
-        this.emitter.emit(
-          this.currentHash,
-          "INTERPRETER SHUT DOWN UNEXPECTEDLY"
-        );
+        this.emitter.emit(this.currentHash, "INTERPRETER SHUT DOWN SUCCESSFUL");
       }
     });
 
     this.socket.on("connect", () => {
-      this.sockStatus = true;
+      this.connStatus = true;
       console.log(`Connected to server on port ${portNum}!`);
       this.sendMsg();
     });
@@ -75,7 +72,7 @@ class Interpreter {
     // Src: https://stackoverflow.com/questions/25791436/reconnect-net-socket-nodejs
     this.socket.on("error", () => {
       // If we are not connected to a server, attempt to connect again
-      if (!this.sockStatus && this.retryAttempNum < this.maxRetryAttempt) {
+      if (!this.connStatus && this.retryAttempNum < this.maxRetryAttempt) {
         console.log("Trying to reconnect!", this.retryAttempNum);
         this.retryAttempNum += 1;
         // Retry to connect in 0.5 seconds
@@ -166,7 +163,7 @@ class Interpreter {
    * @memberof Interpreter
    */
   isLive() {
-    return this.sockStatus;
+    return this.connStatus;
   }
 
   /**
@@ -174,9 +171,17 @@ class Interpreter {
    *
    * @memberof Interpreter
    */
-  kill() {
-    this.process.kill();
-    this.socket.destroy();
+  killServer() {
+    // If we are waiting for a response from the server, we kill it immediately.
+    // There we are not waiting for a response, send a "KILL" packet and give it a chance to clean
+    // up after itself.
+    if (this.isWaiting) {
+      this.socket.destroy();
+      // This will fire off a "close" event for the process which is used to delete this instance of an interpreter
+      this.process.kill();
+    } else {
+      // TODO: Finish implementing case where we send a kill packet.
+    }
   }
 
   /**
@@ -191,7 +196,7 @@ class Interpreter {
     let codeHash = this.calcHash(data);
     // If the socket is not open yet or we are waiting for a message response,
     // append the new message to the message queue.
-    if (!this.sockStatus || this.isWaiting) {
+    if (!this.connStatus || this.isWaiting) {
       this.msgQueue.addMessage([codeHash, codeObj]);
     } else {
       // If not busy, send off code object to server and return code hash
@@ -213,7 +218,7 @@ class Interpreter {
     let codeHash = this.calcHash(data);
     // If the socket is not open yet or we are waiting for a message response,
     // append the new message to the message queue.
-    if (!this.sockStatus || this.isWaiting) {
+    if (!this.connStatus || this.isWaiting) {
       this.msgQueue.addMessage([codeHash, codeObj]);
     } else {
       // If not busy, send off code object to server and return code hash
