@@ -1,4 +1,4 @@
-const cp = require("child_process");
+const { spawn } = require("child_process");
 const { Interpreter } = require("./client.js");
 
 // Constants used to indicate the return status of function calls
@@ -16,20 +16,20 @@ class InterpreterManager {
 
     // There are 65,536 TCP ports in total
     // Ports from 0 - 1023 are well known so we do not use those.
-    for (i = 1024; i < 65000; i++) {
+    for (let i = 1024; i < 65000; i++) {
       this.ports.push(i);
     }
   }
 
   userExists(userName) {
-    if (username in this.instances) {
+    if (userName in this.instances) {
       return true;
     }
     return false;
   }
 
   interpInstanceExists(userName, instanceName) {
-    if (this.userExists(userName) && instanceName in this.instances[username]) {
+    if (this.userExists(userName) && instanceName in this.instances[userName]) {
       return true;
     }
     return false;
@@ -38,7 +38,7 @@ class InterpreterManager {
   getInterp(userName, instanceName) {
     if (this.userExists(userName)) {
       if (this.interpInstanceExists(userName, instanceName)) {
-        return this.instances[username][instanceName];
+        return this.instances[userName][instanceName];
       } else {
         return INTERPDNE;
       }
@@ -70,24 +70,29 @@ class InterpreterManager {
 
     switch (interpType) {
       case "PYTHON":
-        languageServer = spawn("python3"[("serve.py", portNum)]);
+        languageServer = spawn("python3", ["python-server.py", portNum]);
         break;
       case "RUBY":
-        languageServer = spawn("ruby"[("serve.rb", portNum)]);
+        languageServer = spawn("ruby", ["serve.rb", portNum]);
         break;
       case "BASH":
         // TODO: Finish client
-        languageServer = spawn("ruby"[("serve.rb", portNum)]);
+        languageServer = spawn("ruby", ["serve.rb", portNum]);
         break;
       case "ZSH":
         // TODO: Finish client
-        languageServer = spawn("ruby"[("serve.rb", portNum)]);
+        languageServer = spawn("ruby", ["serve.rb", portNum]);
         break;
       default:
         console.log("Language does not exist");
     }
 
-    let newInterp = Interpreter(portNum, interpName, emitter, languageServer);
+    let newInterp = new Interpreter(
+      portNum,
+      interpName,
+      this.emitter,
+      languageServer
+    );
 
     // Set handlers for when the language server crashes
     languageServer.on("error", (code, signal) => {
