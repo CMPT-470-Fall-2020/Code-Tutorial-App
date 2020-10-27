@@ -119,8 +119,22 @@ class Interpreter {
    * @memberof Interpreter
    */
   recv_data(data) {
-    // Send out data
-    this.emitter.emit(this.currentHash, data);
+    let resp = JSON.parse(data.toString("utf-8"));
+    console.log("client got a response", resp);
+    switch (resp["type"]) {
+      case "SUCCESS":
+        // Reset the hash. In case there is a crash, we do not want to send a packet to an outdated hash.
+        this.currentHash = "";
+        this.emitter.emit(this.currentHash, resp);
+        break;
+      case "CONNECTION-OK":
+        break;
+      case "CONNECTION-ERROR":
+        this.killServer();
+        break;
+      default:
+        console.log("This should not happen!");
+    }
 
     this.sendMsg();
   }
