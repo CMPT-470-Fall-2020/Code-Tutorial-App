@@ -1,3 +1,4 @@
+CLUSTER_URI = "mongodb+srv://470_Project:<470_Project>@470project.c1pdi.mongodb.net/<dbname>?retryWrites=true&w=majority";
 const path = require('path')
 const express = require('express');
 var app = express();
