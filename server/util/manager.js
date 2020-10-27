@@ -35,7 +35,7 @@ class InterpreterManager {
     return false;
   }
 
-  getInterpInstance(userName, instanceName) {
+  getInterp(userName, instanceName) {
     if (this.userExists(userName)) {
       if (this.interpInstanceExists(userName, instanceName)) {
         return this.instances[username][instanceName];
@@ -66,26 +66,46 @@ class InterpreterManager {
 
     // Retrieve the port number for the server
     let portNum = this.ports.pop();
-    let child;
+    let languageServer;
 
     switch (interpType) {
       case "PYTHON":
-        child = spawn("python3"[("serve.py", portNum)]);
+        languageServer = spawn("python3"[("serve.py", portNum)]);
+        break;
       case "RUBY":
-        child = spawn("ruby"[("serve.rb", portNum)]);
+        languageServer = spawn("ruby"[("serve.rb", portNum)]);
+        break;
+      case "BASH":
+        // TODO: Finish client
+        languageServer = spawn("ruby"[("serve.rb", portNum)]);
+        break;
+      case "ZSH":
+        // TODO: Finish client
+        languageServer = spawn("ruby"[("serve.rb", portNum)]);
+        break;
       default:
         console.log("Language does not exist");
     }
 
-    child.on("exit", (code, signal) => {
+    let newInterp = Interpreter(portNum, interpName, emitter, languageServer);
+
+    // Set handlers for when the language server crashes
+    languageServer.on("error", (code, signal) => {
       // Return the port number on exit
       this.ports.push(portNum);
+      // Delete the interpreter instance
+      delete this.instances[userName][interpName];
     });
 
-    newInterp = Interpreter(portNum, interpName, emitter);
+    languageServer.on("close", (code, signal) => {
+      // Return the port number on exit
+      this.ports.push(portNum);
+      // Delete interpreter instance
+      delete this.instances[userName][interpName];
+    });
     // Add the interpreter instance
     this.instances[userName][interpName] = newInterp;
-    // Return the interpreter instance to the user
+    // Return the interpreter instance to the user to use it to run code.
     return newInterp;
   }
 }
