@@ -19,24 +19,51 @@ class Interpreter {
    * @param {eventEmitter} eventEmitter An eventEmitter instance used to emit responses from the server.
    * @memberof Interpreter
    */
-  constructor(portNum, interpName, eventEmitter) {
-    this.name = interpName;
+  constructor(portNum, interpName, eventEmitter, serverProcess) {
+    // The name of the interpreter instance.
+    this.interpName = interpName;
+    // The process which runs the server
+    this.serverProcess = serverProcess;
+    // A queue containing all messages which need to be sent.
     this.msgQueue = new MessageQueue();
     // Event emitter used to notify server when a request is completed and result
     // can be sent back to caller
     this.emitter = eventEmitter;
-    // Indicate that the socket is still open
-    this.sockStatus = false;
-    // Flag indicating whether we are waiting for a response from the server
-    this.isWaiting = false;
     // The current hash of the message for which we are waiting for a response to
     this.currentHash = undefined;
     // The socket used to make a connection
     this.socket = new net.Socket();
+
+    // FLAGS
+    // Indicate that the socket is still open
+    this.sockStatus = false;
+    // Flag indicating whether we are waiting for a response from the server
+    this.isWaiting = false;
     // The number of attempts tried to connect
     this.retryAttempNum = 0;
     // Max number of attempts tried
     this.maxRetryAttempt = 10;
+
+    // Register handlers for the server process shutting exiting/crashing.
+    this.serverProcess.on("error", () => {
+      // TODO: Add better error message
+      if (this.currentHash.length != 0) {
+        this.emitter.emit(
+          this.currentHash,
+          "INTERPRETER SHUT DOWN UNEXPECTEDLY"
+        );
+      }
+    });
+
+    this.serverProcess.on("close", () => {
+      // TODO: Add better closing message
+      if (this.currentHash.length != 0) {
+        this.emitter.emit(
+          this.currentHash,
+          "INTERPRETER SHUT DOWN UNEXPECTEDLY"
+        );
+      }
+    });
 
     this.socket.on("connect", () => {
       this.sockStatus = true;
@@ -64,12 +91,7 @@ class Interpreter {
       this.recv_data(data);
     });
 
-    this.socket.on("close", () => {
-      console.log("close called");
-      // TODO: Signal to return port number!
-    });
-
-    console.log("Trying to connect for first time!");
+    // Attempt to connect for the first time. If it does not succeed, retry 10 times on 0.5 sec intervals.
     this.socket.connect(portNum, "127.0.0.1");
   }
 
@@ -99,7 +121,6 @@ class Interpreter {
   recv_data(data) {
     // Send out data
     this.emitter.emit(this.currentHash, data);
-    console.log("received", data.toString("utf-8"));
 
     this.sendMsg();
   }
@@ -135,11 +156,12 @@ class Interpreter {
   }
 
   /**
-   * Kill the language server and its client.
+   * Kill the language server and its client immediately.
    *
    * @memberof Interpreter
    */
   kill() {
+    this.process.kill();
     this.socket.destroy();
   }
 
@@ -152,6 +174,28 @@ class Interpreter {
    */
   runCode(data) {
     let codeObj = { type: "RUN", code: data };
+    let codeHash = this.calcHash(data);
+    // If the socket is not open yet or we are waiting for a message response,
+    // append the new message to the message queue.
+    if (!this.sockStatus || this.isWaiting) {
+      this.msgQueue.addMessage([codeHash, codeObj]);
+    } else {
+      // If not busy, send off code object to server and return code hash
+      this.sendMsg();
+    }
+    return codeHash;
+  }
+
+  /**
+   * Run a string containing code and kill the language server once result is received.
+   *
+   * @param {string} data Instructions to be sent.
+   * @return {string} SHA256 hash used to emit an event containing the server's response.
+   * @memberof Interpreter
+   */
+
+  runAndKill(data) {
+    let codeObj = { type: "RUNANDKILL", code: data };
     let codeHash = this.calcHash(data);
     // If the socket is not open yet or we are waiting for a message response,
     // append the new message to the message queue.
