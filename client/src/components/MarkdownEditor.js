@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component} from 'react';
 import {Controlled as CodeMirror} from 'react-codemirror2';
 import Button from 'react-bootstrap/Button';
 import 'codemirror/mode/markdown/markdown.js';
@@ -7,24 +7,18 @@ import './scss/MarkdownEditor.scss';
 
 let marked = require('marked')
 
-// var renderer = new marked.Renderer()
-// renderer.code = function(code, infostring, escaped){
-//     return `<code>${code}</code><div>hello</div>`;
-// }
-
-// marked.setOptions({
-//     renderer
-// })
-
+// Override function for parsing code blocks
 const renderer = {
     code(code, info, escaped) {
-        console.log("Code section " + code);
-        console.log("infostring " + info + "\n");
-        console.log("escaped " + escaped + "\n");
+        var divStyle = 'style="width:100%; height:auto; border: solid 1px #DFDFDF; background: #F7F7F7; padding:0.5%"';
+        var buttonStyle = 'style="font-size: 12px; float: right; border: solid 1px black; margin-top: 1%"';
         
-        return `<code><pre>` + ` ${code} ` + `</pre></code>\n <button>Click me to run code! </button>`
+        return (
+            `<code><pre><div ${divStyle}>${code}</div><button ${buttonStyle}>Run Code Cell</button></pre></code>`
+        )
     }
 };
+
 marked.use({ renderer });
 
 export default class MarkupEditor extends Component {
