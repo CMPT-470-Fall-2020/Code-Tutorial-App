@@ -9,7 +9,9 @@ class App extends Component{
   	this.state = {uname:"",
   	iname:"",
   	lang:"",
-  	code:""}
+  	code:"",
+  	serverResp: "No Server Response Yet!"
+  	}
   }
 
   handleSubmit(event) {
@@ -24,7 +26,7 @@ class App extends Component{
     }).then(result => {
     		return result.json()
     }).then((resp) => {
-		console.log("resp", resp)	
+		this.setState({serverResp: JSON.stringify(resp)})
     });
   }
 
@@ -69,7 +71,7 @@ myChangeHandler = (event) => {
       	 </fieldset>
 
         <button>Send data!</button>
-        <div>{this.state.code}</div>
+        <div><p> Message Received from server {this.state.serverResp} </p></div>
       </form>
     );
   }
