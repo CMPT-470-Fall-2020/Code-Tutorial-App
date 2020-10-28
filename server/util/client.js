@@ -139,8 +139,12 @@ class Interpreter {
       default:
         console.log("This should not happen!");
     }
+    if (this.msgQueue.isEmpty()) {
+      this.isWaiting = false;
+    }else{
+      this.sendMsg();
+    }
 
-    this.sendMsg();
   }
 
   /**
