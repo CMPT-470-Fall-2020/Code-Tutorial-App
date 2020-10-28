@@ -25,6 +25,20 @@ app.post("/forum/:subforumId/:threadId/:postId", (req, res) => {});
 // Delete a particular post in a class forum thread
 app.delete("/forum/:subforumId/:threadId/:postId", (req, res) => {});
 
+// Routing for tutorial list
+// Retrieve a list of tutorials for a particular class
+app.get("/tutorial/:classId/:tutorialSet", (req, res) => {});
+// Add a new tutorial to the list of tutorials for a particular class
+app.post("/tutorial/:classId/:tutorialSet", (req, res) => {});
+
+// Routing for individual tutorials
+// Retrieve the text of a tutorial
+app.get("/tutorial/:classId/:tutorialSet/:tutorialId", (req, res) => {});
+// Add/Change or hide/show tutorial to students
+app.post("/tutorial/:classId/:tutorialSet/:tutorialId", (req, res) => {});
+// Remove tutorial
+app.delete("/tutorial/:classId/:tutorialSet/:tutorialId", (req, res) => {});
+
 /* Temp routing code */
 // const dashboardRouter = require('./routes/dashboard');
 app.get("/dashboard", (req, res) => {
