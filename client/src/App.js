@@ -1,37 +1,65 @@
 import React, {Component} from 'react';
-import logo from './logo.svg';
+import axios from 'axios';
 import './App.css';
 
 class App extends Component{
   // This is the component state which holds the text sent in by our express backend.
-  state = {message:"no message"}
-  componentDidMount(){
-		fetch("/hello")
-			.then(result => {
-					console.log(result)
-					return result.json()
-			})
-		  .then(jsonResp => this.setState({message:jsonResp.message}))
-  	}
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      message:"no message",
+      name: '',
+      password: ''
+    }
+  }
+  
+  onChangeName(e) {
+    this.setState({
+      name: e.target.value
+    });
+  }
+
+  onChangePassword(e) {
+    this.setState({
+      password: e.target.value
+    });
+  }
+
+  onSubmit(e){
+    e.preventDefault();
+
+    const user = {
+      name: this.state.name,
+      password: this.state.password
+    }
+
+    axios.get('http://localhost:3000/dashboard')
+      .then(res => console.log(res.data));
+  }
 
   render(){
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-      	  <p>{this.state.message}</p>
+        <p>{this.state.message}</p>
+        <form onSubmit={this.onSubmit.bind(this)}>
+            <h1>Input User</h1>
+            <p>Username: </p>
+            <input 
+              type="text" 
+              value={this.state.name} 
+              onChange={this.onChangeName.bind(this)}
+              placeholder="username@sfu.ca">
+            </input> 
+            <p>Password: </p>
+            <input 
+              type="text" 
+              value={this.state.password} 
+              onChange={this.onChangePassword.bind(this)}
+              placeholder="password123">
+            </input> 
+            <button>Log In</button>
+        </form>     
     </div>
   );
   }
