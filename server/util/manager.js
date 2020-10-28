@@ -1,4 +1,5 @@
 const { spawn } = require("child_process");
+var events = require("events");
 const { Interpreter } = require("./client.js");
 
 // Constants used to indicate the return status of function calls
@@ -15,8 +16,8 @@ class InterpreterManager {
     this.ports = [];
 
     // There are 65,536 TCP ports in total
-    // Ports from 0 - 1023 are well known so we do not use those.
-    for (let i = 1024; i < 65000; i++) {
+    // IANA suggests that ports from 65353 - 49152 shoul be used for ephemeral(i.e. temporary) connecetions.
+    for (let i = 65535; i > 49152; i--) {
       this.ports.push(i);
     }
   }
@@ -61,6 +62,8 @@ class InterpreterManager {
     }
 
     if (this.interpInstanceExists(userName, interpName)) {
+      console.log("MANAGER: Return an already existing interpreter");
+      // console.log(this.instances[userName]);
       return this.instances[userName][interpName];
     }
 
@@ -73,29 +76,30 @@ class InterpreterManager {
         languageServer = spawn("python3", ["python-server.py", portNum]);
         break;
       case "RUBY":
-        languageServer = spawn("ruby", ["serve.rb", portNum]);
+        languageServer = spawn("ruby", ["ruby-server.rb", portNum]);
         break;
       case "BASH":
         // TODO: Finish client
-        languageServer = spawn("ruby", ["serve.rb", portNum]);
+        // languageServer = spawn("ruby", ["serve.rb", portNum]);
+        console.log("got bash");
         break;
       case "ZSH":
         // TODO: Finish client
-        languageServer = spawn("ruby", ["serve.rb", portNum]);
+        // languageServer = spawn("ruby", ["serve.rb", portNum]);
+        console.log("got zsh");
         break;
       default:
         console.log("Language does not exist");
     }
 
-    let newInterp = new Interpreter(
-      portNum,
-      interpName,
-      this.emitter,
-      languageServer
-    );
-
     // Set handlers for when the language server crashes
     languageServer.on("error", (code, signal) => {
+      console.log(
+        "MANAGER: Language server process died due to an error.",
+        code,
+        signal,
+        "Returning port number and removing instance."
+      );
       // Return the port number on exit
       this.ports.push(portNum);
       // Delete the interpreter instance
@@ -103,14 +107,54 @@ class InterpreterManager {
     });
 
     languageServer.on("close", (code, signal) => {
+      console.log(
+        "MANAGER: Language server process close",
+        code,
+        signal,
+        "Returning port number and removing instance."
+      );
       // Return the port number on exit
       this.ports.push(portNum);
       // Delete interpreter instance
       delete this.instances[userName][interpName];
     });
+
+    console.log("MANAGER: Creating new interpreter instance.");
+    let newInterp = new Interpreter(
+      portNum,
+      interpName,
+      this.emitter,
+      languageServer
+    );
+
+    console.log("MANAGER: Adding the new instance!");
     // Add the interpreter instance
     this.instances[userName][interpName] = newInterp;
     // Return the interpreter instance to the user to use it to run code.
+    console.log("MANAGER: Returning interpreter instance to caller.");
     return newInterp;
   }
 }
+
+// let evEm = new events.EventEmitter();
+// let man = new InterpreterManager(evEm);
+// let interp = man.createInterp("name", "i1", "PYTHON");
+
+// let hash = interp.runCode("print(4 + 4)");
+// evEm.on(hash, (resp) => {
+//   console.log(resp);
+// });
+
+// hash = interp.runCode("import math\nprint(math.log2(4+4))");
+// evEm.on(hash, (resp) => {
+//   console.log(resp);
+// });
+
+module.exports = {
+  InterpreterManager: InterpreterManager,
+  USERDNE: "USERDNE",
+  USEREXISTS: "USEREXISTS",
+  SUCCESS: "SUCCESS",
+  INTERPDNE: "INTERPDNE",
+  INTERPEXISTS: "INTERPEXISTS",
+};
