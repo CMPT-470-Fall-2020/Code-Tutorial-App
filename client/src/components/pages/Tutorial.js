@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import MarkdownEditor from '../MarkdownEditor'
-import {Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
+import {Container} from 'react-bootstrap';
 import {InputGroup, FormControl, DropdownButton, Dropdown} from 'react-bootstrap';
 
 export default class Tutorial extends Component {
@@ -42,9 +42,4 @@ export default class Tutorial extends Component {
 const tutorialTitleStyle = {
     marginTop: '2%',
     paddingLeft: '0px'
-}
-
-const rowStyle = {
-    margin: '0px',
-    padding: '0px'
 }

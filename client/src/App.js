@@ -4,7 +4,6 @@ import Header from './components/layout/Header';
 import Tutorial from './components/pages/Tutorial';
 import TutorialDashboard from './components/pages/TutorialDashboard';
 import CodePlayground from './components/pages/CodePlayground';
-import MarkdownEditor from './components/MarkdownEditor';
 
 class App extends Component {
   render() {
