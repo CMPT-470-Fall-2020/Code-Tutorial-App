@@ -7,19 +7,43 @@ import './scss/MarkdownEditor.scss';
 
 let marked = require('marked')
 
+// var renderer = new marked.Renderer()
+// renderer.code = function(code, infostring, escaped){
+//     return `<code>${code}</code><div>hello</div>`;
+// }
+
+// marked.setOptions({
+//     renderer
+// })
+
+const renderer = {
+    code(code, info, escaped) {
+        console.log("Code section " + code);
+        console.log("infostring " + info + "\n");
+        console.log("escaped " + escaped + "\n");
+        
+        return `<code><pre>` + ` ${code} ` + `</pre></code>\n <button>Click me to run code! </button>`
+    }
+};
+marked.use({ renderer });
+
 export default class MarkupEditor extends Component {
     
     state = {
         value:''
     }
 
+    // Create preview of tutorial
+    getPreview() {
+        return {__html: marked(this.state.value)};
+    }
+    
     render() {
         return (
             <React.Fragment>
                 <section style={sectionStyle}>
                     <h1 style={headerStyle}>Markdown Editor</h1>
-                    <Button variant="primary" style={saveStyle}>Save</Button>
-
+                    <Button variant="primary" style={buttonStyle}>Save</Button>
                 </section>
                 <CodeMirror
                     value={this.state.value}
@@ -33,7 +57,7 @@ export default class MarkupEditor extends Component {
                 />
                 <div>
                     <h1 style={headerStyle}>Markdown Preview</h1>
-                    <div style={previewStyle} dangerouslySetInnerHTML = {{__html: marked(this.state.value)}}>                               
+                    <div style={previewStyle} dangerouslySetInnerHTML = {this.getPreview()}>                               
                     </div>
                 </div>
             </React.Fragment>
@@ -52,7 +76,7 @@ const headerStyle = {
     display: 'inline-block'
 }
 
-const saveStyle = {
+const buttonStyle = {
     padding: '3px',
     float: 'right',
     margin:'2% 0% 0% 1%',
