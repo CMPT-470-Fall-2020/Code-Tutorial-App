@@ -47,6 +47,7 @@ class Interpreter {
     // Register handlers for the server process shutting exiting/crashing.
     this.serverProcess.on("error", () => {
       // TODO: Add better error message
+      console.log("CLIENT: Language Server process died unexpectedly due to error!");
       if (this.currentHash.length != 0) {
         this.emitter.emit(
           this.currentHash,
@@ -57,6 +58,7 @@ class Interpreter {
 
     this.serverProcess.on("close", () => {
       // TODO: Add better closing message
+      console.log("CLIENT: Language Server process closed.")
       if (this.currentHash.length != 0) {
         this.emitter.emit(this.currentHash, "INTERPRETER SHUT DOWN SUCCESSFUL");
       }
@@ -73,7 +75,7 @@ class Interpreter {
     this.socket.on("error", () => {
       // If we are not connected to a server, attempt to connect again
       if (!this.connStatus && this.retryAttempNum < this.maxRetryAttempt) {
-        console.log("Trying to reconnect!", this.retryAttempNum);
+        console.log("CLIENT: Trying to reconnect. Retry #:", this.retryAttempNum);
         this.retryAttempNum += 1;
         // Retry to connect in 0.5 seconds
         setTimeout(() => {
@@ -81,10 +83,10 @@ class Interpreter {
         }, 500);
       }
       // TODO: Signal to return port number!
-      console.log("Failed to connect after", this.retryAttempNum);
     });
 
     this.socket.on("data", (data) => {
+      console.log("CLIENT: Received response from language server.")
       this.recv_data(data);
     });
 
@@ -98,14 +100,19 @@ class Interpreter {
    * @memberof Interpreter
    */
   sendMsg() {
+    console.log("CLIENT: Message queue called in sendMsg")
     if (!this.msgQueue.isEmpty()) {
       // Retrieve next message
       let [hash, msg] = this.msgQueue.getMessage();
+      console.log("CLIENT: Sending a new message to client", msg);
 
       this.isWaiting = true;
       this.currentHash = hash;
-      this.socket.write(JSON.stringify(msg));
+      let msgStatus = this.socket.write(JSON.stringify(msg));
+      console.log("CLIENT: sendMsg sent a message with status", msgStatus);
+      return
     }
+    console.log("CLIENT: Message queue had other messages in sendMsg")
   }
 
   /**
@@ -117,12 +124,12 @@ class Interpreter {
    */
   recv_data(data) {
     let resp = JSON.parse(data.toString("utf-8"));
-    console.log("client got a response", resp);
     switch (resp["type"]) {
       case "SUCCESS":
         // Reset the hash. In case there is a crash, we do not want to send a packet to an outdated hash.
-        this.currentHash = "";
+      console.log("CLIENT: Received response from server. About to emit event", resp);
         this.emitter.emit(this.currentHash, resp);
+        // this.currentHash = "";
         break;
       case "CONNECTION-OK":
         break;
@@ -196,10 +203,13 @@ class Interpreter {
     let codeHash = this.calcHash(data);
     // If the socket is not open yet or we are waiting for a message response,
     // append the new message to the message queue.
+    this.msgQueue.addMessage([codeHash, codeObj]);
     if (!this.connStatus || this.isWaiting) {
-      this.msgQueue.addMessage([codeHash, codeObj]);
+      console.log("CLIENT: adding message to queue in runCode", codeObj);
+      // this.msgQueue.addMessage([codeHash, codeObj]);
     } else {
       // If not busy, send off code object to server and return code hash
+      console.log("CLIENT: Sending message directly in runCode", codeObj);
       this.sendMsg();
     }
     return codeHash;
