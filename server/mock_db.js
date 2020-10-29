@@ -1,5 +1,54 @@
-// TODO: remove this mock database once the main database is done
 let mock_DB = {
+  user: {
+    bChan: {
+      password: "1234",
+      accountType: "instructor",
+      courses: ["CMPT470"],
+    },
+    jBond: {
+      password: "5678",
+      accountType: "student",
+      courses: ["CMPT470"],
+    },
+  },
+  autograder: {
+    test_1: {
+      courseID: "CMPT470",
+      username: "bChan",
+      code: "print('hello world')",
+      testName: "Example Test",
+    },
+  },
+  courses: {
+    CMPT470: {
+      courseName: "CMPT470 - Web development",
+      term: "fall",
+    },
+  },
+  tutorial: {
+    tutorial_1: {
+      username: bChan,
+      courseID: "CMPT470",
+      text: "# Hello world",
+    },
+  },
+  comments: {
+    post_1: {
+      username: "yavor",
+      date: "10-10-2020",
+    },
+  },
+  posts: {
+    post_1: {
+      courseID: "CMPT470",
+      username: "yavor",
+      date: "10-10-2020",
+    },
+  },
+};
+
+// TODO: remove this mock database once the main database is done
+let mock_DB_extended = {
   forum: {
     sub_forum_id_1: {
       t1: {
@@ -18,16 +67,19 @@ let mock_DB = {
     posts: {
       ABC: [
         {
+          id: 1,
           post_text: "Here is my question",
           likes: 2,
           author: "Some guy",
         },
         {
+          id: 2,
           post_text: "Here is an answer",
           likes: 4,
           author: "Some guy",
         },
         {
+          id: 3,
           post_text: "Here is some more information to help",
           likes: 55,
           author: "Some other guy",
@@ -35,16 +87,19 @@ let mock_DB = {
       ],
       DEF: [
         {
+          id: 4,
           post_text: "Here is my question",
           likes: 2,
           author: "Some other guy",
         },
         {
+          id: 5,
           post_text: "Here is an answer",
           likes: 4,
           author: "Some other guy",
         },
         {
+          id: 5,
           post_text: "Here is some more information to help",
           likes: 55,
           author: "Some other guy",
@@ -60,6 +115,7 @@ let mock_DB = {
       class_desc: "Web Development is taught here",
       num_students: 55,
       forum: "sub_forum_id_1",
+      tutorial_list_id: "tutorial_set_id_1",
     },
     class2: {
       class_id: "CMPT 353",
@@ -68,6 +124,7 @@ let mock_DB = {
       class_desc: "Learn about ML and basic Stats",
       num_students: 420,
       forum: "NONE",
+      tutorial_list_id: "tutorial_set_id_2",
     },
     class3: {
       class_id: "CMPT 318",
@@ -76,6 +133,7 @@ let mock_DB = {
       class_desc: "SQL injections and shit",
       num_students: 69,
       forum: "NONE",
+      tutorial_list_id: "NONE",
     },
   },
   tutorial_set: {
@@ -159,3 +217,5 @@ let mock_DB = {
     },
   },
 };
+
+module.exports.mock_DB = mock_DB;
