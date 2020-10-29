@@ -2,6 +2,7 @@ const path = require("path");
 const express = require("express");
 var app = express();
 const port = process.env.PORT || 4000;
+var mockDB = require("./mock_db").mock_DB;
 
 // THIS IS AN EXAMPLE OF HOW OUR FILES WILL BE SERVED WHEN WE UPLOAD TO GCP
 // app.use(express.static(path.join(__dirname, "..","client", "build")));
@@ -27,17 +28,17 @@ app.delete("/forum/:subforumId/:threadId/:postId", (req, res) => {});
 
 // Routing for tutorial list
 // Retrieve a list of tutorials for a particular class
-app.get("/tutorial/:classId/:tutorialSet", (req, res) => {});
-// Add a new tutorial to the list of tutorials for a particular class
-app.post("/tutorial/:classId/:tutorialSet", (req, res) => {});
+app.get("/tutorial/:classId/", (req, res) => {});
+// Add a new tutorial to the tutorials for a particular class
+app.post("/tutorial/:classId/", (req, res) => {});
 
 // Routing for individual tutorials
 // Retrieve the text of a tutorial
-app.get("/tutorial/:classId/:tutorialSet/:tutorialId", (req, res) => {});
+app.get("/tutorial/:classId/:tutorialId", (req, res) => {});
 // Add/Change or hide/show tutorial to students
-app.post("/tutorial/:classId/:tutorialSet/:tutorialId", (req, res) => {});
+app.post("/tutorial/:classId/:tutorialId", (req, res) => {});
 // Remove tutorial
-app.delete("/tutorial/:classId/:tutorialSet/:tutorialId", (req, res) => {});
+app.delete("/tutorial/:classId/:tutorialId", (req, res) => {});
 
 /* Temp routing code */
 // const dashboardRouter = require('./routes/dashboard');
