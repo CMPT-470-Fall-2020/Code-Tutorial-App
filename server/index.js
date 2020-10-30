@@ -1,12 +1,4 @@
-<<<<<<< HEAD
-const path = require("path");
-const express = require("express");
-var app = express();
-const port = process.env.PORT || 4000;
 
-// THIS IS AN EXAMPLE OF HOW OUR FILES WILL BE SERVED WHEN WE UPLOAD TO GCP
-// app.use(express.static(path.join(__dirname, "..","client", "build")));
-=======
 const path = require('path');
 const express = require('express');
 const cors = require('cors');
@@ -27,9 +19,8 @@ connection.once('open', () => {
   console.log("MongoDB database connection established successfully");
 });
 
-/* THIS IS AN EXAMPLE OF HOW OUR FILES WILL BE SERVED WHEN WE UPLOAD TO GCP
-app.use(express.static(path.join(__dirname, "..","client", "build")));
->>>>>>> database
+// THIS IS AN EXAMPLE OF HOW OUR FILES WILL BE SERVED WHEN WE UPLOAD TO GCP
+// app.use(express.static(path.join(__dirname, "..","client", "build"))); 
 
 // app.get('/', (req, res) => {
 //   res.sendFile(path.join(__dirname, "..","client", "build", "index.html"))
@@ -101,7 +92,7 @@ app.post("/tutorial/:classId/:tutorialId", (req, res) => {
 app.delete("/tutorial/:classId/:tutorialId", (req, res) => {
   let classId = req.params.classId;
   let tutId = req.params.tutorialId;
-});
+
 
 /* Temp routing code */
 // const dashboardRouter = require('./routes/dashboard');
