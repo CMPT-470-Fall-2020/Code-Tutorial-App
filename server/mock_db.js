@@ -8,7 +8,7 @@ let mock_DB = {
     jBond: {
       password: "5678",
       accountType: "student",
-      courses: ["CMPT470"],
+      courses: ["CMPT470", "CMPT318"],
     },
   },
   autograder: {
@@ -24,25 +24,52 @@ let mock_DB = {
       courseName: "CMPT470 - Web development",
       term: "fall",
     },
+    CMPT318: {
+      courseName: "CMPT318 - Cybersecurity",
+      term: "fall",
+    },
   },
   tutorial: {
     tutorial_1: {
-      username: bChan,
+      title: "Tutorial 1 for cmpt 470",
+      username: "bChan",
       courseID: "CMPT470",
       text: "# Hello world",
     },
+    tutorial_2: {
+      title: "Tutorial 2 for cmpt 470",
+      username: "bChan",
+      courseID: "CMPT470",
+      text: "# Lets learn some more stuff",
+    },
+    tutorial_2: {
+      title: "Tutorial 1 for cmpt 318",
+      username: "uGlasser",
+      courseID: "CMPT318",
+      text: "# Lets learn some more stuff",
+    },
   },
   comments: {
-    post_1: {
-      username: "yavor",
+    comment_1: {
+      username: "bChan",
       date: "10-10-2020",
+      text: "Try this...!",
+      postID: "post_1",
+    },
+    comment_2: {
+      username: "bChan",
+      date: "11-10-2020",
+      text: "Actually, on second thought, you can try this as well!",
+      postID: "post_1",
     },
   },
   posts: {
     post_1: {
       courseID: "CMPT470",
-      username: "yavor",
+      username: "jBond",
       date: "10-10-2020",
+      title: "Please help me.",
+      text: "I have a problem.",
     },
   },
 };
