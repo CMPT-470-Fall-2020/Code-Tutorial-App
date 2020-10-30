@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
+import Login from './components/Login';
+import Dashboard from './components/Dashboard';
+import "./App.css";
 import Header from './components/layout/Header';
 import CreateTutorial from './components/pages/CreateTutorial';
 import CourseDashboard from './components/pages/CourseDashboard';
@@ -13,6 +16,8 @@ class App extends Component {
       <Router>
         <div className="App">
           <Header></Header>
+            <Route exact path="/" component={Login} id="login-page"></Route>
+            <Route path="/Dashboard" component={Dashboard}></Route>
             <Route path="/createtutorial" component={CreateTutorial}></Route>
             <Route path="/coursedashboard" component={CourseDashboard}></Route>
             <Route path="/codeplayground" component={CodePlayground}></Route>
