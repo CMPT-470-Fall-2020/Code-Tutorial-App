@@ -31,13 +31,18 @@ export default class MarkupEditor extends Component {
     getPreview() {
         return {__html: marked(this.state.value)};
     }
+
+    // Save to DB
+    saveDB() {
+        console.log("save to db here");
+    }
     
     render() {
         return (
             <React.Fragment>
                 <section style={sectionStyle}>
                     <h1 style={headerStyle}>Markdown Editor</h1>
-                    <Button variant="primary" style={buttonStyle}>Save</Button>
+                    <Button variant="primary" style={buttonStyle} onClick={this.saveDB.bind(this)}>Save</Button>
                 </section>
                 <CodeMirror
                     value={this.state.value}

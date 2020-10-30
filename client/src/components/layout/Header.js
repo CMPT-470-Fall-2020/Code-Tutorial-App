@@ -13,8 +13,8 @@ export default function Header() {
                 <Nav className="mr-auto">
                 <Nav.Link href="/">Home</Nav.Link>
                 <NavDropdown title="Tutorials" id="basic-nav-dropdown">
-                    <NavDropdown.Item href="/TutorialDashboard">Dashboard</NavDropdown.Item>
-                    <NavDropdown.Item href="/Tutorial">Create Tutorial</NavDropdown.Item>
+                    <NavDropdown.Item href="/CourseDashboard">Dashboard</NavDropdown.Item>
+                    <NavDropdown.Item href="/CreateTutorial">Create Tutorial</NavDropdown.Item>
                 </NavDropdown>
                 <Nav.Link href="/CodePlayground">Code Playground</Nav.Link>
                 </Nav>

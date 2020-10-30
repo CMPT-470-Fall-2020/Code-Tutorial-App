@@ -3,7 +3,7 @@ import MarkdownEditor from '../MarkdownEditor'
 import {Container} from 'react-bootstrap';
 import {InputGroup, FormControl, DropdownButton, Dropdown} from 'react-bootstrap';
 
-export default class Tutorial extends Component {
+export default class CreateTutorial extends Component {
 
     state = {
         title: "Course"
