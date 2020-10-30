@@ -1,13 +1,30 @@
 import React, { Component } from 'react';
 import Button from 'react-bootstrap/Button';
 import { Link } from "react-router-dom"; 
+import axios from 'axios';
 
 
 export default class CourseDashboard extends Component {
-    courses = ["CMPT470", "CMPT310", "CMPT354"];
+    constructor(props) {
+        super(props);
+    
+        this.state = {
+          courses: []
+        }
+      }
+    
+    componentDidMount() {
+        axios.get('http://localhost:3000/dashboard')
+          .then(res => {
+            this.setState({courses: res.data});
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+      }
 
     createCourseContainers() {
-        return this.courses.map((course)=>
+        return this.state.courses.map((course)=>
             <Link to={
                 {
                     pathname: "./tutorials",
@@ -15,9 +32,12 @@ export default class CourseDashboard extends Component {
                 }
             }>
                 <div style={background}>
-                    <div key={course} style={courseCard}>
+                    <div key={course.id} style={courseCard}>
                             <div style={name}> 
-                                {course}
+                                {course.name} 
+                            </div>
+                            <div style={description}>
+                                {course.description}
                             </div>
                     </div>
                 </div>
@@ -57,6 +77,13 @@ const courseCard = {
 }
 
 const name = {
+    color: '#343a40',
+    fontFamily: 'Arial, Helvetica, sans-serif',
+    fontWeight: 'bold',
+    textAlign: 'center'
+}
+
+const description = {
     color: '#343a40',
     fontFamily: 'Arial, Helvetica, sans-serif',
     fontWeight: 'bold',

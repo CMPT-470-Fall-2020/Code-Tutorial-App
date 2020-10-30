@@ -10,12 +10,15 @@ const port = process.env.PORT || 4000;
 //   res.sendFile(path.join(__dirname, "..","client", "build", "index.html"))
 // })
 
-// // TODO: need to route to ./routes
-// // TODO: Needs courses from database, add another argument for userid
-// app.get('/dashboard', (req, res) => {
-//   res.json([{id: 1, name: 'CMPT 470', description: 'Web-based Information Systems'}, 
-//   {id: 2, name: 'CMPT 383', description: 'Comparative Programming Languages'}])
-// })
+// TODO: need to route to ./routes
+// TODO: Needs courses from database, add another argument for userid
+app.get('/dashboard', (req, res) => {
+  res.json([{id: 1, name: 'CMPT 470', description: 'Web-based Information Systems'}, 
+  {id: 2, name: 'CMPT 383', description: 'Comparative Programming Languages'},
+  {id: 3, name: 'CMPT 310', description: 'Artificial Intelligence'},
+  {id: 4, name: 'CMPT 354', description: 'Introduction to Database Systems'}])
+})
+
 // Retrieve a list of all the posts for a certain class.
 app.get("/forum/:classId", (req, res) => {
   let classId = req.params.classId;

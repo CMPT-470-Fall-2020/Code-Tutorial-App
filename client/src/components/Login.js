@@ -60,7 +60,7 @@ export default class Login extends Component{
               placeholder="password123">
             </input> 
 
-            <Link to={{pathname: '/Dashboard'}}> 
+            <Link to={{pathname: '/coursedashboard'}}> 
                 <button>Log In</button>
             </Link>
         </form>     
