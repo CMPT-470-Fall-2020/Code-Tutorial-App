@@ -6,9 +6,16 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "bootstrap": "^4.5.3",
+    "codemirror": "^5.58.1",
+    "marked": "^1.2.0",
     "markedjs": "^10.0.0",
+    "node-sass": "^4.14.1",
     "react": "^16.14.0",
+    "react-bootstrap": "^1.3.0",
+    "react-codemirror2": "^7.2.1",
     "react-dom": "^16.14.0",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3"
   },
   "scripts": {

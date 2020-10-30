@@ -1,39 +1,27 @@
-import React, {Component} from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
+import {BrowserRouter as Router, Route} from 'react-router-dom';
+import Header from './components/layout/Header';
+import CreateTutorial from './components/pages/CreateTutorial';
+import CourseDashboard from './components/pages/CourseDashboard';
+import CodePlayground from './components/pages/CodePlayground';
+import Tutorials from './components/pages/Tutorials';
+import RunTutorial from './components/pages/RunTutorial';
 
-class App extends Component{
-  // This is the component state which holds the text sent in by our express backend.
-  state = {message:"no message"}
-  componentDidMount(){
-		fetch("/hello")
-			.then(result => {
-					console.log(result)
-					return result.json()
-			})
-		  .then(jsonResp => this.setState({message:jsonResp.message}))
-  	}
+class App extends Component {
+  render() {
+    return (
+      <Router>
+        <div className="App">
+          <Header></Header>
+            <Route path="/createtutorial" component={CreateTutorial}></Route>
+            <Route path="/coursedashboard" component={CourseDashboard}></Route>
+            <Route path="/codeplayground" component={CodePlayground}></Route>
+            <Route path="/tutorials" component={Tutorials}></Route>
+            <Route path="/runtutorial" component={RunTutorial}></Route>
 
-  render(){
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-      	  <p>{this.state.message}</p>
-    </div>
-  );
+        </div>
+      </Router>
+    );
   }
 }
 
