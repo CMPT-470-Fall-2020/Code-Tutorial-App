@@ -10,24 +10,15 @@ const port = process.env.PORT || 4000;
 //   res.sendFile(path.join(__dirname, "..","client", "build", "index.html"))
 // })
 
-
-
-/* Temp routing code */
-// const dashboardRouter = require('./routes/dashboard');
+// TODO: need to route to ./routes
+// TODO: Needs courses from database, add another argument for userid
 app.get('/dashboard', (req, res) => {
-  res.json([{id: 1, name: 'CMPT 470'}, {id: 2, name: 'CMPT 471'}])
+  res.json([{id: 1, name: 'CMPT 470', description: 'Web-based Information Systems'}, 
+  {id: 2, name: 'CMPT 383', description: 'Comparative Programming Languages'}])
 })
 
 app.get('/', (req, res) => {
   res.json({message: 'Hello World from the backend server on the \"/\" route!'})
-})
-
-app.get('/coursesPage', (req, res) => {
-  res.json([{id: 1, title: 'Assignment 1 clarification'}, {id: 2, title: 'Exam coverage'}])
-})
-
-app.get('/coursesPage/tutorials', (req, res) => {
-  res.json([{id: 1, title: 'Tutorial 1'}, {id: 2, title: 'Tutorial 2'}])
 })
 
 app.listen(port, ()=> {
