@@ -43,6 +43,7 @@ app.post("/forum/:classId/:postId", (req, res) => {
   let classId = req.params.classId;
   let postId = req.params.postId;
 });
+
 // Delete a particular thread in a class forum
 app.delete("/forum/:classId/:postId", (req, res) => {
   let classId = req.params.classId;
@@ -52,11 +53,16 @@ app.delete("/forum/:classId/:postId", (req, res) => {
 
 // Update/Create a comment in a post thread.
 app.post("/forum/:classId/:postId/:commentId", (req, res) => {
-  let classId = req.params.classId;
   let postId = req.params.postId;
   let commentId = req.params.commentId;
-  // Change the text of a comment for a specific post.
+  let userId = req.body.userId;
+  let commentText = req.body.commentText;
+
+  let newComment = new Comment({commentId, postId, userId, commentText});
+  newComment.save(); // not sure about the try catch thing
 });
+
+// Change the text of a comment for a specific post.
 
 // Delete a particular post in a class forum thread
 app.delete("/forum/:classId/:postId/:commentId", (req, res) => {
@@ -83,15 +89,18 @@ app.get("/tutorial/:classId/:tutorialId", (req, res) => {
   let classId = req.params.classId;
   let tutId = req.params.tutorialId;
 });
+
 // Add/Change or hide/show tutorial to students
 app.post("/tutorial/:classId/:tutorialId", (req, res) => {
   let classId = req.params.classId;
   let tutId = req.params.tutorialId;
 });
+
 // Remove tutorial
 app.delete("/tutorial/:classId/:tutorialId", (req, res) => {
   let classId = req.params.classId;
   let tutId = req.params.tutorialId;
+});
 
 
 /* Temp routing code */

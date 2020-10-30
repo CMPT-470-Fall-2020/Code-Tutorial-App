@@ -18,11 +18,8 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "markedjs": "^10.0.0",
-<<<<<<< HEAD
     "mongoose": "^5.10.9",
     "nodemon": "^2.0.6"
-=======
-    "mongoose": "^5.10.11"
->>>>>>> database
+
   }
 }
