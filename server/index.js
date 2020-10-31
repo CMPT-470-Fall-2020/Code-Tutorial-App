@@ -3,23 +3,12 @@ const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const passport = require('passport');
-const passportLocal = require('passport-local').Strategy;
-const cookieParser = require('cookie-parser');
-const bcrypt = require("bcryptjs");
-const session = require("express-session");
-const bodyParser = require("body-parser");
-const User = require('./models/user.model');
-
 var app = express();
 const port = process.env.PORT || 4000;
 
 // Database code
 require('dotenv').config();
-app.use(cors({
-  origin: "http://localhost:3000", //  Need to change origin for when it is hosted
-  credentials: true
-}));
+app.use(cors());
 app.use(express.json());
 
 const uri = process.env.ATLAS_URI;
@@ -29,43 +18,6 @@ const connection = mongoose.connection;
 connection.once('open', () => {
   console.log("MongoDB database connection established successfully");
 });
-
-// Authentication
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended:true}));
-
-app.use(
-  session({
-    secret: "secretcode",
-    resave: true,
-    saveUninitialized: true,
-  })
-);
-
-app.use(cookieParser("secretcode"));
-app.use(passport.initialize());
-app.use(passport.session());
-require('./passportConfig')(passport);
-
-// Register a user with a new login and password
-app.post("/register", (req, res) => {
-  User.findOne({userId: req.body.user.registerName}, async(err, doc) => {
-    if (err) throw err;
-    if (doc) {
-      res.send("Username already exists. Please try another username")
-    }
-    else {
-      const hashPass = await bcrypt.hash(req.body.user.password, 10);
-
-      const newUser = new User({
-        userId: req.body.user.registerName,
-        password: hashPass
-      });
-      await newUser.save();
-      res.send("User Created");
-    }
-  })
-})
 
 // THIS IS AN EXAMPLE OF HOW OUR FILES WILL BE SERVED WHEN WE UPLOAD TO GCP
 // app.use(express.static(path.join(__dirname, "..","client", "build")));
