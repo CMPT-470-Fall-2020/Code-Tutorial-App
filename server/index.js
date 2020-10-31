@@ -31,6 +31,7 @@ connection.once('open', () => {
 });
 
 // Authentication
+//-----------------------------------------------------------------------------------------
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 
@@ -46,6 +47,21 @@ app.use(cookieParser("secretcode"));
 app.use(passport.initialize());
 app.use(passport.session());
 require('./passportConfig')(passport);
+
+// Authenticate and login user 
+app.post("/login", (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) throw err;
+    if (!user) res.send("No User Exists");
+    else {
+      req.logIn(user, (err) => {
+        if (err) throw err;
+        res.send("Authentication: Sucess");
+        console.log(req.user);
+      });
+    }
+  })(req, res, next);
+})
 
 // Register a user with a new login and password
 app.post("/register", (req, res) => {
@@ -66,6 +82,13 @@ app.post("/register", (req, res) => {
     }
   })
 })
+
+// Return a user object containing all session data
+app.post("/user", (req, res) => {
+  req.send(req.user) 
+})
+//-----------------------------------------------------------------------------------------
+
 
 // THIS IS AN EXAMPLE OF HOW OUR FILES WILL BE SERVED WHEN WE UPLOAD TO GCP
 // app.use(express.static(path.join(__dirname, "..","client", "build")));
