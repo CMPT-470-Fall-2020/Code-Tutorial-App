@@ -86,20 +86,19 @@ app.post("/tutorial/:classId/", (req, res) => {
   let codeText = req.body.codeText;
 
   let newTutorial = new Tutorial({tutorialName, userID, classId, codeText});
-  newTutorial.save(); // not sure about the try catch thing
-  
+  newTutorial.save()
+    .then(() => res.json('Tutorial added!'))
+    .catch(err => res.status(400).json('Error: ' + err));
 });
 
 // Routing for individual tutorials
-// Retrieve the text of a tutorial
+// Retrieve a tutorial
 app.get("/tutorial/:classId/:tutorialId", (req, res) => {
-  let classId = req.params.classId;
   let tutId = req.params.tutorialId;
 
-  Model.findById(tutId, function (err, doc){
-    doc.codeText = req.body.codeText;
-    doc.save();
-  });
+  Model.findById(tutId)
+    .then(tutorial => res.json(tutorial))
+    .catch(err => res.status(400).json('Error: ' + err));
   
 });
 
@@ -107,21 +106,27 @@ app.get("/tutorial/:classId/:tutorialId", (req, res) => {
 app.post("/tutorial/:classId/:tutorialId", (req, res) => {
   let tutId = req.params.tutorialId;
 
-  Model.findById(tutId, function (err, doc){
-    doc.codeText = req.body.codeText;
-    doc.save();
-  });
+  Model.findById(tutId)
+    .then(tutorial => {
+      tutorial.tutorialName = req.body.tutorialName;
+      tutorial.userID = req.body.userID;
+      tutorial.courseID = req.params.classId;
+      tutorial.codeText = req.body.codeText;
 
+      tutorial.save()
+        .then(() => res.json('Exercise updated!'))
+        .catch(err => res.status(400).json('Error: ' + err));
+    })
+    .catch(err => res.status(400).json('Error: ' + err));
 });
 
 // Remove tutorial
 app.delete("/tutorial/:classId/:tutorialId", (req, res) => {
   let tutId = req.params.tutorialId;
 
-  Model.findById(tutId, function (err, doc){
-    doc.codeText = req.body.codeText;
-    doc.delete();
-  });
+  Model.findByIdAndDelete(tutId)
+    .then(() => res.json('Tutorial deleted.'))
+    .catch(err => res.status(400).json('Error: ' + err));
 
 });
 
