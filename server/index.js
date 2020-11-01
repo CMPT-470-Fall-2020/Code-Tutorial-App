@@ -56,7 +56,7 @@ app.post("/login", (req, res, next) => {
     else {
       req.logIn(user, (err) => {
         if (err) throw err;
-        res.send("Authentication: Sucess");
+        res.send("Authentication: Success");
         console.log(req.user);
       });
     }
@@ -65,7 +65,7 @@ app.post("/login", (req, res, next) => {
 
 // Register a user with a new login and password
 app.post("/register", (req, res) => {
-  User.findOne({userId: req.body.user.registerName}, async(err, doc) => {
+  User.findOne({userID: req.body.user.name}, async(err, doc) => {
     if (err) throw err;
     if (doc) {
       res.send("Username already exists. Please try another username")
@@ -74,7 +74,7 @@ app.post("/register", (req, res) => {
       const hashPass = await bcrypt.hash(req.body.user.password, 10);
 
       const newUser = new User({
-        userId: req.body.user.registerName,
+        userID: req.body.user.name,
         password: hashPass
       });
       await newUser.save();
@@ -82,6 +82,12 @@ app.post("/register", (req, res) => {
     }
   })
 })
+
+// Terminate login session
+app.get('/logout', function(req, res){
+  req.logout();
+  res.redirect('/');
+});
 
 // Return a user object containing all session data
 app.post("/user", (req, res) => {

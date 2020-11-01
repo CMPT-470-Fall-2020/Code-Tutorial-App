@@ -6,9 +6,9 @@ const localStrategy = require("passport-local").Strategy;
 module.exports = function(passport) {
     // Create a local strategy
     passport.use(
-        new localStrategy((userID, password, done) => {
+        new localStrategy({usernameField: "name", passwordField: "password"}, (username, password, done) => {
             // Find user with the same userID
-            User.findOne({userID, userID}, (err, user) => {
+            User.findOne({userID: username}, (err, user) => {
                 if (err) throw err;
                 // No user with userID
                 if (!user) {
