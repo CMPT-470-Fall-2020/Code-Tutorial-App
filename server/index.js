@@ -1,8 +1,9 @@
-
 const path = require('path');
 const express = require('express');
+const bodyParser = require('body-parser')
 const cors = require('cors');
 const mongoose = require('mongoose');
+const godBolt = require('./godbolt');
 var app = express();
 const port = process.env.PORT || 4000;
 
@@ -10,10 +11,11 @@ const port = process.env.PORT || 4000;
 require('dotenv').config();
 app.use(cors());
 app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 const uri = process.env.ATLAS_URI;
 
-mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true});
+mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true });
 const connection = mongoose.connection;
 connection.once('open', () => {
   console.log("MongoDB database connection established successfully");
@@ -101,6 +103,20 @@ app.delete("/tutorial/:classId/:tutorialId", (req, res) => {
 // Retrieve all the classes to be displayed on a certain users dashboard
 app.get("/dashboard/:userId", (req, res) => {
   let userId = req.params.userId;
+});
+
+app.post("/run", (req, res) => {
+  let lang = req.body.lang
+  let code = req.body.code
+  // TODO: Add more error handling for different badly formatted inputs
+  if (lang.trim().toLowerCase().startsWith("godbolt")) {
+    godBolt.getBytecode(lang.trim().toLowerCase().split(":")[1],
+      code,
+      (response) => { res.json({ message: response }) },
+      (response) => { res.json({ message: response }) })
+  } else {
+    // TODO: Hook up code evaluation classes here.
+  }
 });
 
 // TODO: Work on login authentication
