@@ -9,7 +9,7 @@ const autograderSchema = new Schema({
   code: { type: string, required: true },
   testName: { type: string, required: true },
 }, {
-  timestamps: true,
+  timestamps: true
 });
 
 const Autograder = mongoose.model('Autograder', autograderSchema);

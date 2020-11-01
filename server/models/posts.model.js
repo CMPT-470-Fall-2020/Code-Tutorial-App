@@ -9,7 +9,7 @@ const postSchema = new Schema({
   postTitle: {type: String, required: true },
   postText: { type: String, required: true }
 }, {
-  timestamps: true,
+  timestamps: true
 });
 
 const Post = mongoose.model('Post', postSchema);

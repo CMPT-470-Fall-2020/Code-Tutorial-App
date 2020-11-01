@@ -81,6 +81,13 @@ app.get("/tutorial/:classId/", (req, res) => {
 // Add a new tutorial to the tutorials for a particular class
 app.post("/tutorial/:classId/", (req, res) => {
   let classId = req.params.classId;
+  let tutorialName = req.body.tutorialName;
+  let userID = req.body.userID;
+  let codeText = req.body.codeText;
+
+  let newTutorial = new Tutorial({tutorialName, userID, classId, codeText});
+  newTutorial.save(); // not sure about the try catch thing
+  
 });
 
 // Routing for individual tutorials
@@ -88,18 +95,34 @@ app.post("/tutorial/:classId/", (req, res) => {
 app.get("/tutorial/:classId/:tutorialId", (req, res) => {
   let classId = req.params.classId;
   let tutId = req.params.tutorialId;
+
+  Model.findById(tutId, function (err, doc){
+    doc.codeText = req.body.codeText;
+    doc.save();
+  });
+  
 });
 
 // Add/Change or hide/show tutorial to students
 app.post("/tutorial/:classId/:tutorialId", (req, res) => {
-  let classId = req.params.classId;
   let tutId = req.params.tutorialId;
+
+  Model.findById(tutId, function (err, doc){
+    doc.codeText = req.body.codeText;
+    doc.save();
+  });
+
 });
 
 // Remove tutorial
 app.delete("/tutorial/:classId/:tutorialId", (req, res) => {
-  let classId = req.params.classId;
   let tutId = req.params.tutorialId;
+
+  Model.findById(tutId, function (err, doc){
+    doc.codeText = req.body.codeText;
+    doc.delete();
+  });
+
 });
 
 

@@ -8,7 +8,7 @@ const commentSchema = new Schema({
   userID: { type: String, required: true },
   commentText: { type: String, required: true }
 }, {
-  timestamps: true,
+  timestamps: true
 });
 
 const Comment = mongoose.model('Comment', commentSchema);

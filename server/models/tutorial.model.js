@@ -9,7 +9,7 @@ const tutorialSchema = new Schema({
   courseID: { type: BigInt, required: true },
   codeText: { type: string, required: true }
 }, {
-  timestamps: true,
+  timestamps: true
 });
 
 const Tutorial = mongoose.model('Tutorial', tutorialSchema);
