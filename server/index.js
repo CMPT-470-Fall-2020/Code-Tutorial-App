@@ -167,7 +167,7 @@ app.delete("/forum/:classId/:postId/:commentId", (req, res) => {
 
 // Routing for general list of tutorials
 // Retrieve a list of tutorials for a particular class
-app.get("/tutorial/:classId/", (req, res) => {
+app.get("/tutorial/:classId", (req, res) => {
   let classId = req.params.classId;
 
   Tutorial.find({'courseID': classId})
@@ -178,7 +178,7 @@ app.get("/tutorial/:classId/", (req, res) => {
 
 
 // Add a new tutorial to the tutorials for a particular class
-app.post("/tutorial/:classId/", (req, res) => {
+app.post("/tutorial/:classId/add", (req, res) => {
   let courseID = req.params.classId;
   let tutorialName = req.body.tutorialName;
   let userID = req.body.userID;
@@ -202,7 +202,7 @@ app.get("/tutorial/:classId/:tutorialId", (req, res) => {
 });
 
 // Add/Change or hide/show tutorial to students
-app.post("/tutorial/:classId/:tutorialId", (req, res) => {
+app.post("/tutorial/:classId/:tutorialId/update", (req, res) => {
   let tutId = req.params.tutorialId;
 
   Tutorial.findById(tutId)
