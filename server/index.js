@@ -33,13 +33,36 @@ connection.once('open', () => {
 //   res.sendFile(path.join(__dirname, "..","client", "build", "index.html"))
 // })
 
-// Add a new Course 
-app.post("/courseList", (req, res) => {
-  let courseName = req.body.courseName;
-  let term = req.body.term;
-  let response = '';
+// Add a new user
+app.post("/user/add", (req, res) => {
+  let userName = req.body.userName;
+  let password = req.body.password;
+  let accountType = req.body.accountType;
+  
+  let newUser = new User({userName, password, accountType});
+  newUser.save()
+    .then(() => res.json('User added!'))
+    .catch(err => res.status(400).json('Error: ' + err));
 
-  let newCourse = new Course({courseName, term});
+})
+
+// Delete a User 
+app.delete("/user/delete", (req, res) => {
+  let userID = req.body.userID;
+
+  User.findByIdAndDelete(userID)
+    .then(() => res.json('User deleted.'))
+    .catch(err => res.status(400).json('Error: ' + err));
+
+});
+
+// Add a new Course 
+app.post("/courseList/add", (req, res) => {
+  let courseName = req.body.courseName;
+  let courseCode = req.body.courseCode;
+  let term = req.body.term;
+
+  let newCourse = new Course({courseName, courseCode, term});
   newCourse.save()
     .then(() => res.json('Course added!'))
     .catch(err => res.status(400).json('Error: ' + err));
