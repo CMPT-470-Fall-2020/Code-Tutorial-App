@@ -7,6 +7,13 @@ var app = express();
 const port = process.env.PORT || 4000;
 
 // Database code
+const User = require('./models/user.model');
+const Autograder = require('./models/autograder.model');
+const Comment = require('./models/comments.model');
+const Post = require('./models/posts.model');
+const Course = require('./models/courses.model');
+const Tutorial = require('./models/tutorial.model');
+
 require('dotenv').config();
 app.use(cors());
 app.use(express.json());
@@ -26,66 +33,158 @@ connection.once('open', () => {
 //   res.sendFile(path.join(__dirname, "..","client", "build", "index.html"))
 // })
 
+// Add a new Course 
+app.post("/courseList", (req, res) => {
+  let courseName = req.body.courseName;
+  let term = req.body.term;
+  let response = '';
+
+  let newCourse = new Course({courseName, term});
+  newCourse.save()
+    .then(() => res.json('Course added!'))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
+// Delete a Course 
+app.delete("/courseList/:classId", (req, res) => {
+  let classId = req.params.classId;
+
+  Course.findByIdAndDelete(classId)
+    .then(() => res.json('Course deleted.'))
+    .catch(err => res.status(400).json('Error: ' + err));
+
+});
+
 // Retrieve a list of all the posts for a certain class.
 app.get("/forum/:classId", (req, res) => {
   let classId = req.params.classId;
+
+  Post.find({'courseID': classId})
+  .then(posts => res.json(posts))
+  .catch(err => res.status(400).json('Error: ' + err));
 });
 
 // Retrieve all the comments for a post in a specific class
 app.get("/forum/:classId/:postId", (req, res) => {
-  let classId = req.params.classId;
   let postId = req.params.postId;
-  console.log("classId", classId, "postId", postId);
+
+  Comment.find({'postID': postId})
+  .then(comments => res.json(comments))
+  .catch(err => res.status(400).json('Error: ' + err));
+});
+
+// get a single comment based on the id
+app.get("/forum/:classId/:postId/:commentId", (req, res) => {
+  let commentId = req.params.commentId;
+
+  Comment.findById(commentId)
+  .then(comment => res.json(comment))
+  .catch(err => res.status(400).json('Error: ' + err));
 });
 
 // Add a new post for a particular subforum
-app.post("/forum/:classId/:postId", (req, res) => {
-  let classId = req.params.classId;
+app.post("/forum/:classId/add", (req, res) => {
+  let courseID = req.params.classId;
+  let userID = req.body.userId;
+  let postTitle = req.body.postTitle;
+  let postText = req.body.postText;
+  console.log(courseID);
+  let newPost = new Post({userID, courseID, postTitle, postText});
+  console.log(newPost);
+  newPost.save()
+    .then(() => res.json('Post added!'))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
+// Update a post for a particular subform.
+app.post("/forum/:classId/:postId/update", (req, res) => {
   let postId = req.params.postId;
+
+  Post.findById(postId)
+    .then(post => {
+      post.userID = req.body.userID;
+      post.courseID = req.params.classId;
+      post.postTitle = req.body.postTitle;
+      post.postText = req.body.postText;
+
+      post.save()
+        .then(() => res.json('Post updated!'))
+        .catch(err => res.status(400).json('Error: ' + err));
+    })
+    .catch(err => res.status(400).json('Error: ' + err));
 });
 
 // Delete a particular thread in a class forum
 app.delete("/forum/:classId/:postId", (req, res) => {
-  let classId = req.params.classId;
   let postId = req.params.postId;
-  // Delete the post with id postId in the  class with classId.
+
+  Post.findByIdAndDelete(postId)
+    .then(() => res.json('Post deleted.'))
+    .catch(err => res.status(400).json('Error: ' + err));
+
+  Comment.deleteMany({"postID": postId})
+    .catch(err => res.status(400).json('Error: ' + err));
 });
 
-// Update/Create a comment in a post thread.
-app.post("/forum/:classId/:postId/:commentId", (req, res) => {
-  let postId = req.params.postId;
-  let commentId = req.params.commentId;
-  let userId = req.body.userId;
+// Create a comment in a post thread.
+app.post("/forum/:classId/:postId/add", (req, res) => {
+  let postID = req.params.postId;
+  let userID = req.body.userId;
   let commentText = req.body.commentText;
 
-  let newComment = new Comment({commentId, postId, userId, commentText});
-  newComment.save(); // not sure about the try catch thing
+  let newComment = new Comment({postID, userID, commentText});
+  newComment.save()
+    .then(() => res.json('Comment added!'))
+    .catch(err => res.status(400).json('Error: ' + err));
 });
 
-// Change the text of a comment for a specific post.
-
-// Delete a particular post in a class forum thread
-app.delete("/forum/:classId/:postId/:commentId", (req, res) => {
-  let classId = req.params.classId;
-  let postId = req.params.postId;
+// Update a comment for a specific post.
+app.post("/forum/:classId/:postId/:commentId/update", (req, res) => {
   let commentId = req.params.commentId;
-  // Delete a particular comment in the class forum.
+
+  Comment.findById(commentId)
+    .then(comment => {
+      comment.postId = req.params.postId;
+      comment.userID = req.body.userID;
+      comment.commentText = req.body.commentText;
+
+      comment.save()
+        .then(() => res.json('Comment updated!'))
+        .catch(err => res.status(400).json('Error: ' + err));
+    })
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
+
+// Delete a particular comment in a class forum thread
+app.delete("/forum/:classId/:postId/:commentId", (req, res) => {
+  let commentId = req.params.commentId;
+
+  Comment.findByIdAndDelete(commentId)
+    .then(() => res.json('Comment deleted.'))
+    .catch(err => res.status(400).json('Error: ' + err));
 });
 
 // Routing for general list of tutorials
 // Retrieve a list of tutorials for a particular class
 app.get("/tutorial/:classId/", (req, res) => {
   let classId = req.params.classId;
+
+  Tutorial.find({'courseID': classId})
+    .then(tutorials => res.json(tutorials))
+    .catch(err => res.status(400).json('Error: ' + err));
+  
 });
+
 
 // Add a new tutorial to the tutorials for a particular class
 app.post("/tutorial/:classId/", (req, res) => {
-  let classId = req.params.classId;
+  let courseID = req.params.classId;
   let tutorialName = req.body.tutorialName;
   let userID = req.body.userID;
   let codeText = req.body.codeText;
 
-  let newTutorial = new Tutorial({tutorialName, userID, classId, codeText});
+  let newTutorial = new Tutorial({tutorialName, userID, courseID, codeText});
   newTutorial.save()
     .then(() => res.json('Tutorial added!'))
     .catch(err => res.status(400).json('Error: ' + err));
@@ -96,7 +195,7 @@ app.post("/tutorial/:classId/", (req, res) => {
 app.get("/tutorial/:classId/:tutorialId", (req, res) => {
   let tutId = req.params.tutorialId;
 
-  Model.findById(tutId)
+  Tutorial.findById(tutId)
     .then(tutorial => res.json(tutorial))
     .catch(err => res.status(400).json('Error: ' + err));
   
@@ -106,7 +205,7 @@ app.get("/tutorial/:classId/:tutorialId", (req, res) => {
 app.post("/tutorial/:classId/:tutorialId", (req, res) => {
   let tutId = req.params.tutorialId;
 
-  Model.findById(tutId)
+  Tutorial.findById(tutId)
     .then(tutorial => {
       tutorial.tutorialName = req.body.tutorialName;
       tutorial.userID = req.body.userID;
@@ -124,7 +223,7 @@ app.post("/tutorial/:classId/:tutorialId", (req, res) => {
 app.delete("/tutorial/:classId/:tutorialId", (req, res) => {
   let tutId = req.params.tutorialId;
 
-  Model.findByIdAndDelete(tutId)
+  Tutorial.findByIdAndDelete(tutId)
     .then(() => res.json('Tutorial deleted.'))
     .catch(err => res.status(400).json('Error: ' + err));
 

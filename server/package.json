@@ -20,6 +20,6 @@
     "markedjs": "^10.0.0",
     "mongoose": "^5.10.9",
     "nodemon": "^2.0.6"
-
-  }
+  },
+  "devDependencies": {}
 }

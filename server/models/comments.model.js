@@ -4,8 +4,8 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const commentSchema = new Schema({
-  postID: { type: mongoose.Schema.Types.ObjectId, ref: 'Post', required: true },
-  userID: { type: String, required: true },
+  postID: { type: mongoose.Types.ObjectId, ref: 'Post', required: true },
+  userID: { type: mongoose.Types.ObjectId, ref: 'User' , required: true },
   commentText: { type: String, required: true }
 }, {
   timestamps: true
