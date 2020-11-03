@@ -378,20 +378,6 @@ app.get("/dashboard/:userId", (req, res) => {
   let userId = req.params.userId;
 });
 
-app.post("/run", (req, res) => {
-  let lang = req.body.lang
-  let code = req.body.code
-  // TODO: Add more error handling for different badly formatted inputs
-  if (lang.trim().toLowerCase().startsWith("godbolt")) {
-    godBolt.getBytecode(lang.trim().toLowerCase().split(":")[1],
-      code,
-      (response) => { res.json({ message: response }) },
-      (response) => { res.json({ message: response }) })
-  } else {
-    // TODO: Hook up code evaluation classes here.
-  }
-});
-
 // TODO: Work on login authentication
 
 // This is the default route. Not sure what to do with it yet.
