@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from "react-router-dom"; 
+import Header from './../layout/Header';
 
 export default class Tutorials extends Component {
     tutorials = ["Tutorial1 - 10/18/2020", "Tutorial2 - 10/28/2020", "Tutorial3 - 11/18/2020"];
@@ -41,12 +42,12 @@ export default class Tutorials extends Component {
     render() {
         return (
             <React.Fragment>
+                {this.props.location.pathname !== '/login' && <Header />}
                 <div>
                     <h3 style={tutorialTitle}>{this.state.tutorialSelected} Tutorials</h3>
                     <main>{this.createTutorialList()}</main>
                 </div>
             </React.Fragment>
-
         )
     }
 }

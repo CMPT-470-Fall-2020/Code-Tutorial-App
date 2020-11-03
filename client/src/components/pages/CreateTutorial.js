@@ -6,6 +6,8 @@ import Button from 'react-bootstrap/Button';
 import 'codemirror/mode/markdown/markdown.js';
 import 'codemirror/lib/codemirror.css';
 import './../scss/MarkdownEditor.scss';
+import axios from 'axios';
+import Header from './../layout/Header';
 
 let marked = require('marked')
 
@@ -30,6 +32,18 @@ export default class CreateTutorial extends Component {
         title: '',
         rawCode: '',
         markdownCode: '',
+        userID: '',
+    }
+
+    componentDidMount() {
+        axios({
+            method: "GET",
+            withCredentials: true,
+            url: "http://localhost:4000/user",
+          }).then((res) => {
+              console.log("userID: " + res.data);
+              this.setState({userID: res.data});
+        });
     }
 
     handleSelect= (e) => {
@@ -55,6 +69,7 @@ export default class CreateTutorial extends Component {
     render() {
         return (
             <React.Fragment>
+                {this.props.location.pathname !== '/login' && <Header />}
                 <Container>
                     <InputGroup className="mb-3" style={tutorialTitleStyle}>
                         <FormControl 
