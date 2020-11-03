@@ -13,7 +13,7 @@ class App extends Component {
     return (
       <Router>
             <div className="App">
-              <Redirect from='/' to='/login' />
+              <Route exact path="/" component={() => (<Redirect to='/login' />)} />
               <Route exact path="/login" component={Login}/>
               <Route path="/createtutorial" component={CreateTutorial}></Route>
               <Route path="/coursedashboard" component={CourseDashboard}></Route>
