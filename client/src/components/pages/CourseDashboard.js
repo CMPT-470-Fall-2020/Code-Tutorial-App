@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
-import Button from 'react-bootstrap/Button';
 import { Link } from "react-router-dom"; 
 import axios from 'axios';
-
+import Header from './../layout/Header';
 
 export default class CourseDashboard extends Component {
     constructor(props) {
         super(props);
     
         this.state = {
-          courses: []
+          courses: [],
+          userID: ''
         }
-      }
+    }
     
     componentDidMount() {
         axios.get('http://localhost:3000/dashboard')
@@ -20,8 +20,17 @@ export default class CourseDashboard extends Component {
           })
           .catch((error) => {
             console.log(error);
-          })
-      }
+        })
+
+        axios({
+            method: "GET",
+            withCredentials: true,
+            url: "http://localhost:4000/user",
+          }).then((res) => {
+              console.log("userID: " + res.data);
+              this.setState({userID: res.data});
+        });
+    }
 
     createCourseContainers() {
         return this.state.courses.map((course)=>
@@ -48,6 +57,7 @@ export default class CourseDashboard extends Component {
     render() {
         return (
             <React.Fragment>
+                {this.props.location.pathname !== '/login' && <Header />}
                 <div>
                     <h3 style={dashboardTitle}>Dashboard - Courses</h3>
                     <main>{this.createCourseContainers()}</main>
