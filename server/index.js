@@ -34,14 +34,19 @@ app.post("/run", (req, res) => {
   let code = req.body.code;
   let lang = req.body.lang;
   let currInstance = interpreterManager.createInterp(uname, iname, lang);
-  let hash = currInstance.runCode(code);
-  ev.on(hash, (codeResp) => {
-    console.log(
-      "SERVER: sending response from language servers back to client:",
-      codeResp
-    );
-    res.json({ message: codeResp });
-  });
+  // The language the user requested does not exist. Send out an error
+  if (currInstance == interpManager.LANGDNE) {
+    res.json({ message: "Language requested does not exist" })
+  } else {
+    let hash = currInstance.runCode(code);
+    ev.on(hash, (codeResp) => {
+      console.log(
+        "SERVER: sending response from language servers back to client:",
+        codeResp
+      );
+      res.json({ message: codeResp });
+    });
+  }
 });
 
 app.get("/hello", (req, res) => {
