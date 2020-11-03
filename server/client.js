@@ -46,21 +46,20 @@ class Interpreter {
 
     // Register handlers for the server process shutting exiting/crashing.
     this.serverProcess.on("error", () => {
-      // TODO: Add better error message
       console.log("CLIENT: Language Server process died unexpectedly due to error!");
       if (this.currentHash.length != 0) {
         this.emitter.emit(
           this.currentHash,
-          "INTERPRETER SHUT DOWN UNEXPECTEDLY"
+          `Interpreter with name: ${this.interpName} shut down unexpectedly. Please try rerunning the interpreter.`
         );
       }
     });
 
     this.serverProcess.on("close", () => {
-      // TODO: Add better closing message
       console.log("CLIENT: Language Server process closed.")
       if (this.currentHash.length != 0) {
-        this.emitter.emit(this.currentHash, "INTERPRETER SHUT DOWN SUCCESSFUL");
+        this.emitter.emit(this.currentHash,
+          `Interpreter with name: ${this.interpName} shut down successfully.`);
       }
     });
 
@@ -75,14 +74,16 @@ class Interpreter {
     this.socket.on("error", () => {
       // If we are not connected to a server, attempt to connect again
       if (!this.connStatus && this.retryAttempNum < this.maxRetryAttempt) {
-        console.log("CLIENT: Trying to reconnect. Retry #:", this.retryAttempNum);
+        console.log(`CLIENT: Trying to reconnect. Retry #: ${this.retryAttempNum}`);
         this.retryAttempNum += 1;
         // Retry to connect in 0.5 seconds
         setTimeout(() => {
           this.socket.connect(portNum, "127.0.0.1");
         }, 500);
       }
-      // TODO: Signal to return port number!
+      // If there is an issue with the socket, we kill the server process.
+      // This will then emit an event which frees up the port.
+      this.serverProcess.kill()
     });
 
     this.socket.on("data", (data) => {
@@ -127,7 +128,7 @@ class Interpreter {
     switch (resp["type"]) {
       case "SUCCESS":
         // Reset the hash. In case there is a crash, we do not want to send a packet to an outdated hash.
-      console.log("CLIENT: Received response from server. About to emit event", resp);
+        console.log("CLIENT: Received response from server. About to emit event", resp);
         this.emitter.emit(this.currentHash, resp);
         // this.currentHash = "";
         break;
@@ -141,7 +142,7 @@ class Interpreter {
     }
     if (this.msgQueue.isEmpty()) {
       this.isWaiting = false;
-    }else{
+    } else {
       this.sendMsg();
     }
 
@@ -189,10 +190,12 @@ class Interpreter {
     if (this.isWaiting) {
       this.socket.destroy();
       // This will fire off a "close" event for the process which is used to delete this instance of an interpreter
-      this.process.kill();
     } else {
-      // TODO: Finish implementing case where we send a kill packet.
+      // Write out the kill message
+      this.socket.write(JSON.stringify({ type: "KILL" }))
+      this.socket.destroy();
     }
+    this.process.kill();
   }
 
   /**
