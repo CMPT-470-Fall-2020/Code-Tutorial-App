@@ -8,6 +8,7 @@ const USEREXISTS = "USEREXISTS";
 const SUCCESS = "SUCCESS";
 const INTERPDNE = "INTERPDNE";
 const INTERPEXISTS = "INTERPEXISTS";
+const LANGDNE = "LANGDNE"
 
 class InterpreterManager {
   constructor(emitter) {
@@ -16,7 +17,8 @@ class InterpreterManager {
     this.ports = [];
 
     // There are 65,536 TCP ports in total
-    // IANA suggests that ports from 65353 - 49152 shoul be used for ephemeral(i.e. temporary) connecetions.
+    // IANA suggests that ports from 65353 - 49152 shoul be used for
+    // ephemeral(i.e. temporary) connecetions.
     for (let i = 65535; i > 49152; i--) {
       this.ports.push(i);
     }
@@ -71,25 +73,27 @@ class InterpreterManager {
     let portNum = this.ports.pop();
     let languageServer;
 
-    switch (interpType) {
-      case "PYTHON":
+    switch (interpType.toLowerCase()) {
+      case "python":
+        console.log("trying python spawn", portNum)
         languageServer = spawn("python3", ["python-server.py", portNum]);
         break;
-      case "RUBY":
-        languageServer = spawn("ruby", ["ruby-server.rb", portNum]);
+      case "bash":
+        languageServer = spawn("./bash-server.js", [portNum]);
         break;
-      case "BASH":
-        // TODO: Finish client
-        // languageServer = spawn("ruby", ["serve.rb", portNum]);
-        console.log("got bash");
+      case "zsh":
+        languageServer = spawn("./zsh-server.js", [portNum]);
         break;
-      case "ZSH":
-        // TODO: Finish client
-        // languageServer = spawn("ruby", ["serve.rb", portNum]);
-        console.log("got zsh");
+      case "julia":
+        languageServer = spawn("./julia-server.js", [portNum]);
+        break;
+      case "ruby":
+        // Ruby is not supported yet
+        //languageServer = spawn("ruby", ["ruby-server.rb", portNum]);
+        console.log("Ruby does not work yet")
         break;
       default:
-        console.log("Language does not exist");
+        return LANGDNE;
     }
 
     // Set handlers for when the language server crashes
@@ -130,31 +134,18 @@ class InterpreterManager {
     console.log("MANAGER: Adding the new instance!");
     // Add the interpreter instance
     this.instances[userName][interpName] = newInterp;
-    // Return the interpreter instance to the user to use it to run code.
-    console.log("MANAGER: Returning interpreter instance to caller.");
+
+    // Return the interpreter instance to caller to run code.
     return newInterp;
   }
 }
 
-// let evEm = new events.EventEmitter();
-// let man = new InterpreterManager(evEm);
-// let interp = man.createInterp("name", "i1", "PYTHON");
-
-// let hash = interp.runCode("print(4 + 4)");
-// evEm.on(hash, (resp) => {
-//   console.log(resp);
-// });
-
-// hash = interp.runCode("import math\nprint(math.log2(4+4))");
-// evEm.on(hash, (resp) => {
-//   console.log(resp);
-// });
-
 module.exports = {
   InterpreterManager: InterpreterManager,
-  USERDNE: "USERDNE",
-  USEREXISTS: "USEREXISTS",
-  SUCCESS: "SUCCESS",
-  INTERPDNE: "INTERPDNE",
-  INTERPEXISTS: "INTERPEXISTS",
+  USERDNE: USERDNE,
+  USEREXISTS: USEREXISTS,
+  SUCCESS: SUCCESS,
+  INTERPDNE: INTERPDNE,
+  INTERPEXISTS: INTERPEXISTS,
+  LANGDNE: LANGDNE
 };

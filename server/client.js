@@ -1,6 +1,7 @@
 const net = require("net");
 const { MessageQueue } = require("./message_queue");
 const crypto = require("crypto");
+const { log } = require("util");
 
 /**
  * Class representing a single instance of an interpreter client.
@@ -83,7 +84,8 @@ class Interpreter {
       }
       // If there is an issue with the socket, we kill the server process.
       // This will then emit an event which frees up the port.
-      this.serverProcess.kill()
+      //console.log("CLIENT: Killing child process due to socket error.");
+      //this.serverProcess.kill()
     });
 
     this.socket.on("data", (data) => {
