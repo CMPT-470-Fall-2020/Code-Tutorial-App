@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {BrowserRouter as Router, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Redirect} from 'react-router-dom';
 import Login from './components/Login';
 import "./App.css";
 import CreateTutorial from './components/pages/CreateTutorial';
@@ -13,6 +13,7 @@ class App extends Component {
     return (
       <Router>
             <div className="App">
+              <Redirect from='/' to='/login' />
               <Route exact path="/login" component={Login}/>
               <Route path="/createtutorial" component={CreateTutorial}></Route>
               <Route path="/coursedashboard" component={CourseDashboard}></Route>
