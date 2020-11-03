@@ -8,7 +8,7 @@ const cookieParser = require('cookie-parser');
 const bcrypt = require("bcryptjs");
 const session = require("express-session");
 const bodyParser = require("body-parser");
-const User = require('./models/user.model');
+//const User = require('./models/user.model');
 const events = require("events");
 const interpManager = require("./manager.js");
 
