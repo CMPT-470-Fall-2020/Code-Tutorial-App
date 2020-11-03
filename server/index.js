@@ -89,9 +89,9 @@ app.get('/logout', function(req, res){
   res.redirect('/');
 });
 
-// Return a user object containing all session data
-app.post("/user", (req, res) => {
-  req.send(req.user) 
+// Return session data containing userID
+app.get("/user", (req, res) => {
+  res.send(req.user.userID) ;
 })
 //-----------------------------------------------------------------------------------------
 
