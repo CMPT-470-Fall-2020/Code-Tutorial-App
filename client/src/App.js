@@ -1,78 +1,66 @@
-import React, {Component} from 'react';
-//import logo from './logo.svg';
+import React, { Component } from 'react';
+import axios from 'axios';
 import './App.css';
 
-class App extends Component{
-  constructor() {
-    super();
-    this.handleSubmit = this.handleSubmit.bind(this);
-  	this.state = {uname:"",
-  	iname:"",
-  	lang:"",
-  	code:"",
-  	serverResp: "No Server Response Yet!"
-  	}
+class App extends Component {
+  // This is the component state which holds the text sent in by our express backend.
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      message: "no message",
+      name: '',
+      password: ''
+    }
   }
 
-  handleSubmit(event) {
-    event.preventDefault();
-    console.log("app state is:", this.state);
-    fetch('/run', {
-      method: 'POST',
-	 headers: {
-   	 "Content-Type": "application/json"
-  	},      
-      body: JSON.stringify(this.state)
-    }).then(result => {
-    		return result.json()
-    }).then((resp) => {
-		this.setState({serverResp: JSON.stringify(resp)})
+  onChangeName(e) {
+    this.setState({
+      name: e.target.value
     });
   }
 
-myChangeHandler = (event) => {
-    let nam = event.target.name;
-    let val = event.target.value;
-    this.setState({[nam]: val});
+  onChangePassword(e) {
+    this.setState({
+      password: e.target.value
+    });
   }
-  // This is the component state which holds the text sent in by our express backend.
-  /*
-  componentDidMount(){
-		fetch("/hello")
-			.then(result => {
-					console.log(result)
-					return result.json()
-			})
-		  .then(jsonResp => this.setState({message:jsonResp.message}))
-  	}
-  	*/
 
-  render(){
-  return (
-      <form onSubmit={this.handleSubmit}>
-      	  <fieldset>
-        <label htmlFor="uname">Enter username</label>
-        <input id="uname" name="uname" onChange={this.myChangeHandler} type="text" />
-      	  </fieldset>
+  onSubmit(e) {
+    e.preventDefault();
 
-      	  <fieldset>
-        <label htmlFor="iname">Enter the interpreter name</label>
-        <input id="iname" name="iname" onChange={this.myChangeHandler} type="text" />
-      	  </fieldset>
+    const user = {
+      name: this.state.name,
+      password: this.state.password
+    }
 
-      	  <fieldset>
-        <label htmlFor="lang">Enter the language to run</label>
-        <input id="lang" name="lang" onChange={this.myChangeHandler} type="text" />
-      	  </fieldset>
+    axios.get('http://localhost:3000/dashboard')
+      .then(res => console.log(res.data));
+  }
 
-      	 <fieldset>
-        <label htmlFor="code">Enter the code you want to run</label>
-		<textarea name="code" onChange={this.myChangeHandler} cols="40" rows="5"></textarea>
-      	 </fieldset>
-
-        <button>Send data!</button>
-        <div><p> Message Received from server {this.state.serverResp} </p></div>
-      </form>
+  render() {
+    return (
+      <div className="App">
+        <p>{this.state.message}</p>
+        <form onSubmit={this.onSubmit.bind(this)}>
+          <h1>Input User</h1>
+          <p>Username: </p>
+          <input
+            type="text"
+            value={this.state.name}
+            onChange={this.onChangeName.bind(this)}
+            placeholder="username@sfu.ca">
+          </input>
+          <p>Password: </p>
+          <input
+            type="text"
+            value={this.state.password}
+            onChange={this.onChangePassword.bind(this)}
+            placeholder="password123">
+          </input>
+          <button>Log In</button>
+        </form>
+      </div>
     );
   }
 }
