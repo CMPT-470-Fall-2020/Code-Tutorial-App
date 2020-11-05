@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import Radio from 'react';
 import axios from 'axios';
 
 export default class Login extends Component{
@@ -58,16 +57,28 @@ export default class Login extends Component{
 
     // Make request to register
     axios({
-        method: "POST",
-        data: {
-          user
-        },
-        withCredentials: true,
-        url: "http://localhost:4000/register",
+      method: "POST",
+      data: {
+        user
+      },
+      withCredentials: true,
+      url: "http://localhost:4000/register",
     }).then((res) => {
-      console.log(res);
       if (res.data === "User Created"){
-        window.location.href="./CreateTutorial";
+        // Login
+        axios({
+          method: "POST",
+          data: {
+              name: user.name,
+              password: user.password
+          },
+          withCredentials: true,
+          url: "http://localhost:4000/login",
+        }).then((res) => {
+          if (res.data === "Authentication: Success") {
+            window.location.href="./CreateTutorial";
+          }
+        });
       }
     });
   }
@@ -117,7 +128,7 @@ export default class Login extends Component{
                   type="radio" 
                   value="Student" 
                   onChange={this.onChangeAccount.bind(this)}
-                  checked={this.state.account == "Student"}>
+                  checked={this.state.account === "Student"}>
                 </input> 
                 Student
               </label>
@@ -126,7 +137,7 @@ export default class Login extends Component{
                   type="radio" 
                   value="Teacher"
                   onChange={this.onChangeAccount.bind(this)}
-                  checked={this.state.account == "Teacher"}
+                  checked={this.state.account === "Teacher"}
                   >
                 </input> 
                 Teacher
