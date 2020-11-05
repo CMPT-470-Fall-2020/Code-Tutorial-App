@@ -11,7 +11,6 @@ router.route("/:classId").get((req, res) => {
       .catch(err => res.status(400).json('Error: ' + err));
 });
   
-  
 // Add a new tutorial to the tutorials for a particular class
 router.route("/:classId/add").post((req, res) => {
     let courseID = req.params.classId;
