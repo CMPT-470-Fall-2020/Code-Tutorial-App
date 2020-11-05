@@ -32,7 +32,7 @@ export default class CreateTutorial extends Component {
         title: '',
         rawCode: '',
         markdownCode: '',
-        userID: '',
+        user: '',
     }
 
     componentDidMount() {
@@ -41,8 +41,7 @@ export default class CreateTutorial extends Component {
             withCredentials: true,
             url: "http://localhost:4000/user",
           }).then((res) => {
-              console.log("userID: " + res.data);
-              this.setState({userID: res.data});
+              this.setState({user: res.data}); // get user object containing: _id, userName, accountType
         });
     }
 

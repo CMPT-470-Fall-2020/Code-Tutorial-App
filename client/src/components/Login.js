@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import Radio from 'react';
 import axios from 'axios';
 
 export default class Login extends Component{
@@ -12,6 +13,7 @@ export default class Login extends Component{
       registerPassword: '',
       name: '',
       password: '',
+      account: ''
     }
   }
 
@@ -39,12 +41,19 @@ export default class Login extends Component{
     });
   }
 
+  onChangeAccount(e) {
+    this.setState({
+      account: e.target.value
+    })
+  }
+
   onRegister(e){
     e.preventDefault();
 
     const user = {
       name: this.state.registerName,
-      password: this.state.registerPassword
+      password: this.state.registerPassword,
+      account: this.state.account
     }
 
     // Make request to register
@@ -103,6 +112,26 @@ export default class Login extends Component{
                 onChange={this.onChangeRegisterPassword.bind(this)}
                 placeholder="password123">
               </input> 
+              <label style={labelStyle}>
+                <input 
+                  type="radio" 
+                  value="Student" 
+                  onChange={this.onChangeAccount.bind(this)}
+                  checked={this.state.account == "Student"}>
+                </input> 
+                Student
+              </label>
+              <label>
+                <input 
+                  type="radio" 
+                  value="Teacher"
+                  onChange={this.onChangeAccount.bind(this)}
+                  checked={this.state.account == "Teacher"}
+                  >
+                </input> 
+                Teacher
+              </label>
+              
               <button style={buttonStyle}>Register</button>
           </form>     
           <form onSubmit={this.onLogin.bind(this)} style={formStyle}>
@@ -138,7 +167,7 @@ const formStyle = {
 
 const loginStyle = {
     margin: '15%',
-    padding: '5%',
+    padding: '1%',
     textAlign: 'center',
     border: '2px solid black',
     background: '#343a40',
