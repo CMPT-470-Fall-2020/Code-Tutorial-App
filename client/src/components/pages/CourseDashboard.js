@@ -9,7 +9,7 @@ export default class CourseDashboard extends Component {
     
         this.state = {
           courses: [],
-          userID: ''
+          user: ''
         }
     }
     
@@ -27,8 +27,7 @@ export default class CourseDashboard extends Component {
             withCredentials: true,
             url: "http://localhost:4000/user",
           }).then((res) => {
-              console.log("userID: " + res.data);
-              this.setState({userID: res.data});
+              this.setState({user: res.data}); // get user object containing: _id, userName, accountType
         });
     }
 
