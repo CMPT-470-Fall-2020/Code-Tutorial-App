@@ -8,7 +8,7 @@ module.exports = function(passport) {
     passport.use(
         new localStrategy({usernameField: "name", passwordField: "password"}, (username, password, done) => {
             // Find user with the same userID
-            User.findOne({userID: username}, (err, user) => {
+            User.findOne({userName: username}, (err, user) => {
                 if (err) throw err;
                 // No user with userID
                 if (!user) {
@@ -33,12 +33,10 @@ module.exports = function(passport) {
     })
 
     // Deserialize user from cookie
+    // Return user object containing: __id, accountType, Courses, userName
     passport.deserializeUser((id, callback)=>{
         User.findOne({ _id: id }, (err, user) => {
-            const userInformation = {
-              userID: user.userID,
-            };
-            callback(err, userInformation);
+            callback(err, user);
         });
     })
 }
