@@ -9,7 +9,6 @@ const cookieParser = require('cookie-parser');
 const bcrypt = require("bcryptjs");
 const session = require("express-session");
 const bodyParser = require("body-parser");
-const User = require('./models/user.model');
 
 var app = express();
 const port = process.env.PORT || 4000;
@@ -72,7 +71,7 @@ app.post("/login", (req, res, next) => {
 
 // Register a user with a new login and password
 app.post("/register", (req, res) => {
-  User.findOne({userID: req.body.user.name}, async(err, doc) => {
+  User.findOne({userName: req.body.user.name}, async(err, doc) => {
     if (err) throw err;
     if (doc) {
       res.send("Username already exists. Please try another username")
@@ -81,8 +80,9 @@ app.post("/register", (req, res) => {
       const hashPass = await bcrypt.hash(req.body.user.password, 10);
 
       const newUser = new User({
-        userID: req.body.user.name,
-        password: hashPass
+        userName: req.body.user.name,
+        password: hashPass,
+        accountType: req.body.user.account
       });
       await newUser.save();
       res.send("User Created");
@@ -92,13 +92,14 @@ app.post("/register", (req, res) => {
 
 // Terminate login session
 app.get('/logout', function(req, res){
-  req.logout();
-  res.redirect('/');
+  req.session.destroy(function (err) {
+    res.redirect('/'); 
+  });
 });
 
 // Return session data containing userID
 app.get("/user", (req, res) => {
-  res.send(req.user.userID) ;
+  res.send(req.user);
 })
 //-----------------------------------------------------------------------------------------
 
