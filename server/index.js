@@ -1,17 +1,55 @@
-
 const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const godBolt = require('./godbolt');
 const passport = require('passport');
 const passportLocal = require('passport-local').Strategy;
 const cookieParser = require('cookie-parser');
 const bcrypt = require("bcryptjs");
 const session = require("express-session");
 const bodyParser = require("body-parser");
+//const User = require('./models/user.model');
+const events = require("events");
+const interpManager = require("./manager.js");
 
 var app = express();
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 const port = process.env.PORT || 4000;
+
+var ev = new events.EventEmitter();
+var interpreterManager = new interpManager.InterpreterManager(ev);
+
+app.post("/run", (req, res) => {
+  console.log("SERVER: hit a POST /run route with request body", req.body);
+  let uname = req.body.uname;
+  let iname = req.body.iname;
+  let code = req.body.code;
+  let lang = req.body.lang;
+
+  if (lang.trim().toLowerCase().startsWith("godbolt")) {
+    godBolt.getBytecode(lang.trim().toLowerCase().split(":")[1],
+      code,
+      (response) => { res.json({ message: response }) },
+      (response) => { res.json({ message: response }) })
+  } else {
+    let currInstance = interpreterManager.createInterp(uname, iname, lang);
+    // The language the user requested does not exist. Send out an error
+    if (currInstance == interpManager.LANGDNE) {
+      res.json({ message: "Language requested does not exist" })
+    } else {
+      let hash = currInstance.runCode(code);
+      ev.on(hash, (codeResp) => {
+        console.log(
+          "SERVER: sending response from language servers back to client:",
+          codeResp
+        );
+        res.json({ message: codeResp });
+      });
+    }
+  }
+});
 
 // Database code
 const User = require('./models/user.model');
@@ -27,10 +65,11 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 const uri = process.env.ATLAS_URI;
 
-mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true});
+mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true });
 const connection = mongoose.connection;
 connection.once('open', () => {
   console.log("MongoDB database connection established successfully");
@@ -39,7 +78,7 @@ connection.once('open', () => {
 // Authentication
 //-----------------------------------------------------------------------------------------
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(
   session({
@@ -117,8 +156,8 @@ app.post("/user/add", (req, res) => {
   let userName = req.body.userName;
   let password = req.body.password;
   let accountType = req.body.accountType;
-  
-  let newUser = new User({userName, password, accountType});
+
+  let newUser = new User({ userName, password, accountType });
   newUser.save()
     .then(() => res.json('User added!'))
     .catch(err => res.status(400).json('Error: ' + err));
@@ -141,7 +180,7 @@ app.post("/courseList/add", (req, res) => {
   let courseCode = req.body.courseCode;
   let term = req.body.term;
 
-  let newCourse = new Course({courseName, courseCode, term});
+  let newCourse = new Course({ courseName, courseCode, term });
   newCourse.save()
     .then(() => res.json('Course added!'))
     .catch(err => res.status(400).json('Error: ' + err));
@@ -161,18 +200,18 @@ app.delete("/courseList/:classId", (req, res) => {
 app.get("/forum/:classId", (req, res) => {
   let classId = req.params.classId;
 
-  Post.find({'courseID': classId})
-  .then(posts => res.json(posts))
-  .catch(err => res.status(400).json('Error: ' + err));
+  Post.find({ 'courseID': classId })
+    .then(posts => res.json(posts))
+    .catch(err => res.status(400).json('Error: ' + err));
 });
 
 // Retrieve all the comments for a post in a specific class
 app.get("/forum/:classId/:postId", (req, res) => {
   let postId = req.params.postId;
 
-  Comment.find({'postID': postId})
-  .then(comments => res.json(comments))
-  .catch(err => res.status(400).json('Error: ' + err));
+  Comment.find({ 'postID': postId })
+    .then(comments => res.json(comments))
+    .catch(err => res.status(400).json('Error: ' + err));
 });
 
 // get a single comment based on the id
@@ -180,8 +219,8 @@ app.get("/forum/:classId/:postId/:commentId", (req, res) => {
   let commentId = req.params.commentId;
 
   Comment.findById(commentId)
-  .then(comment => res.json(comment))
-  .catch(err => res.status(400).json('Error: ' + err));
+    .then(comment => res.json(comment))
+    .catch(err => res.status(400).json('Error: ' + err));
 });
 
 // Add a new post for a particular subforum
@@ -191,7 +230,7 @@ app.post("/forum/:classId/add", (req, res) => {
   let postTitle = req.body.postTitle;
   let postText = req.body.postText;
   console.log(courseID);
-  let newPost = new Post({userID, courseID, postTitle, postText});
+  let newPost = new Post({ userID, courseID, postTitle, postText });
   console.log(newPost);
   newPost.save()
     .then(() => res.json('Post added!'))
@@ -224,7 +263,7 @@ app.delete("/forum/:classId/:postId", (req, res) => {
     .then(() => res.json('Post deleted.'))
     .catch(err => res.status(400).json('Error: ' + err));
 
-  Comment.deleteMany({"postID": postId})
+  Comment.deleteMany({ "postID": postId })
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
@@ -234,7 +273,7 @@ app.post("/forum/:classId/:postId/add", (req, res) => {
   let userID = req.body.userId;
   let commentText = req.body.commentText;
 
-  let newComment = new Comment({postID, userID, commentText});
+  let newComment = new Comment({ postID, userID, commentText });
   newComment.save()
     .then(() => res.json('Comment added!'))
     .catch(err => res.status(400).json('Error: ' + err));
@@ -272,10 +311,10 @@ app.delete("/forum/:classId/:postId/:commentId", (req, res) => {
 app.get("/tutorial/:classId", (req, res) => {
   let classId = req.params.classId;
 
-  Tutorial.find({'courseID': classId})
+  Tutorial.find({ 'courseID': classId })
     .then(tutorials => res.json(tutorials))
     .catch(err => res.status(400).json('Error: ' + err));
-  
+
 });
 
 
@@ -286,7 +325,7 @@ app.post("/tutorial/:classId/add", (req, res) => {
   let userID = req.body.userID;
   let codeText = req.body.codeText;
 
-  let newTutorial = new Tutorial({tutorialName, userID, courseID, codeText});
+  let newTutorial = new Tutorial({ tutorialName, userID, courseID, codeText });
   newTutorial.save()
     .then(() => res.json('Tutorial added!'))
     .catch(err => res.status(400).json('Error: ' + err));
@@ -300,7 +339,7 @@ app.get("/tutorial/:classId/:tutorialId", (req, res) => {
   Tutorial.findById(tutId)
     .then(tutorial => res.json(tutorial))
     .catch(err => res.status(400).json('Error: ' + err));
-  
+
 });
 
 // Add/Change or hide/show tutorial to students
