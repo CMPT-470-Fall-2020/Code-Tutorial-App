@@ -14,7 +14,8 @@ export default class CourseDashboard extends Component {
     }
     
     componentDidMount() {
-        axios.get('http://localhost:3000/dashboard')
+        console.log(this.state.user);
+        axios.get('http://localhost:4000/dashboard')
           .then(res => {
             this.setState({courses: res.data});
           })
