@@ -29,6 +29,7 @@ export default class CreateTutorial extends Component {
 
     state = {
         course: "Course",
+        courseID: '',
         title: '',
         rawCode: '',
         markdownCode: '',
@@ -56,6 +57,11 @@ export default class CreateTutorial extends Component {
     }
 
     handleSelect= (e) => {
+        for (let idx in this.state.courses){
+            if (this.state.courses[idx].courseCode.toUpperCase() === e){
+                this.setState({courseID: this.state.courses[idx]._id});
+            }
+        }
         this.setState({course:e})
     }
 
@@ -70,16 +76,38 @@ export default class CreateTutorial extends Component {
         return {__html: marked(this.state.rawCode)};
     }
 
-    // TO DO: Make server call to save data
+    // Save markup text to db
     saveDB() {
-        console.log("save to db here");
+        axios({
+            method: "POST",
+            data: {
+                tutorialName: this.state.title,
+                userID: this.state.user._id,
+                codeText: this.state.rawCode
+            },
+            withCredentials: true,
+            url: `http://localhost:4000/tutorial/${this.state.courseID}/add`,
+          }).then((res)=> {
+              console.log(res);
+              this.clearStates();
+        })
+    }
+
+    clearStates() {
+        this.setState({ course: "Course"});
+        this.setState({ courseID: ''});
+        this.setState({ title: ''});
+        this.setState({ rawCode: ''});
+        this.setState({ markdownCode: ''});
+        this.setState({ user: ''});
+        this.setState({ courses: []});
     }
     
     render() {
         const coursesDropdown = [];
         for (let idx in this.state.courses){
             const courseCode = this.state.courses[idx].courseCode;
-            coursesDropdown.push(<Dropdown.Item eventKey={courseCode}>{courseCode}</Dropdown.Item>)
+            coursesDropdown.push(<Dropdown.Item eventKey={courseCode} key={courseCode}>{courseCode}</Dropdown.Item>)
         }
 
         return (
