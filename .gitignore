@@ -22,3 +22,6 @@ client/build
 client/npm-debug.log*
 client/yarn-debug.log*
 client/yarn-error.log*
+/server/util/*.log
+/server/python-server.log
+node_modules
