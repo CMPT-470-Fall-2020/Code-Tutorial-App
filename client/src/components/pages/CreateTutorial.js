@@ -33,6 +33,7 @@ export default class CreateTutorial extends Component {
         rawCode: '',
         markdownCode: '',
         user: '',
+        courses: []
     }
 
     componentDidMount() {
@@ -42,6 +43,15 @@ export default class CreateTutorial extends Component {
             url: "http://localhost:4000/user",
           }).then((res) => {
               this.setState({user: res.data}); // get user object containing: _id, userName, accountType
+
+              // get courses for the user
+            axios.get(`http://localhost:4000/dashboard/${this.state.user._id}`)
+            .then(res => {
+                this.setState({courses: res.data});
+            })
+            .catch((error) => {
+                console.log(error);
+            });
         });
     }
 
@@ -66,6 +76,12 @@ export default class CreateTutorial extends Component {
     }
     
     render() {
+        const coursesDropdown = [];
+        for (let idx in this.state.courses){
+            const courseCode = this.state.courses[idx].courseCode;
+            coursesDropdown.push(<Dropdown.Item eventKey={courseCode}>{courseCode}</Dropdown.Item>)
+        }
+
         return (
             <React.Fragment>
                 {this.props.location.pathname !== '/login' && <Header />}
@@ -83,10 +99,8 @@ export default class CreateTutorial extends Component {
                             title={this.state.course}
                             id="dropdown-basic-button"
                             onSelect={this.handleSelect}
-                            >
-                            <Dropdown.Item eventKey="CMPT128">CMPT128</Dropdown.Item>
-                            <Dropdown.Item eventKey="CMPT310">CMPT310</Dropdown.Item>
-                            <Dropdown.Item eventKey="CMPT470">CMPT470</Dropdown.Item>
+                        >
+                        {coursesDropdown}
                         </DropdownButton>
                     </InputGroup>
                     
