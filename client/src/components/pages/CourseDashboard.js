@@ -33,18 +33,16 @@ export default class CourseDashboard extends Component {
         });       
     }
 
-    // TODO: fix this warning:
-    // Warning: Each child in a list should have a unique "key" prop.
     createCourseContainers() {
-        return this.state.courses.map((course)=>
-            <Link to={
+        return this.state.courses.map((course, key)=>
+            <Link key={key} to={
                 {
                     pathname: "./tutorials",
                     state:{course}
                 }
             }>
                 <div style={background}>
-                    <div key={course.id} style={courseCard}>
+                    <div style={courseCard}>
                             <div style={courseCode}> 
                                 {course.courseCode} 
                             </div>
