@@ -14,24 +14,27 @@ export default class CourseDashboard extends Component {
     }
     
     componentDidMount() {
-        console.log(this.state.user);
-        axios.get('http://localhost:4000/dashboard')
-          .then(res => {
-            this.setState({courses: res.data});
-          })
-          .catch((error) => {
-            console.log(error);
-        })
-
+        // get user object from server
         axios({
             method: "GET",
             withCredentials: true,
             url: "http://localhost:4000/user",
           }).then((res) => {
-              this.setState({user: res.data}); // get user object containing: _id, userName, accountType
-        });
+            this.setState({user: res.data}); // get user object containing: _id, userName, accountType
+
+            // get courses for the user
+            axios.get(`http://localhost:4000/dashboard/${this.state.user._id}`)
+            .then(res => {
+                this.setState({courses: res.data});
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        });       
     }
 
+    // TODO: fix this warning:
+    // Warning: Each child in a list should have a unique "key" prop.
     createCourseContainers() {
         return this.state.courses.map((course)=>
             <Link to={
@@ -42,11 +45,11 @@ export default class CourseDashboard extends Component {
             }>
                 <div style={background}>
                     <div key={course.id} style={courseCard}>
-                            <div style={name}> 
-                                {course.name} 
+                            <div style={courseCode}> 
+                                {course.courseCode} 
                             </div>
-                            <div style={description}>
-                                {course.description}
+                            <div style={courseName}>
+                                {course.courseName}
                             </div>
                     </div>
                 </div>
@@ -86,14 +89,14 @@ const courseCard = {
     background: 'white',
 }
 
-const name = {
+const courseCode = {
     color: '#343a40',
     fontFamily: 'Arial, Helvetica, sans-serif',
     fontWeight: 'bold',
     textAlign: 'center'
 }
 
-const description = {
+const courseName = {
     color: '#343a40',
     fontFamily: 'Arial, Helvetica, sans-serif',
     fontWeight: 'bold',

@@ -10,7 +10,7 @@ router.route("/:userId").get((req, res) => {
             return;
         }
 
-        Course.findById({$in: user.courses})
+        Course.find({_id: {$in: user.courses}})
         .then(courses => res.json(courses))
         .catch(err => res.status(400).json('Error: ' + err));
     });
