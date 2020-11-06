@@ -29,10 +29,12 @@ export default class CreateTutorial extends Component {
 
     state = {
         course: "Course",
+        courseID: '',
         title: '',
         rawCode: '',
         markdownCode: '',
         user: '',
+        courses: []
     }
 
     componentDidMount() {
@@ -42,10 +44,24 @@ export default class CreateTutorial extends Component {
             url: "http://localhost:4000/user",
           }).then((res) => {
               this.setState({user: res.data}); // get user object containing: _id, userName, accountType
+
+              // get courses for the user
+            axios.get(`http://localhost:4000/dashboard/${this.state.user._id}`)
+            .then(res => {
+                this.setState({courses: res.data});
+            })
+            .catch((error) => {
+                console.log(error);
+            });
         });
     }
 
     handleSelect= (e) => {
+        for (let idx in this.state.courses){
+            if (this.state.courses[idx].courseCode.toUpperCase() === e){
+                this.setState({courseID: this.state.courses[idx]._id});
+            }
+        }
         this.setState({course:e})
     }
 
@@ -60,12 +76,40 @@ export default class CreateTutorial extends Component {
         return {__html: marked(this.state.rawCode)};
     }
 
-    // TO DO: Make server call to save data
+    // Save markup text to db
     saveDB() {
-        console.log("save to db here");
+        axios({
+            method: "POST",
+            data: {
+                tutorialName: this.state.title,
+                userID: this.state.user._id,
+                codeText: this.state.rawCode
+            },
+            withCredentials: true,
+            url: `http://localhost:4000/tutorial/${this.state.courseID}/add`,
+          }).then((res)=> {
+              console.log(res);
+              this.clearStates();
+        })
+    }
+
+    clearStates() {
+        this.setState({ course: "Course"});
+        this.setState({ courseID: ''});
+        this.setState({ title: ''});
+        this.setState({ rawCode: ''});
+        this.setState({ markdownCode: ''});
+        this.setState({ user: ''});
+        this.setState({ courses: []});
     }
     
     render() {
+        const coursesDropdown = [];
+        for (let idx in this.state.courses){
+            const courseCode = this.state.courses[idx].courseCode;
+            coursesDropdown.push(<Dropdown.Item eventKey={courseCode} key={courseCode}>{courseCode}</Dropdown.Item>)
+        }
+
         return (
             <React.Fragment>
                 {this.props.location.pathname !== '/login' && <Header />}
@@ -83,10 +127,8 @@ export default class CreateTutorial extends Component {
                             title={this.state.course}
                             id="dropdown-basic-button"
                             onSelect={this.handleSelect}
-                            >
-                            <Dropdown.Item eventKey="CMPT128">CMPT128</Dropdown.Item>
-                            <Dropdown.Item eventKey="CMPT310">CMPT310</Dropdown.Item>
-                            <Dropdown.Item eventKey="CMPT470">CMPT470</Dropdown.Item>
+                        >
+                        {coursesDropdown}
                         </DropdownButton>
                     </InputGroup>
                     
