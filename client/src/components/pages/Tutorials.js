@@ -29,7 +29,7 @@ export default class Tutorials extends Component {
         return this.state.tutorials.map((tutorial, key)=>
             <Link key={key} to={
                 {
-                    pathname: "./RunTutorial",
+                    pathname: "/runtutorial",
                     state:{tutorial}
                 }
             }>

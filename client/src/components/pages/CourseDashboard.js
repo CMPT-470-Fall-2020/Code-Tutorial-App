@@ -15,6 +15,7 @@ export default class CourseDashboard extends Component {
     }
     
     componentDidMount() {
+    	console.log("The state in the component before fetching data is:", this.state);
         // get user object from server
         axios({
             method: "GET",
@@ -38,7 +39,7 @@ export default class CourseDashboard extends Component {
         return this.state.courses.map((course, key)=>
             <Link key={key} to={
                 {
-                    pathname: "./tutorials",
+                    pathname: "/tutorials",
                     state:{course}
                 }
             }>
