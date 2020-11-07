@@ -159,6 +159,7 @@ app.get('/logout', function(req, res){
 
 // Return session data containing userID
 app.get("/user", (req, res) => {
+  //console.log("HIT /user route with request", req);
   res.send(req.user);
 })
 //-----------------------------------------------------------------------------------------
