@@ -1,21 +1,35 @@
 import React, { Component } from 'react'
 import {Container} from 'react-bootstrap';
 import Header from './../layout/Header';
+const marked = require('marked')
 
+const renderer2 = {
+code(code, info, escaped) {
+			let divStyle = 'style="width:100%; height:auto; border: solid 1px #DFDFDF; background: #F7F7F7; padding:0.5%"';
+			let buttonStyle = 'style="font-size: 12px; float: right; border: solid 1px black; margin-top: 1%"';
+				
+			return (
+				`<code><pre><div ${divStyle}>HELLO ${code} extra</div><button ${buttonStyle}>Run Code Cell</button></pre></code>`
+			)
+		}
+	};
+
+
+marked.use({ renderer2 });
 export default class RunTutorial extends Component {
     constructor(props){
         super(props);
         this.state = {
-            tutorialSelected: localStorage.getItem('tutorialSelected')
+            tutorialSelected: "```python helpme\nprint(\"Hello world\")```",
+            renderedHTML: undefined,
         };
     }
 
     componentDidMount() {
-        console.log(this)
-        if(this.props.location.state !== undefined){
-            localStorage.setItem('tutorialSelected', JSON.stringify(this.props.location.state.tutorial))
-            this.setState({tutorialSelected:this.props.location.state.tutorial})
-        } 
+        console.log("Tutorial Mounted!")
+		let htmlOutput = marked(this.state.tutorialSelected)
+		console.log("HTML output", typeof(htmlOutput), htmlOutput)
+		this.setState({renderedHTML : htmlOutput});
     }
 
     render() {
@@ -23,17 +37,10 @@ export default class RunTutorial extends Component {
             <React.Fragment>
                 {this.props.location.pathname !== '/login' && <Header />}
                 <Container>
-                    <div>
-                        <h3 style={headerStyle}>{this.state.tutorialSelected}</h3>
-                        
-                        {/* Get Tutorial From DB */}
-                        <div style={tutorialStyle}>
-                            The tutorial will be fetched from the db and displayed here<br></br>
-                            <br></br>
-                            <br></br>
-                            <br></br>
-                        </div>
-                    </div>
+                <h1> Hello below is my tutorial </h1>
+                {this.state.renderedHTML}
+                <div dangerouslySetInnerHTML={{__html:this.state.renderedHTML}}>
+                </div>
                 </Container>
                 
             </React.Fragment>

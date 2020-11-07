@@ -17,6 +17,7 @@ export default class Tutorials extends Component {
         axios.get(`http://localhost:4000/tutorial/${this.state.course}`)
           .then((res) => {
                 this.setState({tutorials: res.data}); 
+                console.log("tutorial/courseid returned", res.data)
             })
             .catch((error) => {
                 console.log(error);
