@@ -1,23 +1,53 @@
 import React, { Component } from 'react';
-import Button from 'react-bootstrap/Button';
 import { Link } from "react-router-dom"; 
-
+import axios from 'axios';
+import Header from './../layout/Header';
 
 export default class CourseDashboard extends Component {
-    courses = ["CMPT470", "CMPT310", "CMPT354"];
+    constructor(props) {
+        super(props);
+    
+        this.state = {
+          courses: [],
+          user: ''
+        }
+    }
+    
+    componentDidMount() {
+        // get user object from server
+        axios({
+            method: "GET",
+            withCredentials: true,
+            url: "http://localhost:4000/user",
+          }).then((res) => {
+            this.setState({user: res.data}); // get user object containing: _id, userName, accountType
+
+            // get courses for the user
+            axios.get(`http://localhost:4000/dashboard/${this.state.user._id}`)
+            .then(res => {
+                this.setState({courses: res.data});
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        });       
+    }
 
     createCourseContainers() {
-        return this.courses.map((course)=>
-            <Link to={
+        return this.state.courses.map((course, key)=>
+            <Link key={key} to={
                 {
                     pathname: "./tutorials",
                     state:{course}
                 }
             }>
                 <div style={background}>
-                    <div key={course} style={courseCard}>
-                            <div style={name}> 
-                                {course}
+                    <div style={courseCard}>
+                            <div style={courseCode}> 
+                                {course.courseCode} 
+                            </div>
+                            <div style={courseName}>
+                                {course.courseName}
                             </div>
                     </div>
                 </div>
@@ -28,6 +58,7 @@ export default class CourseDashboard extends Component {
     render() {
         return (
             <React.Fragment>
+                {this.props.location.pathname !== '/login' && <Header />}
                 <div>
                     <h3 style={dashboardTitle}>Dashboard - Courses</h3>
                     <main>{this.createCourseContainers()}</main>
@@ -56,7 +87,14 @@ const courseCard = {
     background: 'white',
 }
 
-const name = {
+const courseCode = {
+    color: '#343a40',
+    fontFamily: 'Arial, Helvetica, sans-serif',
+    fontWeight: 'bold',
+    textAlign: 'center'
+}
+
+const courseName = {
     color: '#343a40',
     fontFamily: 'Arial, Helvetica, sans-serif',
     fontWeight: 'bold',

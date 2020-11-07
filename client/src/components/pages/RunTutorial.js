@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import {Container} from 'react-bootstrap';
+import Header from './../layout/Header';
 
 export default class RunTutorial extends Component {
     constructor(props){
@@ -20,6 +21,7 @@ export default class RunTutorial extends Component {
     render() {
         return (
             <React.Fragment>
+                {this.props.location.pathname !== '/login' && <Header />}
                 <Container>
                     <div>
                         <h3 style={headerStyle}>{this.state.tutorialSelected}</h3>

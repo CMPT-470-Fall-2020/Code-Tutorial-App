@@ -9,14 +9,13 @@ const cookieParser = require('cookie-parser');
 const bcrypt = require("bcryptjs");
 const session = require("express-session");
 const bodyParser = require("body-parser");
-//const User = require('./models/user.model');
 const events = require("events");
 const interpManager = require("./manager.js");
+const app = express();
+const port = process.env.PORT || 4000;
 
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
-const app = express();
-const port = process.env.PORT || 4000;
 
 var ev = new events.EventEmitter();
 var interpreterManager = new interpManager.InterpreterManager(ev);
