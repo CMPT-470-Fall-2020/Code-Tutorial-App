@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from "react-router-dom"; 
 import axios from 'axios';
 import Header from './../layout/Header';
+const BASE_API_URL = process.env.REACT_APP_PROD_BASE_URL || process.env.REACT_APP_DEV_BASE_URL;
 
 export default class CourseDashboard extends Component {
     constructor(props) {
@@ -18,12 +19,12 @@ export default class CourseDashboard extends Component {
         axios({
             method: "GET",
             withCredentials: true,
-            url: "http://localhost:4000/user",
+            url: BASE_API_URL + "/user",
           }).then((res) => {
             this.setState({user: res.data}); // get user object containing: _id, userName, accountType
 
             // get courses for the user
-            axios.get(`http://localhost:4000/dashboard/${this.state.user._id}`)
+            axios.get(`${BASE_API_URL}/dashboard/${this.state.user._id}`)
             .then(res => {
                 this.setState({courses: res.data});
             })

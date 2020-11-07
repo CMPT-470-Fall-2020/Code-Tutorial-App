@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { Link } from "react-router-dom"; 
 import Header from './../layout/Header';
 import axios from 'axios';
+const BASE_API_URL = process.env.REACT_APP_PROD_BASE_URL || process.env.REACT_APP_DEV_BASE_URL;
+
 
 export default class Tutorials extends Component {    
     constructor(props){
@@ -14,7 +16,7 @@ export default class Tutorials extends Component {
     
     componentDidMount() {
         // get tutorials list object from server
-        axios.get(`http://localhost:4000/tutorial/${this.state.course}`)
+        axios.get(`${BASE_API_URL}/tutorial/${this.state.course}`)
           .then((res) => {
                 this.setState({tutorials: res.data}); 
             })
