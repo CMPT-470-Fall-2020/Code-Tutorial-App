@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "start-prod": "NODE_ENV=production PORT=8080 HOST=0.0.0.0 node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
