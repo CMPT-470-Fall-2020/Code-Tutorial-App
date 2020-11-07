@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import {BrowserRouter as Router, Route, Redirect} from 'react-router-dom';
-import Login from './components/Login';
+import {Route, Switch} from 'react-router-dom';
 import "./App.css";
+
+import Login from './components/Login';
 import CreateTutorial from './components/pages/CreateTutorial';
 import CourseDashboard from './components/pages/CourseDashboard';
 import CodePlayground from './components/pages/CodePlayground';
@@ -17,8 +18,8 @@ import RunTutorial from './components/pages/RunTutorial';
 class App extends Component {
   render() {
     return (
-      <Router>
-            <div className="App">
+     <main>
+      	<Switch>
               <Route exact path="/" component={() => (<Redirect to='/login' />)} />
               <Route exact path="/login" component={Login}/>
               <Route path="/createtutorial" component={CreateTutorial}></Route>
@@ -26,8 +27,8 @@ class App extends Component {
               <Route path="/codeplayground" component={CodePlayground}></Route>
               <Route path="/tutorials" component={Tutorials}></Route>
               <Route path="/runtutorial" component={RunTutorial}></Route>
-            </div>
-      </Router>
+     	 </Switch>
+      </main>
     );
   }
 }
