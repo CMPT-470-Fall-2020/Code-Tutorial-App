@@ -13,7 +13,9 @@ export default class Login extends Component{
       registerPassword: '',
       name: '',
       password: '',
-      account: ''
+      account: '',
+      isAuth: false
+
     }
   }
 
@@ -99,7 +101,10 @@ export default class Login extends Component{
     }).then((res) => {
       console.log(res);
       if (res.data === "Authentication: Success") {
-        window.location.href="./CourseDashboard";
+      	// If the login is successful, we redirect
+        //window.location.href="./CourseDashboard";
+        //this.setState({isAuth: true})
+        this.props.history.push("/coursedashboard");
       }
     });
   }
