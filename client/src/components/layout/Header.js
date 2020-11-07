@@ -6,7 +6,7 @@ import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import axios from 'axios';
 
-const BASE_API_URL = process.env.REACT_APP_PROD_BASE_URL || process.env.REACT_APP_DEV_BASE_URL;
+//const BASE_API_URL = process.env.REACT_APP_PROD_BASE_URL || process.env.REACT_APP_DEV_BASE_URL;
 
 export default class Header extends Component {
     
@@ -15,7 +15,7 @@ export default class Header extends Component {
         axios({
             method: "GET",
             withCredentials: true,
-            url: BASE_API_URL + "/logout",
+            url:  "/logout",
           }).then((res) => {
             window.location.href="/login";
         });
