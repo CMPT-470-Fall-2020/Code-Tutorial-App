@@ -8,6 +8,7 @@ import 'codemirror/lib/codemirror.css';
 import './../scss/MarkdownEditor.scss';
 import axios from 'axios';
 import Header from './../layout/Header';
+import { v4 as uuid } from 'uuid';
 
 let marked = require('marked')
 
@@ -16,9 +17,10 @@ const renderer = {
     code(code, info, escaped) {
         var divStyle = 'style="width:100%; height:auto; border: solid 1px #DFDFDF; background: #F7F7F7; padding:0.5%"';
         var buttonStyle = 'style="font-size: 12px; float: right; border: solid 1px black; margin-top: 1%"';
-        
+        let uniqueID = uuid()
+
         return (
-            `<code><pre><div ${divStyle}>${code}</div><button ${buttonStyle}>Run Code Cell</button></pre></code>`
+            `<code><pre><div ${divStyle}>${code}</div><button ${buttonStyle} id="${uniqueID}">Run Code Cell</button></pre></code>`
         )
     }
 };
@@ -32,7 +34,7 @@ export default class CreateTutorial extends Component {
         courseID: '',
         title: '',
         rawCode: '',
-        markdownCode: '',
+        htmlCode: '',
         user: '',
         courses: []
     }
@@ -83,7 +85,9 @@ export default class CreateTutorial extends Component {
             data: {
                 tutorialName: this.state.title,
                 userID: this.state.user._id,
-                codeText: this.state.rawCode
+                codeText: this.state.rawCode,
+                htmlText: this.state.htmlCode
+                
             },
             withCredentials: true,
             url: `http://localhost:4000/tutorial/${this.state.courseID}/add`,
@@ -98,7 +102,7 @@ export default class CreateTutorial extends Component {
         this.setState({ courseID: ''});
         this.setState({ title: ''});
         this.setState({ rawCode: ''});
-        this.setState({ markdownCode: ''});
+        this.setState({ htmlCode: ''});
         this.setState({ user: ''});
         this.setState({ courses: []});
     }
@@ -141,11 +145,11 @@ export default class CreateTutorial extends Component {
                         options={options}
                         onBeforeChange={(editor, data, value) => {
                             this.setState({rawCode: value});
-                            this.setState({markdownCode: marked(value)});
+                            this.setState({htmlCode: marked(value)});
                         }}
                         onChange={(editor, data, value) => {
                             this.setState({rawCode: value});
-                            this.setState({markdownCode: marked(value)});
+                            this.setState({htmlCode: marked(value)});
                         }}
                     />
                     <div>
