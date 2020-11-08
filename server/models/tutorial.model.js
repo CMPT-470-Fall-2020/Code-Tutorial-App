@@ -7,7 +7,8 @@ const tutorialSchema = new Schema({
   tutorialName: { type: String, required: true },
   userID: { type: mongoose.Types.ObjectId, required: true },
   courseID: { type: mongoose.Types.ObjectId, required: true },
-  codeText: { type: String, required: true }
+  codeText: { type: String, required: true },
+  htmlText: { type: String, required: true }
 }, {
   timestamps: true
 });
