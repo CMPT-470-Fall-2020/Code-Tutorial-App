@@ -5,7 +5,7 @@ import {Controlled as CodeMirror} from 'react-codemirror2';
 import Button from 'react-bootstrap/Button';
 import 'codemirror/mode/markdown/markdown.js';
 import 'codemirror/lib/codemirror.css';
-import './../scss/MarkdownEditor.scss';
+//import './../scss/MarkdownEditor.scss';  TODO: Why does this crash?
 import axios from 'axios';
 import Header from './../layout/Header';
 import { v4 as uuid } from 'uuid'; //TODO: Why is this needed?
