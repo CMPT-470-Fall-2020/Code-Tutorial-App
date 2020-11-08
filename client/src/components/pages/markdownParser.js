@@ -8,18 +8,21 @@ markdownRenderer.setOptions({
 
 const renderer = {
     code(code, info, escaped) {
-        var divStyle = 'style="width:100%; height:auto; border: solid 1px #DFDFDF; background: #F7F7F7; padding:0.5%"';
-        var buttonStyle = 'style="font-size: 12px; float: right; border: solid 1px black; margin-top: 1%"';
-        
+        //var divStyle = 'style={{width:100%; height:auto; border: solid 1px #DFDFDF; background: #F7F7F7; padding:0.5%}}';
+        //var buttonStyle = 'style={{font-size: 12px; float: right; border: solid 1px black; margin-top: 1%}}';
+        /*
         return (
-            `HELLO FROM OUR SHARED RENDERER
-			<code>
+            `<code>
             	<pre>
-            		<div ${divStyle}>${code}</div>
-            		<button ${buttonStyle}>Run Code Cell</button>
+            		<div >${code}</div>
+            		<button onClick={sendMe}>{foo}</button>
             	</pre>
             	</code>`
         )
+        */
+        let cellAttr = info.split(" ");
+        let codeFragment = `<React.Fragment>${code}</React.Fragment>`
+        return `<MarkdownCell lang={\"${cellAttr[0]}\"} iname={\"${cellAttr[1]}\"} code={\`${code}\`}/>`
     }
 };
 
