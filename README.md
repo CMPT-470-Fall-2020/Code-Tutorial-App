@@ -1,4 +1,4 @@
-# CMPT 470 Learning Project
+# CMPT 470 Learning Project - Fall 2020
 This repostory will contain all code for our semester long project. 
 
 # Setting up the project after cloning

@@ -4,7 +4,8 @@
   "description": "Backend server for our learning application.",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "node index.js",
+    "start-prod": "NODE_ENV=production PORT=8080 HOST=0.0.0.0 node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -24,9 +25,10 @@
     "express-session": "^1.17.1",
     "markedjs": "^10.0.0",
     "mongoose": "^5.10.11",
-    "nodemon": "^2.0.6",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  }
 }

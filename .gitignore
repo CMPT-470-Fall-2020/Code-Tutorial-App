@@ -25,3 +25,10 @@ client/yarn-error.log*
 /server/util/*.log
 /server/python-server.log
 node_modules
+client/src/App.js
+client/src/index.js
+client/src/components/Login.js
+client/src/components/layout/Header.js
+client/src/components/pages/CourseDashboard.js
+client/src/components/pages/CreateTutorial.js
+client/src/components/pages/Tutorials.js

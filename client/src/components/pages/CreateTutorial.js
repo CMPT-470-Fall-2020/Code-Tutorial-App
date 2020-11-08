@@ -10,6 +10,9 @@ import axios from 'axios';
 import Header from './../layout/Header';
 import { v4 as uuid } from 'uuid';
 
+//const BASE_API_URL = process.env.REACT_APP_PROD_BASE_URL || process.env.REACT_APP_DEV_BASE_URL;
+
+
 let marked = require('marked')
 
 // Override function for parsing code blocks
@@ -43,12 +46,12 @@ export default class CreateTutorial extends Component {
         axios({
             method: "GET",
             withCredentials: true,
-            url: "http://localhost:4000/user",
+            url:  "/user",
           }).then((res) => {
               this.setState({user: res.data}); // get user object containing: _id, userName, accountType
 
               // get courses for the user
-            axios.get(`http://localhost:4000/dashboard/${this.state.user._id}`)
+            axios.get(`/dashboard/${this.state.user._id}`)
             .then(res => {
                 this.setState({courses: res.data});
             })
@@ -90,7 +93,7 @@ export default class CreateTutorial extends Component {
                 
             },
             withCredentials: true,
-            url: `http://localhost:4000/tutorial/${this.state.courseID}/add`,
+            url: `/tutorial/${this.state.courseID}/add`,
           }).then((res)=> {
               console.log(res);
               this.clearStates();

@@ -1,18 +1,21 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 
+//const BASE_API_URL = process.env.REACT_APP_PROD_BASE_URL || process.env.REACT_APP_DEV_BASE_URL;
+
 export default class Login extends Component{
   // This is the component state which holds the text sent in by our express backend.
   constructor(props) {
     super(props);
-
     this.state = {
       message:"no message",
       registerName: '',
       registerPassword: '',
       name: '',
       password: '',
-      account: ''
+      account: '',
+      isAuth: false
+
     }
   }
 
@@ -62,7 +65,7 @@ export default class Login extends Component{
         user
       },
       withCredentials: true,
-      url: "http://localhost:4000/register",
+      url:  "/register",
     }).then((res) => {
       if (res.data === "User Created"){
         // Login
@@ -73,7 +76,7 @@ export default class Login extends Component{
               password: user.password
           },
           withCredentials: true,
-          url: "http://localhost:4000/login",
+          url:  "/login",
         }).then((res) => {
           if (res.data === "Authentication: Success") {
             window.location.href="./CreateTutorial";
@@ -94,11 +97,14 @@ export default class Login extends Component{
           password: this.state.password
       },
       withCredentials: true,
-      url: "http://localhost:4000/login",
+      url:  "/login",
     }).then((res) => {
       console.log(res);
       if (res.data === "Authentication: Success") {
-        window.location.href="./CourseDashboard";
+      	// If the login is successful, we redirect
+        //window.location.href="./CourseDashboard";
+        //this.setState({isAuth: true})
+        this.props.history.push("/coursedashboard");
       }
     });
   }
