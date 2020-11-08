@@ -9,8 +9,9 @@ import './../scss/MarkdownEditor.scss';
 import axios from 'axios';
 import Header from './../layout/Header';
 //const BASE_API_URL = process.env.REACT_APP_PROD_BASE_URL || process.env.REACT_APP_DEV_BASE_URL;
+import {marked} from './markdownParser';
 
-
+/*
 let marked = require('marked')
 
 // Override function for parsing code blocks
@@ -26,6 +27,7 @@ const renderer = {
 };
 
 marked.use({ renderer });
+*/
 
 export default class CreateTutorial extends Component {
 
