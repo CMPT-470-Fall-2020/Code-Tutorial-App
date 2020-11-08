@@ -21,8 +21,7 @@ const renderer = {
         )
         */
         let cellAttr = info.split(" ");
-        let codeFragment = `<React.Fragment>${code}</React.Fragment>`
-        return `<MarkdownCell userid={\"{userId}\"}lang={\"${cellAttr[0]}\"} iname={\"${cellAttr[1]}\"} code={\`${code}\`}/>`
+        return `<MarkdownCell userid={\"{userId}\"} shouldRun={shouldRunCells} lang={\"${cellAttr[0]}\"} iname={\"${cellAttr[1]}\"} code={\`${code}\`}/>`
     }
 };
 

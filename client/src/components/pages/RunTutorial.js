@@ -52,6 +52,7 @@ export default class RunTutorial extends Component {
 				   <JsxParser
 				 	bindings={{
 						userId: this.state.userId,
+						shouldRunCells: true,
 					}}
 				    components={{MarkdownCell}}
 					jsx={this.state.renderedHTML}

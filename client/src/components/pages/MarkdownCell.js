@@ -4,12 +4,13 @@ import axios from 'axios';
 export default class MarkdownCell extends Component{
 	constructor(props){
 		super(props)
-		//console.log("Cell init with", this.props.code);
+		console.log("Cell init with", this.props.shouldRun);
 		this.state = {
 			code: this.props.code,
 			lang: this.props.lang,
 			interpName: this.props.iname,
 			uid:this.props.userid,
+			shouldRunCells: this.props.shouldRun,
 			codeOutput: "",
 		}
         this.buttonStyle = 'style={{font-size: 12px; float: right; border: solid 1px black; margin-top: 1%}}';
@@ -17,6 +18,9 @@ export default class MarkdownCell extends Component{
 	}
 	
 	runCode(){
+		if (this.state.shouldRunCells !== true){
+			this.setState({codeOutput:"Cells cannot be ran while in editing mode!"})
+		}else{
         axios({
             method: "POST",
             data: {
@@ -40,6 +44,7 @@ export default class MarkdownCell extends Component{
 				this.setState({codeOutput:"There is some sort of error with running your request. :("})
           	 }
         })
+		}
 	}
 
 	render() {

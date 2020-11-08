@@ -8,10 +8,13 @@ import 'codemirror/lib/codemirror.css';
 import './../scss/MarkdownEditor.scss';
 import axios from 'axios';
 import Header from './../layout/Header';
-import { v4 as uuid } from 'uuid';
+import { v4 as uuid } from 'uuid'; //TODO: Why is this needed?
+// Markdown rendering stuff
+import {marked} from './markdownParser';
+import MarkdownCell from "./MarkdownCell.js"
+import JsxParser from 'react-jsx-parser'
 
 //const BASE_API_URL = process.env.REACT_APP_PROD_BASE_URL || process.env.REACT_APP_DEV_BASE_URL;
-import {marked} from './markdownParser';
 
 /*
 let marked = require('marked')
@@ -159,11 +162,16 @@ export default class CreateTutorial extends Component {
                     />
                     <div>
                         <h1 style={headerStyle}>Markdown Preview</h1>
-                        <div 
-                            style={previewStyle} 
-                            dangerouslySetInnerHTML = {this.getPreview()}
-                        > 
-                        </div>
+
+						   <JsxParser
+							bindings={{
+								userId: undefined,
+								shouldRunCells: false,
+							}}
+							components={{MarkdownCell}}
+							jsx={this.state.htmlCode}
+							blacklistedAttrs={[]}
+							/>
                     </div>
                 </Container>
             </React.Fragment>
