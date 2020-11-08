@@ -22,7 +22,7 @@ export default class RunTutorial extends Component {
 
     componentDidMount() {
         // Get tutorial from server
-        axios.get(`http://localhost:4000/tutorial/${this.state.courseID}/${this.state.tutorialID}`)
+        axios.get(`/tutorial/${this.state.courseID}/${this.state.tutorialID}`)
           .then((res) => {
                 this.setState({tutorialSelected: res.data.codeText}); 
                 //console.log("tutorial selected returned", res.data.codeText)
