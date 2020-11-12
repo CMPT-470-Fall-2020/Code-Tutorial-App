@@ -4,30 +4,81 @@ import ButtonToolbar from 'react-bootstrap/ButtonToolbar'
 import { FcHighPriority, FcOk} from "react-icons/fc";
 import {Controlled as CodeMirror} from 'react-codemirror2'
 import axios from 'axios';
+import "../css/MarkdownCodeCell.css";
+import 'codemirror/mode/shell/shell.js'
+import 'codemirror/mode/python/python.js'
+import 'codemirror/mode/julia/julia.js'
+import 'codemirror/mode/ruby/ruby.js'
 
 export default class MarkdownCell extends Component{
 	constructor(props){
 		super(props)
+		this.codeMirrorEditConfig = {
+							viewportMargin:10,
+							readOnly: false,
+							lineWrapping:true,
+							lineNumbers:true,
+							mode:"shell",
+				direction:"ltr",
+				indentUnit: 2,
+				tabSize: 4,
+				
+							}
+		this.codeMirrorReadOnlyConfig = {
+							viewportMargin:10,
+							readOnly:"nocursor",
+							lineWrapping:true,
+							lineNumbers:false,
+							mode:"shell",
+				direction:"ltr",
+				indentUnit: 2,
+				tabSize: 4,
+				
+							}
+
 		this.state = {
-			orignalCodeVal: this.props.code,
-			modifiedCodeVal: this.props.code,
+			orignalCodeVal: this.props.code, // Original text incell. Used to restore cell to original text.
+			modifiedCodeVal: this.props.code, // Current text in cell.
 			lang: this.props.lang,
 			interpName: this.props.iname,
 			uid:this.props.userid,
+
 			shouldRunCells: this.props.shouldRun,  // Used to disable running cells while tutorial is being written.
 			codeOutput: "", // Stores the output returned by API
 			isWaiting: false, // Used to hide/show progress spinner
 			respCodeStatus: undefined,
+
+			// Config for code mirror
+			codeMirrorConfig : this.codeMirrorReadOnlyConfig,
 		}
         this.buttonStyle = 'style={{font-size: 12px; float: right; border: solid 1px black; margin-top: 1%}}';
+
+      // Bind functions so they are accessible from the "render" method.
 	  this.runCode= this.runCode.bind(this);
+	  this.resetCellContents = this.resetCellContents.bind(this);
+	  this.setEditorReadOnly = this.setEditorReadOnly.bind(this);
+	  this.setEditorEditMode = this.setEditorEditMode.bind(this);
 	}
 	
+	resetCellContents(){
+		this.setEditorReadOnly();
+
+		this.setState({modifiedCodeVal: this.state.orignalCodeVal})
+	}
+	
+	setEditorReadOnly(){
+		this.setState({codeMirrorConfig: this.codeMirrorReadOnlyConfig})
+	}
+	setEditorEditMode(){
+		this.setState({codeMirrorConfig: this.codeMirrorEditConfig})
+	}
+
 	runCode(){
 		if (this.state.shouldRunCells !== true){
 			this.setState({codeOutput:"Cells cannot be ran while in editing mode!"})
 		}else{
 		// Display Spinner while waiting
+		this.setEditorReadOnly();
 		this.setState({respCodeStatus: undefined})
 		this.setState({isWaiting: true})
         axios({
