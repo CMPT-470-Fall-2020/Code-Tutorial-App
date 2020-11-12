@@ -1,0 +1,9 @@
+.CodeMirror {
+	background-color: lightgray;
+	height: auto;
+}
+
+.CodeMirror-scroll {
+		max-height:200px;
+	
+}
