@@ -120,10 +120,23 @@ export default class MarkdownCell extends Component{
 					{this.state.isWaiting && <Spinner id="loading-spinner" animation="border" variant="primary"/>}
 					{this.state.respCodeStatus == false && <FcHighPriority/>}
 					{this.state.respCodeStatus == true && <FcOk/>}
-            		<div style={divStyle}>{this.state.modifiedCodeVal}</div>
+					<CodeMirror
+					value={this.state.modifiedCodeVal}
+					options={this.state.codeMirrorConfig}
+
+                    onBeforeChange={(editor, data, value) => {
+						this.setState({modifiedCodeVal: value});
+                    }}
+					onChange={(editor, data, value) => {
+						this.setState({modifiedCodeVal: value});
+					}}
+					onDblClick={(editor, ev) => {
+							this.setState({codeMirrorConfig: this.codeMirrorEditConfig})
+					}}
+					/>
             		<ButtonToolbar>
             		<Button variant="primary" className="mr-2" onClick={this.runCode}>Run code</Button>
-            		<Button variant="primary" className="mr-2">Restore Original</Button>
+            		<Button variant="primary" className="mr-2" onClick={this.resetCellContents}>Restore Original</Button>
             		<Button variant="primary" className="mr-2">Stop</Button>
             		</ButtonToolbar>
             		<div>{this.state.codeOutput}</div>
