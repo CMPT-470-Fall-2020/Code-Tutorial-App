@@ -43,7 +43,7 @@ export default class MarkdownCell extends Component{
 			interpName: this.props.iname,
 			uid:this.props.userid,
 
-			shouldRunCells: this.props.shouldRun,  // Used to disable running cells while tutorial is being written.
+			writeMode: this.props.shouldRun,  // Used to disable running cells while tutorial is being written.
 			codeOutput: "", // Stores the output returned by API
 			isWaiting: false, // Used to hide/show progress spinner
 			respCodeStatus: undefined,
@@ -74,7 +74,7 @@ export default class MarkdownCell extends Component{
 	}
 
 	runCode(){
-		if (this.state.shouldRunCells !== true){
+		if (this.state.writeMode === false){
 			this.setState({codeOutput:"Cells cannot be ran while in editing mode!"})
 		}else{
 		// Display Spinner while waiting
@@ -131,10 +131,13 @@ export default class MarkdownCell extends Component{
 						this.setState({modifiedCodeVal: value});
 					}}
 					onDblClick={(editor, ev) => {
-							this.setState({codeMirrorConfig: this.codeMirrorEditConfig})
+							   console.log("this", this.state.writeMode)
+							   if( this.state.writeMode === true){
+								this.setState({codeMirrorConfig: this.codeMirrorEditConfig})
+							   }
 					}}
 					/>
-            		<ButtonToolbar>
+            		<ButtonToolbar bsPrefix="cell-btns">
             		<Button variant="primary" className="mr-2" onClick={this.runCode}>Run code</Button>
             		<Button variant="primary" className="mr-2" onClick={this.resetCellContents}>Restore Original</Button>
             		<Button variant="primary" className="mr-2">Stop</Button>
