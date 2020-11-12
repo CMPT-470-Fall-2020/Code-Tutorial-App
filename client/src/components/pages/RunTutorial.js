@@ -83,7 +83,7 @@ export default class RunTutorial extends Component {
 				 	bindings={{
 						userId: this.state.userId,
 						theme: this.state.currentTheme,
-						keyMap: this.state.currentKeybinds,
+						keymap: this.state.currentKeybinds,
 						shouldRunCells: true,
 					}}
 				    components={{MarkdownCell}}
