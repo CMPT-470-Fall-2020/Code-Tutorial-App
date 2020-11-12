@@ -5,10 +5,18 @@ import { FcHighPriority, FcOk} from "react-icons/fc";
 import {Controlled as CodeMirror} from 'react-codemirror2'
 import axios from 'axios';
 import "../css/MarkdownCodeCell.css";
+// Codemirror code highlighting
 import 'codemirror/mode/shell/shell.js'
 import 'codemirror/mode/python/python.js'
 import 'codemirror/mode/julia/julia.js'
 import 'codemirror/mode/ruby/ruby.js'
+// Codemirror Themes
+import 'codemirror/theme/monokai.css'
+import 'codemirror/theme/eclipse.css'
+// Codemirror Keymaps
+import 'codemirror/keymap/vim'
+import 'codemirror/keymap/emacs'
+import 'codemirror/keymap/sublime'
 
 export default class MarkdownCell extends Component{
 	constructor(props){
@@ -19,21 +27,20 @@ export default class MarkdownCell extends Component{
 							lineWrapping:true,
 							lineNumbers:true,
 							mode:"shell",
-				direction:"ltr",
-				indentUnit: 2,
-				tabSize: 4,
-				
+							direction:"ltr",
+							indentUnit: 2,
+							tabSize: 4,
 							}
+
 		this.codeMirrorReadOnlyConfig = {
 							viewportMargin:10,
 							readOnly:"nocursor",
 							lineWrapping:true,
 							lineNumbers:false,
 							mode:"shell",
-				direction:"ltr",
-				indentUnit: 2,
-				tabSize: 4,
-				
+							direction:"ltr",
+							indentUnit: 2,
+							tabSize: 4,
 							}
 
 		this.state = {
@@ -50,8 +57,11 @@ export default class MarkdownCell extends Component{
 
 			// Config for code mirror
 			codeMirrorConfig : this.codeMirrorReadOnlyConfig,
+			currentTheme : this.props.theme,
+			currentKeymap : this.props.keymap,
 		}
         this.buttonStyle = 'style={{font-size: 12px; float: right; border: solid 1px black; margin-top: 1%}}';
+        console.log(this.props.keymap)
 
       // Bind functions so they are accessible from the "render" method.
 	  this.runCode= this.runCode.bind(this);
@@ -118,12 +128,18 @@ export default class MarkdownCell extends Component{
             <code>
             	<pre>
 					{this.state.isWaiting && <Spinner id="loading-spinner" animation="border" variant="primary"/>}
-					{this.state.respCodeStatus == false && <FcHighPriority/>}
-					{this.state.respCodeStatus == true && <FcOk/>}
+					{this.state.respCodeStatus === false && <FcHighPriority/>}
+					{this.state.respCodeStatus === true && <FcOk/>}
 					<CodeMirror
 					value={this.state.modifiedCodeVal}
-					options={this.state.codeMirrorConfig}
-
+					options= {
+							Object.assign({}, 
+							this.state.codeMirrorConfig, 
+							{
+									"theme": this.state.currentTheme, 
+									"keyMap": this.state.currentKeymap
+							})
+					}
                     onBeforeChange={(editor, data, value) => {
 						this.setState({modifiedCodeVal: value});
                     }}
@@ -131,7 +147,7 @@ export default class MarkdownCell extends Component{
 						this.setState({modifiedCodeVal: value});
 					}}
 					onDblClick={(editor, ev) => {
-							   console.log("this", this.state.writeMode)
+							   //console.log("Write!", this.state.writeMode)
 							   if( this.state.writeMode === true){
 								this.setState({codeMirrorConfig: this.codeMirrorEditConfig})
 							   }
