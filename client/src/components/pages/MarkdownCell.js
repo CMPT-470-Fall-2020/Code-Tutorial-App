@@ -5,6 +5,7 @@ import { FcHighPriority, FcOk} from "react-icons/fc";
 import {Controlled as CodeMirror} from 'react-codemirror2'
 import axios from 'axios';
 import "../css/MarkdownCodeCell.css";
+
 // Codemirror code highlighting
 import 'codemirror/mode/shell/shell.js'
 import 'codemirror/mode/python/python.js'
@@ -21,7 +22,6 @@ import 'codemirror/keymap/sublime'
 export default class MarkdownCell extends Component{
 	constructor(props){
 		super(props)
-		console.log("This props", this.props)
 		this.codeMirrorEditConfig = {
 							viewportMargin:10,
 							readOnly: false,
@@ -71,6 +71,15 @@ export default class MarkdownCell extends Component{
 	  this.setEditorEditMode = this.setEditorEditMode.bind(this);
 	}
 	
+	componentDidUpdate(prevProps){
+		if (prevProps.theme !== this.props.theme){
+			this.setState({currentTheme: this.props.theme})
+		}
+		if (prevProps.keymap !== this.props.keymap){
+			this.setState({currentKeymap: this.props.keymap})
+		}
+	}
+
 	resetCellContents(){
 		this.setEditorReadOnly();
 
