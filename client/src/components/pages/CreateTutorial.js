@@ -10,7 +10,6 @@ import axios from 'axios';
 import Header from './../layout/Header';
 import { v4 as uuid } from 'uuid'; //TODO: Why is this needed?
 // Markdown rendering stuff
-import {marked} from './markdownParser';
 import MarkdownCell from "./MarkdownCell.js"
 import JsxParser from 'react-jsx-parser'
 
@@ -76,11 +75,6 @@ export default class CreateTutorial extends Component {
         this.setState({
           title: e.target.value
         });
-    }
-
-    // Create preview of tutorial
-    getPreview() {
-        return {__html: marked(this.state.rawCode)};
     }
 
     // Save markup text to db
@@ -151,11 +145,11 @@ export default class CreateTutorial extends Component {
                 		mode="markdown"
                         onBeforeChange={(editor, data, value) => {
                             this.setState({rawCode: value});
-                            this.setState({htmlCode: marked(value)});
+                            //this.setState({htmlCode: marked(value)});
                         }}
                         onChange={(editor, data, value) => {
                             this.setState({rawCode: value});
-                            this.setState({htmlCode: marked(value)});
+                            //this.setState({htmlCode: marked(value)});
                         }}
                     />
                     <div>

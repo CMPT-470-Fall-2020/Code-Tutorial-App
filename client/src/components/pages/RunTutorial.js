@@ -4,15 +4,15 @@ import Header from './../layout/Header';
 import axios from 'axios';
 import MarkdownCell from "./MarkdownCell.js"
 import {codeMirrorThemes, codeMirrorKeyBinds} from './codemirrorSettings';
-
+import "../css/RunTutorial.css"
+import 'katex/dist/katex.min.css' // `react-katex` does not import the CSS for you
 import {InlineMath, BlockMath} from 'react-katex'
+
 const ReactMarkdown = require('react-markdown')
 const gfm = require('remark-gfm')
 const math = require('remark-math')
 const emoji = require('remark-emoji');
 
-import "../css/RunTutorial.css"
-import 'katex/dist/katex.min.css' // `react-katex` does not import the CSS for you
 
 export default class RunTutorial extends Component {
 
@@ -56,10 +56,7 @@ export default class RunTutorial extends Component {
             })
             .catch((error) => {
                 console.log(error);
-        }).then((res) => {
-            let htmlOutput = marked(this.state.tutorialSelected)
-            this.setState({renderedHTML : htmlOutput});
-        });
+        })
     }
 
     handleThemeSelect(theme){
