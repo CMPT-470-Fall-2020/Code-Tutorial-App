@@ -1,9 +1,13 @@
 .CodeMirror {
-	background-color: lightgray;
 	height: auto;
 }
 
 .CodeMirror-scroll {
 		max-height:200px;
-	
+}
+
+.cell-btns {
+		display:flex;
+		justify-content:flex-end;
+		padding-top:1em;
 }
