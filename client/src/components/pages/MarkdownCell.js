@@ -21,6 +21,7 @@ import 'codemirror/keymap/sublime'
 export default class MarkdownCell extends Component{
 	constructor(props){
 		super(props)
+		console.log("This props", this.props)
 		this.codeMirrorEditConfig = {
 							viewportMargin:10,
 							readOnly: false,
@@ -57,8 +58,8 @@ export default class MarkdownCell extends Component{
 
 			// Config for code mirror
 			codeMirrorConfig : this.codeMirrorReadOnlyConfig,
-			currentTheme : this.props.theme,
-			currentKeymap : this.props.keymap,
+			currentTheme : this.props.theme || "eclipse",
+			currentKeymap : this.props.keymap || "default",
 		}
         this.buttonStyle = 'style={{font-size: 12px; float: right; border: solid 1px black; margin-top: 1%}}';
         console.log(this.props.keymap)
@@ -127,9 +128,6 @@ export default class MarkdownCell extends Component{
 			return(
             <code>
             	<pre>
-					{this.state.isWaiting && <Spinner id="loading-spinner" animation="border" variant="primary"/>}
-					{this.state.respCodeStatus === false && <FcHighPriority/>}
-					{this.state.respCodeStatus === true && <FcOk/>}
 					<CodeMirror
 					value={this.state.modifiedCodeVal}
 					options= {
@@ -153,12 +151,19 @@ export default class MarkdownCell extends Component{
 							   }
 					}}
 					/>
-            		<ButtonToolbar bsPrefix="cell-btns">
-            		<Button variant="primary" className="mr-2" onClick={this.runCode}>Run code</Button>
-            		<Button variant="primary" className="mr-2" onClick={this.resetCellContents}>Restore Original</Button>
-            		<Button variant="primary" className="mr-2">Stop</Button>
-            		</ButtonToolbar>
-            		<div>{this.state.codeOutput}</div>
+					<div className="code-cell-footer">
+							{this.state.isWaiting && <Spinner id="loading-spinner" animation="border" variant="primary"/>}
+							{this.state.respCodeStatus === false && <FcHighPriority/>}
+							{this.state.respCodeStatus === true && <FcOk/>}
+							<ButtonToolbar bsPrefix="cell-btns">
+							<Button variant="primary" className="mr-2" onClick={this.runCode}>Run code</Button>
+							<Button variant="primary" className="mr-2" onClick={this.resetCellContents}>Restore Original</Button>
+							<Button variant="primary" className="mr-2">Stop</Button>
+							</ButtonToolbar>
+					</div>
+            		<div className="code-cell-output">
+            			{this.state.codeOutput}
+            		</div>
             	</pre>
             </code>
 			)
