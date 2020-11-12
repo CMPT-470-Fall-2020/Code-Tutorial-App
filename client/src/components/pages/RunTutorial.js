@@ -1,12 +1,18 @@
 import React, { Component } from 'react'
 import {Container, DropdownButton, Dropdown} from 'react-bootstrap';
 import Header from './../layout/Header';
-import {marked} from './markdownParser';
-import JsxParser from 'react-jsx-parser'
 import axios from 'axios';
 import MarkdownCell from "./MarkdownCell.js"
 import {codeMirrorThemes, codeMirrorKeyBinds} from './codemirrorSettings';
+
+import {InlineMath, BlockMath} from 'react-katex'
+const ReactMarkdown = require('react-markdown')
+const gfm = require('remark-gfm')
+const math = require('remark-math')
+const emoji = require('remark-emoji');
+
 import "../css/RunTutorial.css"
+import 'katex/dist/katex.min.css' // `react-katex` does not import the CSS for you
 
 export default class RunTutorial extends Component {
 
@@ -21,9 +27,25 @@ export default class RunTutorial extends Component {
             currentTheme: 'eclipse',
             currentKeybinds: "default"
         };
+		//console.log("Code in constructor", this.tutorialSelected)
+		this.renderers = {
+  			inlineMath: ({value}) => <InlineMath math={value} />,
+		  	math: ({value}) => <BlockMath math={value} />,
+		  	code: ({language, value, node}) => {
+		  		return <MarkdownCell 
+		  			theme={this.state.currentTheme} 
+		  			keymap={this.state.currentKeybinds} 
+		  			code={value} iname={node.meta} 
+		  			lang={language} 
+		  			uid={this.state.userId} 
+		  			shouldRun={true}/>
+  			}
+		}
         this.handleThemeSelect = this.handleThemeSelect.bind(this);
         this.handleKeybindSelect = this.handleKeybindSelect.bind(this);
+
     }
+
 
     componentDidMount() {
         // Get tutorial from server
@@ -79,17 +101,8 @@ export default class RunTutorial extends Component {
       				</DropdownButton>
 			</div>
                 <Container style={tutorialStyle}>
-				   <JsxParser
-				 	bindings={{
-						userId: this.state.userId,
-						theme: this.state.currentTheme,
-						keymap: this.state.currentKeybinds,
-						shouldRunCells: true,
-					}}
-				    components={{MarkdownCell}}
-					jsx={this.state.renderedHTML}
-				    blacklistedAttrs={[]}
-					/>
+
+					<ReactMarkdown plugins={[gfm, math, emoji]}  renderers={this.renderers} children={this.state.tutorialSelected}/>
                 </Container>
             </div>
         )
