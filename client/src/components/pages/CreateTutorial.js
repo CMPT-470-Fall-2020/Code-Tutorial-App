@@ -14,26 +14,23 @@ import {marked} from './markdownParser';
 import MarkdownCell from "./MarkdownCell.js"
 import JsxParser from 'react-jsx-parser'
 
-//const BASE_API_URL = process.env.REACT_APP_PROD_BASE_URL || process.env.REACT_APP_DEV_BASE_URL;
+import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter'
+import {ghcolors} from 'react-syntax-highlighter/dist/esm/styles/prism'
+import {InlineMath, BlockMath} from 'react-katex'
+import 'katex/dist/katex.min.css' // `react-katex` does not import the CSS for you
+const ReactMarkdown = require('react-markdown')
+const gfm = require('remark-gfm')
+const math = require('remark-math')
+const emoji = require('remark-emoji');
 
-/*
-let marked = require('marked')
-
-// Override function for parsing code blocks
-const renderer = {
-    code(code, info, escaped) {
-        var divStyle = 'style="width:100%; height:auto; border: solid 1px #DFDFDF; background: #F7F7F7; padding:0.5%"';
-        var buttonStyle = 'style="font-size: 12px; float: right; border: solid 1px black; margin-top: 1%"';
-        let uniqueID = uuid()
-
-        return (
-            `<code><pre><div ${divStyle}>${code}</div><button ${buttonStyle} id="${uniqueID}">Run Code Cell</button></pre></code>`
-        )
-    }
-};
-
-marked.use({ renderer });
-*/
+const renderers = {
+  inlineMath: ({value}) => <InlineMath math={value} />,
+  math: ({value}) => <BlockMath math={value} />,
+  code: ({language, value, node}) => {
+  	// Use a lighter code highlighter. The user does not need to edit the codecell.
+    return <SyntaxHighlighter style={ghcolors} language={language} children={value || ""} />
+  }
+}
 
 export default class CreateTutorial extends Component {
 
@@ -151,6 +148,7 @@ export default class CreateTutorial extends Component {
                     <CodeMirror
                         value={this.state.rawCode}
                         options={options}
+                		mode="markdown"
                         onBeforeChange={(editor, data, value) => {
                             this.setState({rawCode: value});
                             this.setState({htmlCode: marked(value)});
@@ -163,15 +161,7 @@ export default class CreateTutorial extends Component {
                     <div>
                         <h1 style={headerStyle}>Markdown Preview</h1>
 
-						   <JsxParser
-							bindings={{
-								userId: undefined,
-								shouldRunCells: false,
-							}}
-							components={{MarkdownCell}}
-							jsx={this.state.htmlCode}
-							blacklistedAttrs={[]}
-							/>
+						<ReactMarkdown plugins={[gfm, math, emoji]}  renderers={renderers} children={this.state.rawCode}/>
                     </div>
                 </Container>
             </React.Fragment>
