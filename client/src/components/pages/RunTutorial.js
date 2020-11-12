@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-import {Container} from 'react-bootstrap';
+import {Container, DropdownButton, Dropdown} from 'react-bootstrap';
 import Header from './../layout/Header';
 import {marked} from './markdownParser';
 import JsxParser from 'react-jsx-parser'
 import axios from 'axios';
 import MarkdownCell from "./MarkdownCell.js"
-
+import {codeMirrorThemes, codeMirrorKeyBinds} from './codemirrorSettings';
+import "../css/RunTutorial.css"
 
 export default class RunTutorial extends Component {
 
@@ -17,7 +18,11 @@ export default class RunTutorial extends Component {
             tutorialSelected: '',
             renderedHTML: undefined,
             userId: props.location.state.tutorial.userID,
+            currentTheme: 'eclipse',
+            currentKeybinds: "default"
         };
+        this.handleThemeSelect = this.handleThemeSelect.bind(this);
+        this.handleKeybindSelect = this.handleKeybindSelect.bind(this);
     }
 
     componentDidMount() {
@@ -32,26 +37,53 @@ export default class RunTutorial extends Component {
         }).then((res) => {
             let htmlOutput = marked(this.state.tutorialSelected)
             this.setState({renderedHTML : htmlOutput});
-            //console.log("Output html from marked", htmlOutput);
         });
     }
 
-    clickBtn(){
-    	//console.log("activated")
-        console.log(this.state.renderedHTML)
+    handleThemeSelect(theme){
+    	console.log("Current theme", theme);
+    	this.setState({currentTheme: theme});
     }
 
-    //<div dangerouslySetInnerHTML={{__html:this.state.renderedHTML}}></div>
+    handleKeybindSelect(keybind){
+    	console.log("Current theme", keybind);
+    	this.setState({currentKeybinds: keybind});
+    }
+
     render() {
         return (
         	<div>
-            <React.Fragment>
-                {this.props.location.pathname !== '/login' && <Header />}
+            {this.props.location.pathname !== '/login' && <Header />}
+            <div id="codemirror-settings-group">
+            	    <label>Select Code Cell Theme: </label>
+					<DropdownButton
+					  title={this.state.currentTheme}
+					  id="dropdown-editor-theme-align-right"
+				      className="codemirror-select"
+					  onSelect={this.handleThemeSelect}
+						>
+						{codeMirrorThemes.map((themeName, index) =>{
+							return <Dropdown.Item eventKey={themeName} key={index.toString()}>{themeName}</Dropdown.Item>
+						})}
+					</DropdownButton>
+            	    <label>Select Code Cell Keybinds</label>
+					<DropdownButton
+					  title={this.state.currentKeybinds}
+					  id="dropdown-editor-keybinds-align-right"
+				      className="codemirror-select"
+					  onSelect={this.handleKeybindSelect}
+						>
+						{codeMirrorKeyBinds.map((keyBind, index) =>{
+							return <Dropdown.Item eventKey={keyBind} key={index.toString()}>{keyBind}</Dropdown.Item>
+						})}
+      				</DropdownButton>
+			</div>
                 <Container style={tutorialStyle}>
-                    Random Text
 				   <JsxParser
 				 	bindings={{
 						userId: this.state.userId,
+						theme: this.state.currentTheme,
+						keyMap: this.state.currentKeybinds,
 						shouldRunCells: true,
 					}}
 				    components={{MarkdownCell}}
@@ -59,7 +91,6 @@ export default class RunTutorial extends Component {
 				    blacklistedAttrs={[]}
 					/>
                 </Container>
-            </React.Fragment>
             </div>
         )
     }

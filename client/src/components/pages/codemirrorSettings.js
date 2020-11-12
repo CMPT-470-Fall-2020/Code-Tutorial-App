@@ -33,7 +33,7 @@ const codeMirrorThemes = [
 'zenburn',
 ]
 
-const codeMirrorKeyBinds = ['vim', 'emacs', 'sublime']
+const codeMirrorKeyBinds = ['default','vim', 'emacs', 'sublime']
 
 module.exports = {
 	codeMirrorThemes: codeMirrorThemes,
