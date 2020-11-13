@@ -61,7 +61,7 @@ export default class MarkdownCell extends Component{
 			currentTheme : this.props.theme || "eclipse",
 			currentKeymap : this.props.keymap || "default",
 		}
-        this.buttonStyle = 'style={{font-size: 12px; float: right; border: solid 1px black; margin-top: 1%}}';
+        //this.buttonStyle = 'style={{font-size: 12px; float: right; border: solid 1px black; margin-top: 1%}}';
         console.log(this.props.keymap)
 
       // Bind functions so they are accessible from the "render" method.
@@ -133,7 +133,7 @@ export default class MarkdownCell extends Component{
 	}
 
 	render() {
-			const divStyle = {width:"100%", height:"auto", border: "solid 1px #DFDFDF", background: "#F7F7F7", padding:"0.5%"};
+			//const divStyle = {width:"100%", height:"auto", border: "solid 1px #DFDFDF", background: "#F7F7F7", padding:"0.5%"};
 			return(
             <code>
             	<pre>

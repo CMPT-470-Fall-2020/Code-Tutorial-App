@@ -5,13 +5,11 @@ import {Controlled as CodeMirror} from 'react-codemirror2';
 import Button from 'react-bootstrap/Button';
 import 'codemirror/mode/markdown/markdown.js';
 import 'codemirror/lib/codemirror.css';
-import './../scss/MarkdownEditor.scss';
+//import './../scss/MarkdownEditor.scss';
 import axios from 'axios';
 import Header from './../layout/Header';
-import { v4 as uuid } from 'uuid'; //TODO: Why is this needed?
+//import { v4 as uuid } from 'uuid'; //TODO: Why is this needed?
 // Markdown rendering stuff
-import MarkdownCell from "./MarkdownCell.js"
-import JsxParser from 'react-jsx-parser'
 
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter'
 import {ghcolors} from 'react-syntax-highlighter/dist/esm/styles/prism'
@@ -192,9 +190,11 @@ const options = {
     lineNumbers: true
 }
 
+/*
 const previewStyle = {
     padding: '1%',
     resize: 'none',
     border: '1px solid black',
     minHeight: '100px'
 }
+*/
