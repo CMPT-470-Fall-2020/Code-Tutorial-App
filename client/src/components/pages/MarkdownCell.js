@@ -11,13 +11,12 @@ import "codemirror/mode/shell/shell.js";
 import "codemirror/mode/python/python.js";
 import "codemirror/mode/julia/julia.js";
 import "codemirror/mode/ruby/ruby.js";
-// Codemirror Themes
-import "codemirror/theme/monokai.css";
-import "codemirror/theme/eclipse.css";
+
 // Codemirror Keymaps
 import "codemirror/keymap/vim";
 import "codemirror/keymap/emacs";
 import "codemirror/keymap/sublime";
+
 
 export default class MarkdownCell extends Component {
   constructor(props) {
@@ -73,6 +72,7 @@ export default class MarkdownCell extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.theme !== this.props.theme) {
+      require("codemirror/theme/" + this.props.theme + ".css")
       this.setState({ currentTheme: this.props.theme });
     }
     if (prevProps.keymap !== this.props.keymap) {
