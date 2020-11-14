@@ -17,6 +17,9 @@ import "codemirror/keymap/vim";
 import "codemirror/keymap/emacs";
 import "codemirror/keymap/sublime";
 
+// Codemirror Default theme
+import "codemirror/theme/eclipse.css";
+
 
 export default class MarkdownCell extends Component {
   constructor(props) {
@@ -72,6 +75,7 @@ export default class MarkdownCell extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.theme !== this.props.theme) {
+      // Instead of loading all themes at once, lets load them on demand.
       require("codemirror/theme/" + this.props.theme + ".css")
       this.setState({ currentTheme: this.props.theme });
     }

@@ -32,7 +32,7 @@ export default class RunTutorial extends Component {
       code: ({ language, value, node }) => {
         return (
           <MarkdownCell
-            theme={this.state.currentTheme}
+            theme={this.state.currentTheme || "eclipse"}
             keymap={this.state.currentKeybinds}
             code={value}
             iname={node.meta}
@@ -61,12 +61,10 @@ export default class RunTutorial extends Component {
   }
 
   handleThemeSelect(theme) {
-    console.log("Current theme", theme);
     this.setState({ currentTheme: theme });
   }
 
   handleKeybindSelect(keybind) {
-    console.log("Current theme", keybind);
     this.setState({ currentKeybinds: keybind });
   }
 
