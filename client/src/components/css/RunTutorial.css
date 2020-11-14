@@ -1,4 +1,5 @@
-.themes-dropdown {
-  height: 20%;
-  overflow-y: scroll;
+.dropdown-menu { 
+max-height: 180px; 
+overflow-y: auto; 
+min-width: 100%;
 }
