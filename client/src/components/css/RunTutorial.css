@@ -1,5 +1,5 @@
-.dropdown-menu { 
-max-height: 180px; 
-overflow-y: auto; 
-min-width: 100%;
+.dropdown-menu {
+  max-height: 180px;
+  overflow-y: auto;
+  min-width: 100%;
 }
