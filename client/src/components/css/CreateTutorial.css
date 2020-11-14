@@ -1,0 +1,22 @@
+.CodeMirror {
+    border: 1px solid black;
+}
+
+/*
+#writing-area {
+	display:flex;
+	flex-direction:row;
+}
+#markdown-editor{
+	width:50%;
+	padding-right:1%;
+}
+#markdown-preview{
+	height:80%;
+	width:50%;
+	padding-left:1%;
+	border: 1px solid black;
+
+}
+
+*/
