@@ -6,6 +6,7 @@ import Button from 'react-bootstrap/Button';
 import 'codemirror/mode/markdown/markdown.js';
 import 'codemirror/lib/codemirror.css';
 //import './../scss/MarkdownEditor.scss';
+import '../css/CreateTutorial.css';
 import axios from 'axios';
 import Header from './../layout/Header';
 //import { v4 as uuid } from 'uuid'; //TODO: Why is this needed?
@@ -133,28 +134,31 @@ export default class CreateTutorial extends Component {
                         </DropdownButton>
                     </InputGroup>
                     
-                    <section style={sectionStyle}>
-                        <h1 style={headerStyle}>Markdown Editor</h1>
-                        <Button variant="primary" style={buttonStyle} onClick={this.saveDB.bind(this)}>Save</Button>
-                    </section>
-                    <CodeMirror
-                        value={this.state.rawCode}
-                        options={options}
-                		mode="markdown"
-                        onBeforeChange={(editor, data, value) => {
-                            this.setState({rawCode: value});
-                            //this.setState({htmlCode: marked(value)});
-                        }}
-                        onChange={(editor, data, value) => {
-                            this.setState({rawCode: value});
-                            //this.setState({htmlCode: marked(value)});
-                        }}
-                    />
-                    <div>
-                        <h1 style={headerStyle}>Markdown Preview</h1>
-
-						<ReactMarkdown plugins={[gfm, math, emoji]}  renderers={renderers} children={this.state.rawCode}/>
-                    </div>
+                <div id="writing-area">
+						<div id="markdown-editor">
+							<section style={sectionStyle}>
+								<h1 style={headerStyle}>Markdown Editor</h1>
+								<Button variant="primary" style={buttonStyle} onClick={this.saveDB.bind(this)}>Save</Button>
+							</section>
+							<CodeMirror
+								value={this.state.rawCode}
+								options={options}
+								mode="markdown"
+								onBeforeChange={(editor, data, value) => {
+									this.setState({rawCode: value});
+									//this.setState({htmlCode: marked(value)});
+								}}
+								onChange={(editor, data, value) => {
+									this.setState({rawCode: value});
+									//this.setState({htmlCode: marked(value)});
+								}}
+							/>
+						</div>
+						<div id="markdown-preview">
+							<h1 style={headerStyle}>Markdown Preview</h1>
+							<ReactMarkdown plugins={[gfm, math, emoji]}  renderers={renderers} children={this.state.rawCode}/>
+						</div>
+                </div>
                 </Container>
             </React.Fragment>
         )
