@@ -89,13 +89,14 @@ export default class CreateTutorial extends Component {
 
   // Save markup text to db
   saveDB() {
+  	console.log("The state", this.state);
     axios({
       method: "POST",
       data: {
         tutorialName: this.state.title,
         userID: this.state.user._id,
         codeText: this.state.rawCode,
-        htmlText: this.state.htmlCode,
+        htmlText: "FAKE HTML TO STOP US FROM GETTING AN ERROR SINCE WE DO NOT USE THIS ANYMORE", // TODO: Remove this field
       },
       withCredentials: true,
       url: `/tutorial/${this.state.courseID}/add`,
