@@ -181,12 +181,16 @@ const formStyle = {
 };
 
 const loginStyle = {
-  margin: "15%",
   padding: "1%",
   textAlign: "center",
   border: "2px solid black",
   background: "#343a40",
   color: "white",
+  width: "1000px",
+  position: "fixed",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)"
 };
 
 const labelStyle = {
