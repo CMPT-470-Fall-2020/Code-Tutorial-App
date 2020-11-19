@@ -11,14 +11,11 @@ import axios from "axios";
 
 export default class Header extends Component {
   onLogout(e) {
-    console.log("CALLED");
     axios({
       method: "GET",
       withCredentials: true,
       url: "/logout",
-    }).then((res) => {
-      window.location.href = "/login";
-    });
+    })
   }
 
   render() {
@@ -43,9 +40,9 @@ export default class Header extends Component {
             </Nav.Link>
           </Nav>
         </Navbar.Collapse>
-        <Button onClick={this.onLogout.bind(this)} style={logoutStyle}>
-          Logout
-        </Button>
+        <Nav.Link as={Link} to="/login" style={logoutStyle} onClick={this.onLogout.bind(this)}>
+          Logout        
+        </Nav.Link>
       </Navbar>
     );
   }
