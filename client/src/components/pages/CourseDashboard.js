@@ -44,7 +44,7 @@ export default class CourseDashboard extends Component {
       <Link
         key={key}
         to={{
-          pathname: "/tutorials",
+          pathname: "/forumList",
           state: { course },
         }}
       >
