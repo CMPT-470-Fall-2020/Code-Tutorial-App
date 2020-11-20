@@ -37,6 +37,9 @@ export default class Header extends Component {
               <NavDropdown.Item as={Link} to="/createtutorial">
                 Create Tutorial
               </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/createCourse">
+                Create Course
+              </NavDropdown.Item>
             </NavDropdown>
             <Nav.Link as={Link} to="/codeplayground">
               Code Playground

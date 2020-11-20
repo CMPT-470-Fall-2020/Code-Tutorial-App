@@ -11,6 +11,7 @@ import RunTutorial from "./components/pages/RunTutorial";
 import ForumList from "./components/pages/ForumList";
 import CreatePost from "./components/pages/CreatePost";
 import Post from "./components/pages/Post";
+import CreateCourse from "./components/pages/CreateCourse";
 
 // This is how we get the base URL. Locally, it is localhost:4000.
 // On the VM, it is the dynamic(ephemeral) IP given to use every time we start up the VM.
@@ -33,6 +34,7 @@ class App extends Component {
           <Route path="/createPost" component={CreatePost}></Route>
           <Route path="/post" component={Post}></Route>
           <Route path="/runtutorial" component={RunTutorial}></Route>
+          <Route path="/createCourse" component={CreateCourse}></Route>
         </Switch>
       </main>
     );

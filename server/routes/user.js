@@ -26,8 +26,6 @@ router.route("/delete").delete((req, res) => {
 router.route("/addCourse").post((req, res) => {
     let userID = req.body.userID;
     let courseID = req.body.courseID;
-    console.log(userID);
-    console.log(courseID);
 
     User.findByIdAndUpdate(userID, {$push: {courses: courseID}})
         .then(() => res.json('Course Added'))
