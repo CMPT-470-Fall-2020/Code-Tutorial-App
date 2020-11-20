@@ -2,17 +2,55 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Header from "./../layout/Header";
+import {
+  Container,
+  InputGroup,
+  FormControl
+} from "react-bootstrap";
+import Button from "react-bootstrap/Button";
 //const BASE_API_URL = process.env.REACT_APP_PROD_BASE_URL || process.env.REACT_APP_DEV_BASE_URL;
 
 export default class CourseDashboard extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       courses: [],
       user: "",
+      newCourse: "",
     };
   }
+
+  addCourse() {
+    axios({
+      method: "POST",
+      data: {
+        userID: this.state.user,
+        courseID: this.state.newCourse,
+      },
+      withCredentials: true,
+      url: `/user/addCourse`,
+    }).then((res) => {
+      console.log(res);
+    });
+
+    axios({
+      method: "GET",
+      withCredentials: true,
+      url: "/user",
+    }).then((res) => {
+      this.setState({ user: res.data });
+      console.log(res);
+    });
+
+    window.location.reload(false);
+    
+  }
+
+  onChangeCourseID(e) {
+    this.setState({
+        newCourse: e.target.value,
+    });
+}
 
   componentDidMount() {
     console.log(
@@ -58,14 +96,34 @@ export default class CourseDashboard extends Component {
     ));
   }
 
+  
+
   render() {
     return (
       <React.Fragment>
         {this.props.location.pathname !== "/login" && <Header />}
         <div>
           <h3 style={dashboardTitle}>Dashboard - Courses</h3>
-          <main>{this.createCourseContainers()}</main>
         </div>
+          <Container style={addCourse}>
+            <InputGroup >
+              <FormControl
+                placeholder="Course Code"
+                value={this.state.newCourse}
+                onChange={this.onChangeCourseID.bind(this)}
+              ></FormControl>
+              <InputGroup.Append>
+                <Button
+                    variant="primary"
+                    style={buttonStyle}
+                    onClick={this.addCourse.bind(this)}
+                  >
+                    Add Course
+                </Button>
+              </InputGroup.Append>
+            </InputGroup>
+        </Container>
+        <main style={main}> {this.createCourseContainers()} </main>
       </React.Fragment>
     );
   }
@@ -74,6 +132,23 @@ export default class CourseDashboard extends Component {
 const dashboardTitle = {
   margin: "2% 10%",
   borderBottom: "1px solid black",
+};
+
+const main = {
+  margin: "5% 0% 0% 0%",
+}
+
+const addCourse = {
+  float: "right",
+  padding: "3px",
+  margin: "0% 10% 0% 0%"
+};
+
+const buttonStyle = {
+  padding: "3px",
+  float: "right",
+  fontFamily: "Arial, Helvetica, sans-serif",
+  backgroundColor: "#343a40",
 };
 
 const background = {
