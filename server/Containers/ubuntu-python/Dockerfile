@@ -4,6 +4,7 @@ RUN mkdir -p /app
 RUN mkdir -p /home
 
 RUN pwd
+RUN apt-get update && apt-get -y install python3
 
 WORKDIR /app
 
@@ -16,7 +17,7 @@ RUN pwd
 
 EXPOSE 5000
 
-ENTRYPOINT [ "node", "/app/bash-server.js", "5000" ]
+ENTRYPOINT [ "python3", "/app/python-server.py", "5000" ]
 
 
 
