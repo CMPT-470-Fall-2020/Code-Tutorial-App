@@ -8,8 +8,9 @@ router.route("/courseList/add").post((req, res) => {
     let term = req.body.term;
   
     let newCourse = new Course({courseName, courseCode, term});
+    console.log(newCourse._id);
     newCourse.save()
-      .then(() => res.json('Course added!'))
+      .then(() => res.json(newCourse._id))
       .catch(err => res.status(400).json('Error: ' + err));
 });
   

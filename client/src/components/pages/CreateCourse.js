@@ -10,12 +10,15 @@ import {
 import Button from "react-bootstrap/Button";
 
 export default class CreateCourse extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
+      userID: '',
       name: '',
       code: '',
       term: '',
+      newCourse: '',
     };
   }
 
@@ -58,8 +61,18 @@ export default class CreateCourse extends Component {
       withCredentials: true,
       url: `/course/courseList/add`,
     }).then((res) => {
-      console.log(res);
+        // this.setState({ newCourse: res.data });
+
+        axios.post('/user/addCourse', {
+            userID: this.state.userID,
+            courseID: res.data,
+          }).then((res) => {
+            console.log(res);
+          });
+
+        console.log(res);
     });
+
   }
 
   render() {
