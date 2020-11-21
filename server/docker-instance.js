@@ -1,5 +1,5 @@
 const Chance = require("chance");
-const { exec } = require("child_process");
+const Docker = require("dockerode");
 const chance = new Chance();
 const DOCKER_NAME_POOL =
   "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -30,6 +30,8 @@ class DockerInstance {
     this.portNum = portNum;
     this.baseImg = BASE_IMAGES[imageLang.toLowerCase()];
     this.container_name = chance.string({ pool: DOCKER_NAME_POOL });
+    this.docker = new Docker();
+    this.container_instance = undefined;
 
     console.log(
       "Constructor finished. Container name will be",
@@ -38,69 +40,44 @@ class DockerInstance {
   }
 
   startInstance() {
-    // Generate a container random name
-    const START_COMMAND = `docker run -p ${this.portNum}:5000 -d --name=${this.container_name} ${this.baseImg}`;
+    this.docker.createContainer(
+      {
+        Image: this.baseImg,
+        name: this.container_name,
+        HostConfig: {
+          AutoRemove: true,
+          PortBindings: {
+            "5000/tcp": [{ HostIp: "", HostPort: `${this.portNum}` }],
+          },
+        },
+      },
+      (err, container) => {
+        console.log("DOCKER: Starting the container");
+        this.container_instance = container;
+        console.log(
+          "DOCKER: After setting container instance",
+          this.container_instance
+        );
 
-    console.log("DOCKER: About to execute", START_COMMAND);
-    exec(START_COMMAND, (error, stdout, stderr) => {
-      if (error) {
-        // TODO: Figure out what to do if the language server cannot be started.
-        console.log(`error: ${error.message}`);
-        return;
+        container.start((err, data) => {
+          console.log("container started", err, data);
+        });
       }
-      if (stderr) {
-        // TODO: Figure out what to do if the language server cannot be started.
-        console.log(`stderr: ${stderr}`);
-        return;
-      }
-      console.log(`stdout: ${stdout}`);
-      console.log(this.baseImg);
-    });
+    );
   }
 
-  removeInstance() {
-    // This command removes the container from the harddrive and frees up space
-    const RM_COMMAND = `docker rm ${this.container_name}`;
-    console.log("running", RM_COMMAND);
-    exec(RM_COMMAND, (error, stdout, stderr) => {
-      if (error) {
-        // TODO: Figure out what to do if the language server cannot be started.
-        console.log(`error: ${error.message}`);
-        return;
-      }
-      if (stderr) {
-        // TODO: Figure out what to do if the language server cannot be started.
-        console.log(`stderr: ${stderr}`);
-        return;
-      }
-      console.log(`stdout: ${stdout}`);
-      console.log("finished RM command");
-    });
-  }
   stopInstance() {
-    // This command will stop a container
-    const STOP_COMMAND = `docker container stop ${this.container_name}`;
-
-    console.log("running", STOP_COMMAND, "container name", this.container_name);
-    exec(STOP_COMMAND, (error, stdout, stderr) => {
-      if (error) {
-        // TODO: Figure out what to do if the language server cannot be started.
-        console.log(`error: ${error.message}`);
-        return;
-      }
-      if (stderr) {
-        // TODO: Figure out what to do if the language server cannot be started.
-        console.log(`stderr: ${stderr}`);
-        return;
-      }
-      console.log(`stdout: ${stdout}`);
-      console.log("finished STOP command");
-      this.removeInstance();
+    this.container_instance.stop((err, data) => {
+      console.log("Instance stopped");
     });
   }
 
+  // TODO implement check for container being alive
   isAlive() {}
 }
+
+let ex = new DockerInstance(BASH, 54322);
+ex.startInstance();
 
 module.exports = {
   DockerInstance: DockerInstance,
