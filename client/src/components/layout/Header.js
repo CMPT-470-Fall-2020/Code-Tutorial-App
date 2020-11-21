@@ -9,6 +9,25 @@ import axios from "axios";
 //const BASE_API_URL = process.env.REACT_APP_PROD_BASE_URL || process.env.REACT_APP_DEV_BASE_URL;
 
 export default class Header extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      user: "",
+    };
+  }
+
+  componentDidMount() {
+    // get user object from server
+    axios({
+      method: "GET",
+      withCredentials: true,
+      url: "/user",
+    }).then((res) => {
+      this.setState({ user: res.data }); // get user object containing: _id, userName, accountType
+    });
+  }
+
   onLogout(e) {
     axios({
       method: "GET",
@@ -24,21 +43,31 @@ export default class Header extends Component {
           Learning Platform
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="mr-auto">
-            <NavDropdown title="Tutorials" id="basic-nav-dropdown">
-              <NavDropdown.Item as={Link} to="/coursedashboard">
-                Dashboard
-              </NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/createtutorial">
-                Create Tutorial
-              </NavDropdown.Item>
-            </NavDropdown>
-            <Nav.Link as={Link} to="/codeplayground">
-              Code Playground
-            </Nav.Link>
-          </Nav>
-        </Navbar.Collapse>
+
+        {this.state.user.accountType === "Student" && (
+          <React.Fragment>
+            <Navbar.Collapse id="basic-navbar-nav">
+                <Nav className="mr-auto">
+                <NavDropdown title="Tutorials" id="basic-nav-dropdown" >
+                    <NavDropdown.Item as={Link} to="/coursedashboard">Dashboard</NavDropdown.Item>
+                </NavDropdown>
+                <Nav.Link as={Link} to="/codeplayground">Code Playground</Nav.Link> 
+                </Nav>
+            </Navbar.Collapse>
+          </React.Fragment>
+        )}
+        {this.state.user.accountType === "Teacher" && (
+          <React.Fragment>
+            <Navbar.Collapse id="basic-navbar-nav">
+                <Nav className="mr-auto">
+                <NavDropdown title="Tutorials" id="basic-nav-dropdown" >
+                    <NavDropdown.Item as={Link} to="/coursedashboard">Dashboard</NavDropdown.Item>
+                    <NavDropdown.Item as={Link} to="/createtutorial">Create Tutorial</NavDropdown.Item>
+                </NavDropdown>
+                </Nav>
+            </Navbar.Collapse>
+          </React.Fragment>
+        )}
         <Nav.Link as={Link} to="/login" style={logoutStyle} onClick={this.onLogout.bind(this)}>
           Logout        
         </Nav.Link>
