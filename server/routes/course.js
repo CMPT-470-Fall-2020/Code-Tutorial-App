@@ -13,6 +13,15 @@ router.route("/courseList/add").post((req, res) => {
       .then(() => res.json(newCourse._id))
       .catch(err => res.status(400).json('Error: ' + err));
 });
+
+// Get a list of all courses
+router.route("/courseList").get((req, res) => {
+
+  Course.find().distinct('_id')
+    .then(courseList => res.json(courseList))
+    .catch(err => res.status(400).json('Error: ' + err));
+
+});
   
 // Delete a Course 
 router.route("/courseList/:classId").delete((req, res) => {

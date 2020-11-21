@@ -17,34 +17,39 @@ export default class CourseDashboard extends Component {
       courses: [],
       user: "",
       newCourse: "",
+      courseList: [],
     };
   }
 
   addCourse() {
-    axios({
-      method: "POST",
-      data: {
-        userID: this.state.user,
-        courseID: this.state.newCourse,
-      },
-      withCredentials: true,
-      url: `/user/addCourse`,
-    }).then((res) => {
-      console.log(res);
-    });
+    if(this.state.courseList.includes(this.state.newCourse)) {
+      axios({
+        method: "POST",
+        data: {
+          userID: this.state.user,
+          courseID: this.state.newCourse,
+        },
+        withCredentials: true,
+        url: `/user/addCourse`,
+      }).then((res) => {
+        console.log(res);
+      });
+  
+      axios({
+        method: "GET",
+        withCredentials: true,
+        url: "/user",
+      }).then((res) => {
+        this.setState({ user: res.data });
+        console.log(res);
+      });
+  
+      window.location.reload(false);
+    } else {
+      window.alert(this.state.newCourse + ' is and invalid course code!');
+    }
 
-    axios({
-      method: "GET",
-      withCredentials: true,
-      url: "/user",
-    }).then((res) => {
-      this.setState({ user: res.data });
-      console.log(res);
-    });
-
-    window.location.reload(false);
-    
-  }
+  } 
 
   onChangeCourseID(e) {
     this.setState({
@@ -75,6 +80,20 @@ export default class CourseDashboard extends Component {
           console.log(error);
         });
     });
+
+        // get user object from server
+    axios({
+      method: "GET",
+      withCredentials: true,
+      url: "/course/courseList",
+    }).then((res) => {
+      this.setState({ courseList: res.data });
+      console.log(res);
+    })
+      .catch((error) => {
+        console.log(error);
+    });
+
   }
 
   createCourseContainers() {
@@ -90,6 +109,8 @@ export default class CourseDashboard extends Component {
           <div style={courseCard}>
             <div style={courseCode}>{course.courseCode}</div>
             <div style={courseName}>{course.courseName}</div>
+            {/* change to only for teacher */}
+            <div style={courseName}>{course._id}</div> 
           </div>
         </div>
       </Link>
