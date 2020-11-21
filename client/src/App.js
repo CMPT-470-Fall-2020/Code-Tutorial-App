@@ -3,6 +3,7 @@ import { Route, Switch, Redirect } from "react-router-dom";
 import "./App.css";
 
 import Login from "./components/Login";
+import Header from "./components/layout/Header";
 import CreateTutorial from "./components/pages/CreateTutorial";
 import CourseDashboard from "./components/pages/CourseDashboard";
 import CodePlayground from "./components/pages/CodePlayground";
@@ -19,6 +20,7 @@ class App extends Component {
   render() {
     return (
       <main>
+        <Route path="/" render={ ( props ) => ( props.location.pathname !== "/login") && <Header /> }></Route>
         <Switch>
           <Route exact path="/" component={() => <Redirect to="/login" />} />
           <Route exact path="/login" component={Login} />

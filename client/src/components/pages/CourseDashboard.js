@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import Header from "./../layout/Header";
 //const BASE_API_URL = process.env.REACT_APP_PROD_BASE_URL || process.env.REACT_APP_DEV_BASE_URL;
 
 export default class CourseDashboard extends Component {
@@ -61,7 +60,6 @@ export default class CourseDashboard extends Component {
   render() {
     return (
       <React.Fragment>
-        {this.props.location.pathname !== "/login" && <Header />}
         <div>
           <h3 style={dashboardTitle}>Dashboard - Courses</h3>
           <main>{this.createCourseContainers()}</main>

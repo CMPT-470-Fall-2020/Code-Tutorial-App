@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Container, DropdownButton, Dropdown } from "react-bootstrap";
-import Header from "./../layout/Header";
 import axios from "axios";
 import MarkdownCell from "./MarkdownCell.js";
 import { codeMirrorThemes, codeMirrorKeyBinds } from "./codemirrorSettings";
@@ -71,7 +70,6 @@ export default class RunTutorial extends Component {
   render() {
     return (
       <div>
-        {this.props.location.pathname !== "/login" && <Header />}
         <div id="codemirror-settings-group">
           <label>Select Code Cell Theme: </label>
           <DropdownButton
