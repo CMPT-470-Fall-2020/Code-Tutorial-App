@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import Header from "./../layout/Header";
 import axios from "axios";
 import {
     Container,
@@ -62,7 +61,6 @@ export default class CreatePost extends Component {
   render() {
     return (
       <React.Fragment>
-        {this.props.location.pathname !== "/login" && <Header />}
         <div>
           <h3 style={postTitle}>Forum</h3>
         </div>

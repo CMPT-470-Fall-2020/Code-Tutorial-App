@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import Header from "./../layout/Header";
 import {
     Container,
     InputGroup,
@@ -209,7 +208,6 @@ export default class Post extends Component {
   render() {
     return (
       <React.Fragment>
-        {this.props.location.pathname !== "/login" && <Header />}
         <div>
           <h3 style={postTitle}>{this.state.forum.postTitle}</h3>
           <p style={postText}>{this.state.forum.postText}</p>
