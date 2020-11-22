@@ -78,7 +78,7 @@ export default class Login extends Component {
           url: "/login",
         }).then((res) => {
           if (res.data === "Authentication: Success") {
-            window.location.href = "./CreateTutorial";
+              this.props.history.push("/coursedashboard");
           }
         });
       }
@@ -98,7 +98,6 @@ export default class Login extends Component {
       withCredentials: true,
       url: "/login",
     }).then((res) => {
-      console.log(res);
       if (res.data === "Authentication: Success") {
         // If the login is successful, we redirect
         //window.location.href="./CourseDashboard";
@@ -181,12 +180,16 @@ const formStyle = {
 };
 
 const loginStyle = {
-  margin: "15%",
   padding: "1%",
   textAlign: "center",
   border: "2px solid black",
   background: "#343a40",
   color: "white",
+  width: "1000px",
+  position: "fixed",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)"
 };
 
 const labelStyle = {
