@@ -1,51 +1,70 @@
 import React, { Component } from 'react'
 import {Container} from 'react-bootstrap';
+import Header from './../layout/Header';
+import {marked} from './markdownParser';
+import JsxParser from 'react-jsx-parser'
+import axios from 'axios';
+import MarkdownCell from "./MarkdownCell.js"
+
 
 export default class RunTutorial extends Component {
+
     constructor(props){
         super(props);
         this.state = {
-            tutorialSelected: localStorage.getItem('tutorialSelected')
+            tutorialID:  props.location.state.tutorial._id,
+            courseID: props.location.state.tutorial.courseID,
+            tutorialSelected: '',
+            renderedHTML: undefined,
+            userId: props.location.state.tutorial.userID,
         };
     }
 
     componentDidMount() {
-        console.log(this)
-        if(this.props.location.state !== undefined){
-            localStorage.setItem('tutorialSelected', JSON.stringify(this.props.location.state.tutorial))
-            this.setState({tutorialSelected:this.props.location.state.tutorial})
-        } 
+        // Get tutorial from server
+        axios.get(`/tutorial/${this.state.courseID}/${this.state.tutorialID}`)
+          .then((res) => {
+                this.setState({tutorialSelected: res.data.codeText}); 
+                //console.log("tutorial selected returned", res.data.codeText)
+            })
+            .catch((error) => {
+                console.log(error);
+        }).then((res) => {
+            let htmlOutput = marked(this.state.tutorialSelected)
+            this.setState({renderedHTML : htmlOutput});
+            //console.log("Output html from marked", htmlOutput);
+        });
     }
 
+    clickBtn(){
+    	//console.log("activated")
+        console.log(this.state.renderedHTML)
+    }
+
+    //<div dangerouslySetInnerHTML={{__html:this.state.renderedHTML}}></div>
     render() {
         return (
+        	<div>
             <React.Fragment>
-                <Container>
-                    <div>
-                        <h3 style={headerStyle}>{this.state.tutorialSelected}</h3>
-                        
-                        {/* Get Tutorial From DB */}
-                        <div style={tutorialStyle}>
-                            The tutorial will be fetched from the db and displayed here<br></br>
-                            <br></br>
-                            <br></br>
-                            <br></br>
-                        </div>
-                    </div>
+                {this.props.location.pathname !== '/login' && <Header />}
+                <Container style={tutorialStyle}>
+                    Random Text
+				   <JsxParser
+				 	bindings={{
+						userId: this.state.userId,
+						shouldRunCells: true,
+					}}
+				    components={{MarkdownCell}}
+					jsx={this.state.renderedHTML}
+				    blacklistedAttrs={[]}
+					/>
                 </Container>
-                
             </React.Fragment>
-            
+            </div>
         )
     }
 }
 
-const headerStyle = {
-    margin: '2% 0%',
-    borderBottom: '1px solid black'
-}
-
 const tutorialStyle = {
-    border: '1px solid black'
+    margin: '2% 2%',
 }
-

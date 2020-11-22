@@ -17,8 +17,10 @@ router.route("/:classId/add").post((req, res) => {
     let tutorialName = req.body.tutorialName;
     let userID = req.body.userID;
     let codeText = req.body.codeText;
+    let htmlText = req.body.htmlText;
 
-    let newTutorial = new Tutorial({tutorialName, userID, courseID, codeText});
+
+    let newTutorial = new Tutorial({tutorialName, userID, courseID, codeText, htmlText});
     newTutorial.save()
         .then(() => res.json('Tutorial added!'))
         .catch(err => res.status(400).json('Error: ' + err));
@@ -43,7 +45,9 @@ router.route("/:classId/:tutorialId/update").post((req, res) => {
         tutorial.tutorialName = req.body.tutorialName;
         tutorial.userID = req.body.userID;
         tutorial.courseID = req.params.classId;
-        tutorial.codeText = req.body.codeText;
+        tutorial.codeText = req.body.codeText,
+        tutorial.htmlText = req.body.htmlText;
+
 
         tutorial.save()
             .then(() => res.json('Exercise updated!'))

@@ -1,36 +1,43 @@
 import React, { Component } from 'react'
 import { Link } from "react-router-dom"; 
+import Header from './../layout/Header';
+import axios from 'axios';
+//const BASE_API_URL = process.env.REACT_APP_PROD_BASE_URL || process.env.REACT_APP_DEV_BASE_URL;
 
-export default class Tutorials extends Component {
-    tutorials = ["Tutorial1 - 10/18/2020", "Tutorial2 - 10/28/2020", "Tutorial3 - 11/18/2020"];
-    
+
+export default class Tutorials extends Component {    
     constructor(props){
         super(props);
         this.state = {
-            tutorialSelected: localStorage.getItem('tutorialSelected')
+            course: props.location.state.course._id,
+            tutorials: []
         };
     }
-
+    
     componentDidMount() {
-        console.log(this)
-        if(this.props.location.state !== undefined){
-            localStorage.setItem('tutorialSelected', JSON.stringify(this.props.location.state.course))
-            this.setState({tutorialSelected:this.props.location.state.course})
-        } 
+        // get tutorials list object from server
+        axios.get(`/tutorial/${this.state.course}`)
+          .then((res) => {
+                this.setState({tutorials: res.data}); 
+                console.log("tutorial/courseid returned", res.data)
+            })
+            .catch((error) => {
+                console.log(error);
+        });       
     }
 
     createTutorialList() {
-        return this.tutorials.map((tutorial)=>
-            <Link to={
+        return this.state.tutorials.map((tutorial, key)=>
+            <Link key={key} to={
                 {
-                    pathname: "./RunTutorial",
+                    pathname: "/runtutorial",
                     state:{tutorial}
                 }
             }>
                 <div style={background}>
-                    <div key={tutorial} style={tutorialCard}>
+                    <div style={tutorialCard}>
                             <div style={name}> 
-                                {tutorial}
+                                {tutorial.tutorialName}
                             </div>
                     </div>
                 </div>
@@ -41,12 +48,12 @@ export default class Tutorials extends Component {
     render() {
         return (
             <React.Fragment>
+                {this.props.location.pathname !== '/login' && <Header />}
                 <div>
                     <h3 style={tutorialTitle}>{this.state.tutorialSelected} Tutorials</h3>
                     <main>{this.createTutorialList()}</main>
                 </div>
             </React.Fragment>
-
         )
     }
 }
