@@ -1,7 +1,9 @@
 const net = require("net");
-const { MessageQueue } = require("./message_queue");
 const crypto = require("crypto");
 const { log } = require("util");
+
+const { MessageQueue } = require("./message_queue");
+const { DockerInstance } = require("./docker-instance");
 
 /**
  * Class representing a single instance of an interpreter client.
@@ -20,20 +22,21 @@ class Interpreter {
    * @param {eventEmitter} eventEmitter An eventEmitter instance used to emit responses from the server.
    * @memberof Interpreter
    */
-  constructor(portNum, interpName, eventEmitter, dockerInstance) {
+  constructor(portNum, interpName, interpreterLang, eventEmitter) {
     // The name of the interpreter instance.
     this.interpName = interpName;
     this.portNum = portNum;
+    this.lang = interpreterLang;
     // A queue containing all messages which need to be sent.
     this.msgQueue = new MessageQueue();
     // Event emitter used to notify server when a request is completed and result
     // can be sent back to caller
     this.emitter = eventEmitter;
-    this.dockerInstance = dockerInstance;
     // The current hash of the message for which we are waiting for a response to
     this.currentHash = "";
     // The socket used to make a connection
     this.socket = new net.Socket();
+    this.dockerInstance = new DockerInstance(this.lang, portNum);
 
     // FLAGS
     // Indicate that the socket is still open

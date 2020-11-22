@@ -1,7 +1,6 @@
 const { spawn } = require("child_process");
 var events = require("events");
 const { Interpreter } = require("./client.js");
-const { DockerInstance } = require("./docker-instance");
 
 // Constants used to indicate the return status of function calls
 const USERDNE = "USERDNE";
@@ -90,14 +89,12 @@ class InterpreterManager {
     }
 
     console.log("MANAGER: Creating new interpreter instance at port", portNum);
-    let dockerInstance = new DockerInstance(interpreterLang, portNum);
     let newInterp = new Interpreter(
       portNum,
       interpName,
-      this.emitter,
-      dockerInstance
+      interpreterLang,
+      this.emitter
     );
-    console.log("MANAGER: Creating new Docker Instance");
 
     this.instances[userName][interpName] = newInterp;
     // Return the interpreter instance to caller to run code.
