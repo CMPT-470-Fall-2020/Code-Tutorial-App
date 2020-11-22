@@ -3,11 +3,6 @@ var events = require("events");
 const { Interpreter } = require("./client.js");
 
 // Constants used to indicate the return status of function calls
-const USERDNE = "USERDNE";
-const USEREXISTS = "USEREXISTS";
-const SUCCESS = "SUCCESS";
-const INTERPDNE = "INTERPDNE";
-const INTERPEXISTS = "INTERPEXISTS";
 const LANGDNE = "LANGDNE";
 
 const BASH = "bash";
@@ -45,69 +40,63 @@ class InterpreterManager {
     return false;
   }
 
-  getInterp(userName, instanceName) {
-    if (this.userExists(userName)) {
-      if (this.interpInstanceExists(userName, instanceName)) {
-        return this.instances[userName][instanceName];
-      } else {
-        return INTERPDNE;
-      }
-    }
-    return USERDNE;
-  }
-
   createUser(userName) {
     if (userName in this.instances) {
-      return USEREXISTS;
+      return false;
     }
 
     this.instances[userName] = {};
-    return SUCCESS;
+    return true;
   }
 
-  createInterp(userName, interpName, interpType) {
-    if (!this.userExists()) {
-      console.log("MANAGER: Creating user");
+  removeUser(userName) {
+    delete this.instances[userName];
+  }
+
+  isPermittedLanguage(lang) {
+    if (PERMITTED_LANGUAGES.includes(lang.toLowerCase())) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  createInstance(userName, interpName, lang) {
+    // Retrieve the port number for the server
+    let portNum = this.ports.pop();
+
+    let newInterp = new Interpreter(portNum, interpName, lang, this.emitter);
+
+    // Add interpreter to instances
+    this.instances[userName][interpName] = newInterp;
+    return newInterp;
+  }
+
+  getInstance(userName, interpName, lang) {
+    if (!this.isPermittedLanguage(lang)) {
+      return LANGDNE;
+    }
+
+    // Create a new user if they do not exist
+    if (!this.userExists(userName)) {
       this.createUser(userName);
     }
 
     if (this.interpInstanceExists(userName, interpName)) {
-      console.log("MANAGER: Return an already existing interpreter");
-      // console.log(this.instances[userName]);
+      console.log("MANAGER: return existing instance");
       return this.instances[userName][interpName];
-    }
-
-    // Retrieve the port number for the server
-    let portNum = this.ports.pop();
-    let languageServer;
-    let interpreterLang = undefined;
-
-    if (PERMITTED_LANGUAGES.includes(interpType.toLowerCase())) {
-      interpreterLang = interpType.toLowerCase();
     } else {
-      return LANGDNE;
+      console.log("MANAGER: return new instance");
+      return this.createInstance(userName, interpName, lang);
     }
+  }
 
-    console.log("MANAGER: Creating new interpreter instance at port", portNum);
-    let newInterp = new Interpreter(
-      portNum,
-      interpName,
-      interpreterLang,
-      this.emitter
-    );
-
-    this.instances[userName][interpName] = newInterp;
-    // Return the interpreter instance to caller to run code.
-    return newInterp;
+  deleteInstance(userName, interpName) {
+    delete this.instances[userName][interpName];
   }
 }
 
 module.exports = {
   InterpreterManager: InterpreterManager,
-  USERDNE: USERDNE,
-  USEREXISTS: USEREXISTS,
-  SUCCESS: SUCCESS,
-  INTERPDNE: INTERPDNE,
-  INTERPEXISTS: INTERPEXISTS,
   LANGDNE: LANGDNE,
 };
