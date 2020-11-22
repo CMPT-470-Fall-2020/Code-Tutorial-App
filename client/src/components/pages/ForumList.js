@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import Header from "./../layout/Header";
 import axios from "axios";
-//const BASE_API_URL = process.env.REACT_APP_PROD_BASE_URL || process.env.REACT_APP_DEV_BASE_URL;
+import Button from "react-bootstrap/Button";
 
 export default class ForumList extends Component {
   constructor(props) {
@@ -10,10 +9,19 @@ export default class ForumList extends Component {
     this.state = {
       course: props.location.state.course._id,
       forums: [],
+      userID: ''
     };
   }
 
   componentDidMount() {
+    axios({
+        method: "GET",
+        withCredentials: true,
+        url: "/user",
+      }).then((res) => {
+        this.setState({ userID: res.data._id });
+    });
+
     // get forum list object from server
     axios
       .get(`/forum/${this.state.course}`)
@@ -28,26 +36,49 @@ export default class ForumList extends Component {
 
   createForumList() {
     return this.state.forums.map((forum, key) => (
-      <Link
-        key={key}
-        to={{
-          pathname: "/post",
-          state: { forum },
-        }}
-      >
-        <div style={background}>
-          <div style={forumCard}>
-            <div style={name}>{forum.postTitle}</div>
+      <div key={key}>
+        <Link
+          to={{
+            pathname: "/post",
+            state: { forum },
+          }}
+        >
+          <div style={background}>
+            <div style={forumCard}>
+              <div style={name}>{forum.postTitle}</div>
+            </div>
           </div>
-        </div>
-      </Link>
+        </Link>
+        <div>{this.showDeleteButton(forum)}</div>
+      </div>
     ));
+  }
+
+  showDeleteButton(forum) {
+    if (forum.userID === this.state.userID) {
+        return (
+            <div>
+                <button onClick={this.deletePost.bind(this, forum)}>Delete</button>
+            </div>
+        )
+    } 
+    return
+  }
+
+  deletePost(forum) {
+      axios({
+          method: "DELETE",
+          withCredentials: true,
+          url: `/forum/${forum.courseID}/${forum._id}`,
+      }).then((res) => {
+          console.log(res);
+      });
+      window.location.reload(); 
   }
 
   render() {
     return (
       <React.Fragment>
-        {this.props.location.pathname !== "/login" && <Header />}
         <div>
           <h3 style={postTitle}>Forum</h3>
           <main>{this.createForumList()}</main>
@@ -57,7 +88,12 @@ export default class ForumList extends Component {
             pathname: "/createPost",
             state: {course: this.state.course}
           }}>
-          <p>Add Post</p>
+            <Button
+                  variant="primary"
+                  style={buttonStyle}
+                  >
+              Add Post
+            </Button>
         </Link>
       </React.Fragment>
     );
@@ -88,4 +124,12 @@ const name = {
   fontFamily: "Arial, Helvetica, sans-serif",
   fontWeight: "bold",
   textAlign: "center",
+};
+
+const buttonStyle = {
+  padding: "3px",
+  float: "right",
+  margin: "2% 0% 0% 1%",
+  fontFamily: "Arial, Helvetica, sans-serif",
+  backgroundColor: "#343a40",
 };

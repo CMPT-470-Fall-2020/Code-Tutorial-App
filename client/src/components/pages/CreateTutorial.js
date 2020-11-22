@@ -13,7 +13,6 @@ import "codemirror/lib/codemirror.css";
 //import './../scss/MarkdownEditor.scss';
 import "../css/CreateTutorial.css";
 import axios from "axios";
-import Header from "./../layout/Header";
 //import { v4 as uuid } from 'uuid'; //TODO: Why is this needed?
 // Markdown rendering stuff
 
@@ -129,7 +128,6 @@ export default class CreateTutorial extends Component {
 
     return (
       <React.Fragment>
-        {this.props.location.pathname !== "/login" && <Header />}
         <Container>
           <InputGroup className="mb-3" style={tutorialTitleStyle}>
             <FormControl

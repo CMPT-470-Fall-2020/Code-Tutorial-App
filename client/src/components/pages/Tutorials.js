@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import Header from "./../layout/Header";
 import axios from "axios";
 //const BASE_API_URL = process.env.REACT_APP_PROD_BASE_URL || process.env.REACT_APP_DEV_BASE_URL;
 
@@ -47,7 +46,6 @@ export default class Tutorials extends Component {
   render() {
     return (
       <React.Fragment>
-        {this.props.location.pathname !== "/login" && <Header />}
         <div>
           <h3 style={tutorialTitle}>{this.state.tutorialSelected} Tutorials</h3>
           <main>{this.createTutorialList()}</main>

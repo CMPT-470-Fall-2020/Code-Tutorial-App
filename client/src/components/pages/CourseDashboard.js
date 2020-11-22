@@ -8,7 +8,7 @@ import {
   FormControl
 } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
-//const BASE_API_URL = process.env.REACT_APP_PROD_BASE_URL || process.env.REACT_APP_DEV_BASE_URL;
+
 
 export default class CourseDashboard extends Component {
   constructor(props) {
@@ -122,7 +122,6 @@ export default class CourseDashboard extends Component {
   render() {
     return (
       <React.Fragment>
-        {this.props.location.pathname !== "/login" && <Header />}
         <div>
           <h3 style={dashboardTitle}>Dashboard - Courses</h3>
         </div>

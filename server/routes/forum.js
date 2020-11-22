@@ -44,7 +44,7 @@ router.route("/:classId/add").post((req, res) => {
 
 // Update a post for a particular subform.
 router.route("/:classId/:postId/update").post((req, res) => {
-let postId = req.params.postId;
+    let postId = req.params.postId;
 
     Post.findById(postId)
         .then(post => {
@@ -75,12 +75,12 @@ router.route("/:classId/:postId").delete((req, res) => {
 // Create a comment in a post thread.
 router.route("/:classId/:postId/add").post((req, res) => {
     console.log(req.body);
-    let postID = '5fb5b638f6528a01378916cf';
-    let userID = '5fa21bbfc1c1c56142697eef';
-    let commentText = "comment";
+    let postID = req.body.postID;
+    let userID = req.body.userID;
+    let commentText = req.body.commentText;
     
     let newComment = new Comment({postID, userID, commentText});
-    // console.log(newComment);
+    
     newComment.save()
         .then(() => res.json('Comment added!'))
         .catch(err => res.status(400).json('Error: ' + err));

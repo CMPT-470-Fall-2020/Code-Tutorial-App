@@ -1,6 +1,5 @@
 // Function based component
 import React, { Component } from "react";
-import Button from "react-bootstrap/Button";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import NavDropdown from "react-bootstrap/NavDropdown";
@@ -10,15 +9,36 @@ import axios from "axios";
 //const BASE_API_URL = process.env.REACT_APP_PROD_BASE_URL || process.env.REACT_APP_DEV_BASE_URL;
 
 export default class Header extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      user: "",
+    };
+  }
+
+  componentDidMount() {
+    // get user object from server
+    axios({
+      method: "GET",
+      withCredentials: true,
+      url: "/user",
+    }).then((res) => {
+      this.setState({ user: res.data }); // get user object containing: _id, userName, accountType
+    });
+  }
+
+  componentWillUnmount() {
+    this.setState = (state,callback)=>{
+      return;
+  }}
+
   onLogout(e) {
-    console.log("CALLED");
     axios({
       method: "GET",
       withCredentials: true,
       url: "/logout",
-    }).then((res) => {
-      window.location.href = "/login";
-    });
+    })
   }
 
   render() {
@@ -28,6 +48,7 @@ export default class Header extends Component {
           Learning Platform
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
+
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
             <NavDropdown title="Tutorials" id="basic-nav-dropdown">
@@ -46,9 +67,9 @@ export default class Header extends Component {
             </Nav.Link>
           </Nav>
         </Navbar.Collapse>
-        <Button onClick={this.onLogout.bind(this)} style={logoutStyle}>
-          Logout
-        </Button>
+        <Nav.Link as={Link} to="/" style={logoutStyle} onClick={this.onLogout.bind(this)}>
+          Logout        
+        </Nav.Link>
       </Navbar>
     );
   }
