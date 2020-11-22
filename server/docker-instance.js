@@ -4,13 +4,6 @@ const chance = new Chance();
 const DOCKER_NAME_POOL =
   "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-const BASH = "bash";
-const ZSH = "zsh";
-const PYTHON = "python";
-const JULIA = "julia";
-
-const PERMITTED_LANGUAGES = [BASH, ZSH, PYTHON, JULIA];
-
 const BASE_IMAGES = {
   bash: "470-ubuntu-bash",
   zsh: "470-ubuntu-zsh",
@@ -20,13 +13,8 @@ const BASE_IMAGES = {
 
 class DockerInstance {
   constructor(imageLang, portNum) {
-    this.imgType = PERMITTED_LANGUAGES.includes(imageLang.toLowerCase())
-      ? imageLang.toLowerCase()
-      : undefined;
-
-    console.log("the image type is.", this.imgType);
-    console.log("Base images", BASE_IMAGES);
-    // TODO: Signal if the language does not exist
+    console.log("DOCKER: IMAGE AND PORT:", imageLang, portNum);
+    this.imgType = imageLang;
     this.portNum = portNum;
     this.baseImg = BASE_IMAGES[imageLang.toLowerCase()];
     this.container_name = chance.string({ pool: DOCKER_NAME_POOL });
@@ -39,7 +27,7 @@ class DockerInstance {
     );
   }
 
-  startInstance() {
+  startInstance(callback) {
     this.docker.createContainer(
       {
         Image: this.baseImg,
@@ -54,13 +42,18 @@ class DockerInstance {
       (err, container) => {
         console.log("DOCKER: Starting the container");
         this.container_instance = container;
-        console.log(
-          "DOCKER: After setting container instance",
-          this.container_instance
-        );
-
+        console.log("DOCKER: After setting container instance");
+        if (err) {
+          // TODO: Use a constant to indicate a status and check the type of error.
+          return 1;
+        }
         container.start((err, data) => {
           console.log("container started", err, data);
+          if (err) {
+            return 1;
+          }
+          callback();
+          return 0;
         });
       }
     );
@@ -76,15 +69,6 @@ class DockerInstance {
   isAlive() {}
 }
 
-let ex = new DockerInstance(BASH, 54322);
-ex.startInstance();
-
 module.exports = {
   DockerInstance: DockerInstance,
-  lang: {
-    BASH: BASH,
-    PYTHON: PYTHON,
-    ZSH: ZSH,
-    JULIA: JULIA,
-  },
 };

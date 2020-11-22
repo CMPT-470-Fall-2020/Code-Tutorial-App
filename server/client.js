@@ -20,16 +20,16 @@ class Interpreter {
    * @param {eventEmitter} eventEmitter An eventEmitter instance used to emit responses from the server.
    * @memberof Interpreter
    */
-  constructor(portNum, interpName, eventEmitter, serverProcess) {
+  constructor(portNum, interpName, eventEmitter, dockerInstance) {
     // The name of the interpreter instance.
     this.interpName = interpName;
-    // The process which runs the server
-    this.serverProcess = serverProcess;
+    this.portNum = portNum;
     // A queue containing all messages which need to be sent.
     this.msgQueue = new MessageQueue();
     // Event emitter used to notify server when a request is completed and result
     // can be sent back to caller
     this.emitter = eventEmitter;
+    this.dockerInstance = dockerInstance;
     // The current hash of the message for which we are waiting for a response to
     this.currentHash = "";
     // The socket used to make a connection
@@ -45,25 +45,6 @@ class Interpreter {
     // Max number of attempts tried
     this.maxRetryAttempt = 10;
 
-    // Register handlers for the server process shutting exiting/crashing.
-    this.serverProcess.on("error", () => {
-      console.log("CLIENT: Language Server process died unexpectedly due to error!");
-      if (this.currentHash.length != 0) {
-        this.emitter.emit(
-          this.currentHash,
-          `Interpreter with name: ${this.interpName} shut down unexpectedly. Please try rerunning the interpreter.`
-        );
-      }
-    });
-
-    this.serverProcess.on("close", () => {
-      console.log("CLIENT: Language Server process closed.")
-      if (this.currentHash.length != 0) {
-        this.emitter.emit(this.currentHash,
-          `Interpreter with name: ${this.interpName} shut down successfully.`);
-      }
-    });
-
     this.socket.on("connect", () => {
       this.connStatus = true;
       console.log(`Connected to server on port ${portNum}!`);
@@ -75,7 +56,9 @@ class Interpreter {
     this.socket.on("error", () => {
       // If we are not connected to a server, attempt to connect again
       if (!this.connStatus && this.retryAttempNum < this.maxRetryAttempt) {
-        console.log(`CLIENT: Trying to reconnect. Retry #: ${this.retryAttempNum}`);
+        console.log(
+          `CLIENT: Trying to reconnect. Retry #: ${this.retryAttempNum}`
+        );
         this.retryAttempNum += 1;
         // Retry to connect in 0.5 seconds
         setTimeout(() => {
@@ -89,21 +72,32 @@ class Interpreter {
     });
 
     this.socket.on("data", (data) => {
-      console.log("CLIENT: Received response from language server.")
-      this.recv_data(data);
+      console.log("CLIENT: Received response from language server.");
+      this.processResponse(data);
     });
 
-    // Attempt to connect for the first time. If it does not succeed, retry 10 times on 0.5 sec intervals.
-    this.socket.connect(portNum, "127.0.0.1");
+    // Start the docker instance
+    this.dockerInstance.startInstance(() => {
+      console.log("CONNECT CALLBACK FROM CLIENT: ", this.portNum);
+      this.connectToServer();
+    });
   }
 
+  connectToServer() {
+    console.log(
+      "CLIENT: Client trying to connect with port num:",
+      this.portNum
+    );
+    // Attempt to connect for the first time. If it does not succeed, retry 10 times on 0.5 sec intervals.
+    this.socket.connect(this.portNum, "127.0.0.1");
+  }
   /**
    * Send the next message in the queue to the language server.
    *
    * @memberof Interpreter
    */
   sendMsg() {
-    console.log("CLIENT: Message queue called in sendMsg")
+    console.log("CLIENT: Message queue called in sendMsg");
     if (!this.msgQueue.isEmpty()) {
       // Retrieve next message
       let [hash, msg] = this.msgQueue.getMessage();
@@ -113,9 +107,9 @@ class Interpreter {
       this.currentHash = hash;
       let msgStatus = this.socket.write(JSON.stringify(msg));
       console.log("CLIENT: sendMsg sent a message with status", msgStatus);
-      return
+      return;
     }
-    console.log("CLIENT: Message queue had other messages in sendMsg")
+    console.log("CLIENT: Message queue had other messages in sendMsg");
   }
 
   /**
@@ -125,12 +119,15 @@ class Interpreter {
    * @param {JSON} data JSON response containing stdout/stderr generated from executing  a command.
    * @memberof Interpreter
    */
-  recv_data(data) {
+  processResponse(data) {
     let resp = JSON.parse(data.toString("utf-8"));
     switch (resp["type"]) {
       case "SUCCESS":
         // Reset the hash. In case there is a crash, we do not want to send a packet to an outdated hash.
-        console.log("CLIENT: Received response from server. About to emit event", resp);
+        console.log(
+          "CLIENT: Received response from server. About to emit event",
+          resp
+        );
         this.emitter.emit(this.currentHash, resp);
         // this.currentHash = "";
         break;
@@ -147,7 +144,6 @@ class Interpreter {
     } else {
       this.sendMsg();
     }
-
   }
 
   /**
@@ -194,7 +190,7 @@ class Interpreter {
       // This will fire off a "close" event for the process which is used to delete this instance of an interpreter
     } else {
       // Write out the kill message
-      this.socket.write(JSON.stringify({ type: "KILL" }))
+      this.socket.write(JSON.stringify({ type: "KILL" }));
       this.socket.destroy();
     }
     this.process.kill();

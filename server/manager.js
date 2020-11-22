@@ -1,6 +1,7 @@
 const { spawn } = require("child_process");
 var events = require("events");
 const { Interpreter } = require("./client.js");
+const { DockerInstance } = require("./docker-instance");
 
 // Constants used to indicate the return status of function calls
 const USERDNE = "USERDNE";
@@ -8,7 +9,14 @@ const USEREXISTS = "USEREXISTS";
 const SUCCESS = "SUCCESS";
 const INTERPDNE = "INTERPDNE";
 const INTERPEXISTS = "INTERPEXISTS";
-const LANGDNE = "LANGDNE"
+const LANGDNE = "LANGDNE";
+
+const BASH = "bash";
+const ZSH = "zsh";
+const PYTHON = "python";
+const JULIA = "julia";
+
+const PERMITTED_LANGUAGES = [BASH, ZSH, PYTHON, JULIA];
 
 class InterpreterManager {
   constructor(emitter) {
@@ -60,6 +68,7 @@ class InterpreterManager {
 
   createInterp(userName, interpName, interpType) {
     if (!this.userExists()) {
+      console.log("MANAGER: Creating user");
       this.createUser(userName);
     }
 
@@ -72,69 +81,25 @@ class InterpreterManager {
     // Retrieve the port number for the server
     let portNum = this.ports.pop();
     let languageServer;
+    let interpreterLang = undefined;
 
-    switch (interpType.toLowerCase()) {
-      case "python":
-        console.log("trying python spawn", portNum)
-        languageServer = spawn("python3", ["python-server.py", portNum]);
-        break;
-      case "bash":
-        languageServer = spawn("./bash-server.js", [portNum]);
-        break;
-      case "zsh":
-        languageServer = spawn("./zsh-server.js", [portNum]);
-        break;
-      case "julia":
-        languageServer = spawn("./julia-server.js", [portNum]);
-        break;
-      case "ruby":
-        // Ruby is not supported yet
-        //languageServer = spawn("ruby", ["ruby-server.rb", portNum]);
-        console.log("Ruby does not work yet")
-        break;
-      default:
-        return LANGDNE;
+    if (PERMITTED_LANGUAGES.includes(interpType.toLowerCase())) {
+      interpreterLang = interpType.toLowerCase();
+    } else {
+      return LANGDNE;
     }
 
-    // Set handlers for when the language server crashes
-    languageServer.on("error", (code, signal) => {
-      console.log(
-        "MANAGER: Language server process died due to an error.",
-        code,
-        signal,
-        "Returning port number and removing instance."
-      );
-      // Return the port number on exit
-      this.ports.push(portNum);
-      // Delete the interpreter instance
-      delete this.instances[userName][interpName];
-    });
-
-    languageServer.on("close", (code, signal) => {
-      console.log(
-        "MANAGER: Language server process close",
-        code,
-        signal,
-        "Returning port number and removing instance."
-      );
-      // Return the port number on exit
-      this.ports.push(portNum);
-      // Delete interpreter instance
-      delete this.instances[userName][interpName];
-    });
-
-    console.log("MANAGER: Creating new interpreter instance.");
+    console.log("MANAGER: Creating new interpreter instance at port", portNum);
+    let dockerInstance = new DockerInstance(interpreterLang, portNum);
     let newInterp = new Interpreter(
       portNum,
       interpName,
       this.emitter,
-      languageServer
+      dockerInstance
     );
+    console.log("MANAGER: Creating new Docker Instance");
 
-    console.log("MANAGER: Adding the new instance!");
-    // Add the interpreter instance
     this.instances[userName][interpName] = newInterp;
-
     // Return the interpreter instance to caller to run code.
     return newInterp;
   }
@@ -147,5 +112,5 @@ module.exports = {
   SUCCESS: SUCCESS,
   INTERPDNE: INTERPDNE,
   INTERPEXISTS: INTERPEXISTS,
-  LANGDNE: LANGDNE
+  LANGDNE: LANGDNE,
 };
