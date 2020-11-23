@@ -1,6 +1,8 @@
 const net = require("net");
 const crypto = require("crypto");
 const { log } = require("util");
+const logger = require("./logging");
+
 
 const { MessageQueue } = require("./message_queue");
 const { DockerInstance } = require("./docker-instance");
@@ -50,7 +52,7 @@ class Interpreter {
 
     this.socket.on("connect", () => {
       this.connStatus = true;
-      console.log(`CLIENT: Connected to server on port ${portNum}!`);
+      logger.info(`CLIENT: Connected to server on port ${portNum}!`);
       this.sendMsg();
     });
 
@@ -59,7 +61,7 @@ class Interpreter {
     this.socket.on("error", () => {
       // If we are not connected to a server, attempt to connect again
       if (!this.connStatus && this.retryAttempNum < this.maxRetryAttempt) {
-        console.log(
+        logger.info(
           `CLIENT: Trying to reconnect. Retry #: ${this.retryAttempNum}`
         );
         this.retryAttempNum += 1;
@@ -75,19 +77,19 @@ class Interpreter {
     });
 
     this.socket.on("data", (data) => {
-      console.log("CLIENT: Received response from language server.");
+      logger.debug("CLIENT: Received response from language server.");
       this.processResponse(data);
     });
 
     // Start the docker instance
     this.dockerInstance.startInstance(() => {
-      console.log("CLIENT: Trying to start a connection to container!")
+      logger.debug("CLIENT: Trying to start a connection to container!")
       this.connectToServer();
     });
   }
 
   connectToServer() {
-    console.log(
+    logger.info(
       "CLIENT: Client trying to connect with port num:",
       this.portNum
     );
@@ -100,19 +102,19 @@ class Interpreter {
    * @memberof Interpreter
    */
   sendMsg() {
-    console.log("CLIENT: Message queue called in sendMsg");
+    logger.debug("CLIENT: Message queue called in sendMsg");
     if (!this.msgQueue.isEmpty()) {
       // Retrieve next message
       let [hash, msg] = this.msgQueue.getMessage();
-      console.log("CLIENT: Sending a new message to client", msg);
+      logger.debug("CLIENT: Sending a new message to client", msg);
 
       this.isWaiting = true;
       this.currentHash = hash;
       let msgStatus = this.socket.write(JSON.stringify(msg));
-      console.log("CLIENT: sendMsg sent a message with status", msgStatus);
+      logger.debug("CLIENT: sendMsg sent a message with status", msgStatus);
       return;
     }
-    console.log("CLIENT: Message queue had other messages in sendMsg");
+    logger.debug("CLIENT: Message queue had other messages in sendMsg");
   }
 
   /**
@@ -123,12 +125,12 @@ class Interpreter {
    * @memberof Interpreter
    */
   processResponse(data) {
-  	console.log("CLIENT: Received a response and is about to decode it.");
+  	logger.debug("CLIENT: Received a response and is about to decode it.");
     let resp = JSON.parse(data.toString("utf-8"));
     switch (resp["type"]) {
       case "SUCCESS":
         // Reset the hash. In case there is a crash, we do not want to send a packet to an outdated hash.
-        console.log(
+        logger.debug(
           "CLIENT: Received response from server. About to emit event",
           resp
         );
@@ -141,7 +143,7 @@ class Interpreter {
         this.killServer();
         break;
       default:
-        console.log("This should not happen!");
+        logger.error("This should not happen!");
     }
     if (this.msgQueue.isEmpty()) {
       this.isWaiting = false;
@@ -214,11 +216,11 @@ class Interpreter {
     // append the new message to the message queue.
     this.msgQueue.addMessage([codeHash, codeObj]);
     if (!this.connStatus || this.isWaiting) {
-      console.log("CLIENT: adding message to queue in runCode", codeObj);
+      logger.debug("CLIENT: adding message to queue in runCode", codeObj);
       // this.msgQueue.addMessage([codeHash, codeObj]);
     } else {
       // If not busy, send off code object to server and return code hash
-      console.log("CLIENT: Sending message directly in runCode", codeObj);
+      logger.debug("CLIENT: Sending message directly in runCode", codeObj);
       this.sendMsg();
     }
     return codeHash;

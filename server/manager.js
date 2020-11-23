@@ -1,6 +1,7 @@
 const { spawn } = require("child_process");
 var events = require("events");
-const { Interpreter } = require("./client.js");
+const { Interpreter } = require("./client");
+const logger = require("./logging");
 
 // Constants used to indicate the return status of function calls
 const LANGDNE = "LANGDNE";
@@ -83,10 +84,10 @@ class InterpreterManager {
     }
 
     if (this.interpInstanceExists(userName, interpName)) {
-      console.log("MANAGER: return existing instance for user:", userName, "with name:", interpName);
+      logger.info("MANAGER: return existing instance for user:", userName, "with name:", interpName);
       return this.instances[userName][interpName];
     } else {
-      console.log("MANAGER: return new instance for user:", userName, "with name:", interpName);
+      logger.info("MANAGER: return new instance for user:", userName, "with name:", interpName);
       return this.createInstance(userName, interpName, lang);
     }
   }

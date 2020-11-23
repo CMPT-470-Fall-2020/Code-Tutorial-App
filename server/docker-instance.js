@@ -1,5 +1,7 @@
 const Chance = require("chance");
 const Docker = require("dockerode");
+const logger = require("./logging");
+
 const chance = new Chance();
 const DOCKER_NAME_POOL =
   "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -13,7 +15,7 @@ const BASE_IMAGES = {
 
 class DockerInstance {
   constructor(imageLang, portNum) {
-    console.log("DOCKER: Create new instance with image name and port number:", imageLang, portNum);
+    logger.info("DOCKER: Create new instance with image name and port number:", imageLang, portNum);
     this.imgType = imageLang;
     this.portNum = portNum;
     this.baseImg = BASE_IMAGES[imageLang.toLowerCase()];
@@ -21,14 +23,14 @@ class DockerInstance {
     this.docker = new Docker();
     this.container_instance = undefined;
 
-    console.log(
+    logger.trace(
       "DOCKER: Constructor finished. Container name will be",
       this.container_name
     );
   }
 
   startInstance(callback) {
-  	console.log("DOCKER: StartInstance called");
+  	logger.trace("DOCKER: StartInstance called");
     this.docker.createContainer(
       {
         Image: this.baseImg,
@@ -43,17 +45,17 @@ class DockerInstance {
       (err, container) => {
         if (err) {
           // TODO: Use a constant to indicate a status and check the type of error.
-          console.log("DOCKER: Container could not be created.", err.message)
+          logger.error("DOCKER: Container could not be created.", err.message)
           return 1;
         }
 
-        console.log("DOCKER: Container created. Starting container...");
+        logger.trace("DOCKER: Container created. Starting container...");
         this.container_instance = container;
         container.start((err, data) => {
           if (err) {
             return 1;
           }
-          console.log("DOCKER: container started without error",data, "Calling callback");
+          logger.trace("DOCKER: container started without error",data, "Calling callback");
           callback();
           return 0;
         });
@@ -63,7 +65,7 @@ class DockerInstance {
 
   stopInstance() {
     this.container_instance.stop((err, data) => {
-      console.log("Instance stopped");
+      logger.info("Instance stopped");
     });
   }
 
