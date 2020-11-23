@@ -18,7 +18,7 @@ echo "Building base bash container"
 cd ../ubuntu-bash
 # Some linux distros alias cp to "cp -i". This causes issues with the script
 # since it will ask for permission before overwritting any existing files overwrite.
-/usr/bin/cp ../../bash-server.js ./
+/usr/bin/cp ../../language-servers/bash-server.js ./
 /usr/bin/cp ../../generic_server.js ./
 docker build -t 470-ubuntu-bash .
 
@@ -28,7 +28,7 @@ echo "Building base zsh container"
 cd ../ubuntu-zsh
 # Some linux distros alias cp to "cp -i". This causes issues with the script
 # since it will ask for permission before overwritting any existing files overwrite.
-/usr/bin/cp ../../zsh-server.js ./
+/usr/bin/cp ../../language-servers/zsh-server.js ./
 /usr/bin/cp ../../generic_server.js ./
 docker build -t 470-ubuntu-zsh .
 
@@ -37,7 +37,7 @@ echo "Building base julia container"
 cd ../ubuntu-julia
 # Some linux distros alias cp to "cp -i". This causes issues with the script
 # since it will ask for permission before overwritting any existing files overwrite.
-/usr/bin/cp ../../julia-server.js ./
+/usr/bin/cp ../../language-servers/julia-server.js ./
 /usr/bin/cp ../../generic_server.js ./
 docker build -t 470-ubuntu-julia .
 
@@ -47,5 +47,5 @@ echo "Building base python container"
 cd ../ubuntu-python
 # Some linux distros alias cp to "cp -i". This causes issues with the script
 # since it will ask for permission before overwritting any existing files overwrite.
-/usr/bin/cp ../../python-server.py ./
+/usr/bin/cp ../../language-servers/python-server.py ./
 docker build -t 470-ubuntu-python .
