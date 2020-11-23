@@ -13,7 +13,7 @@ const BASE_IMAGES = {
 
 class DockerInstance {
   constructor(imageLang, portNum) {
-    console.log("DOCKER: IMAGE AND PORT:", imageLang, portNum);
+    console.log("DOCKER: Create new instance with image name and port number:", imageLang, portNum);
     this.imgType = imageLang;
     this.portNum = portNum;
     this.baseImg = BASE_IMAGES[imageLang.toLowerCase()];
@@ -22,12 +22,13 @@ class DockerInstance {
     this.container_instance = undefined;
 
     console.log(
-      "Constructor finished. Container name will be",
+      "DOCKER: Constructor finished. Container name will be",
       this.container_name
     );
   }
 
   startInstance(callback) {
+  	console.log("DOCKER: StartInstance called");
     this.docker.createContainer(
       {
         Image: this.baseImg,
@@ -40,18 +41,19 @@ class DockerInstance {
         },
       },
       (err, container) => {
-        console.log("DOCKER: Starting the container");
-        this.container_instance = container;
-        console.log("DOCKER: After setting container instance");
         if (err) {
           // TODO: Use a constant to indicate a status and check the type of error.
+          console.log("DOCKER: Container could not be created.", err.message)
           return 1;
         }
+
+        console.log("DOCKER: Container created. Starting container...");
+        this.container_instance = container;
         container.start((err, data) => {
-          console.log("container started", err, data);
           if (err) {
             return 1;
           }
+          console.log("DOCKER: container started without error",data, "Calling callback");
           callback();
           return 0;
         });

@@ -83,10 +83,10 @@ class InterpreterManager {
     }
 
     if (this.interpInstanceExists(userName, interpName)) {
-      console.log("MANAGER: return existing instance");
+      console.log("MANAGER: return existing instance for user:", userName, "with name:", interpName);
       return this.instances[userName][interpName];
     } else {
-      console.log("MANAGER: return new instance");
+      console.log("MANAGER: return new instance for user:", userName, "with name:", interpName);
       return this.createInstance(userName, interpName, lang);
     }
   }

@@ -50,7 +50,7 @@ class Interpreter {
 
     this.socket.on("connect", () => {
       this.connStatus = true;
-      console.log(`Connected to server on port ${portNum}!`);
+      console.log(`CLIENT: Connected to server on port ${portNum}!`);
       this.sendMsg();
     });
 
@@ -79,9 +79,9 @@ class Interpreter {
       this.processResponse(data);
     });
 
-    console.log("About to start docker");
     // Start the docker instance
     this.dockerInstance.startInstance(() => {
+      console.log("CLIENT: Trying to start a connection to container!")
       this.connectToServer();
     });
   }
@@ -123,6 +123,7 @@ class Interpreter {
    * @memberof Interpreter
    */
   processResponse(data) {
+  	console.log("CLIENT: Received a response and is about to decode it.");
     let resp = JSON.parse(data.toString("utf-8"));
     switch (resp["type"]) {
       case "SUCCESS":

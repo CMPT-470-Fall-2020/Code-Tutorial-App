@@ -18,6 +18,13 @@ const app = express();
 const port = process.env.PORT || 4000;
 const host = process.env.HOST || "127.0.0.1";
 
+app.use(function(req, res, next){
+    res.setTimeout(120000, function(){
+        console.log('Request has timed out.');
+            res.send(408);
+        });
+    next();
+});
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
