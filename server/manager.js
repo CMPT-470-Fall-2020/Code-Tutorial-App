@@ -74,7 +74,7 @@ class InterpreterManager {
     return newInterp;
   }
 
-  getInstance(userName, interpName, lang) {
+  getInstance(userName, interpName, lang, createIfNone) {
     if (!this.isPermittedLanguage(lang)) {
       return LANGDNE;
     }
@@ -100,7 +100,10 @@ class InterpreterManager {
         "with name:",
         interpName
       );
-      return this.createInstance(userName, interpName, lang);
+      if (createIfNone) {
+        return this.createInstance(userName, interpName, lang);
+      }
+      return undefined;
     }
   }
 

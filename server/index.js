@@ -37,19 +37,36 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
 });
 
-// You may be looking at this and wondering, why is this route the same as the above
-// but commented out?
-// Yavor says: I don't fucking know.
-/*
-app.get("/", (req, res) => {
-  res.json({
-    message: 'Hello World from the backend server on the "/" route!',
-  });
-});
-*/
-
 var ev = new events.EventEmitter();
 var interpreterManager = new interpManager.InterpreterManager(ev);
+
+app.delete("/run", (req, res) => {
+  console.log("SERVER: hit a DELETE /run route with request body", req.body);
+  let uname = req.body.uname;
+  let iname = req.body.iname;
+  let lang = req.body.lang;
+
+  // If the instance exists, stop it and delete it.
+  if (
+    interpreterManager.userExists(uname) &&
+    interpreterManager.interpInstanceExists(uname, iname)
+  ) {
+    // Retrieve the instance
+    let currInstance = interpreterManager.getInstance(
+      uname,
+      iname,
+      lang,
+      false
+    );
+    if (currInstance !== undefined) {
+      currInstance.shutdown();
+      interpreterManager.deleteInstance(uname, iname);
+    }
+  }
+  // Return a success message whether or not the instance has been started/exists or not.
+  // The user should not be concerned about such things.
+  res.json({ message: "Instance Successfully Stopped!" });
+});
 
 app.post("/run", (req, res) => {
   console.log("SERVER: hit a POST /run route with request body", req.body);

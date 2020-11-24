@@ -74,7 +74,12 @@ class DockerInstance {
 
   stopInstance() {
     this.container_instance.stop((err, data) => {
-      logger.info("Instance stopped");
+      if (err) {
+        logger.error("Instance stopped with an error:", err);
+        return false;
+      }
+      logger.info("Instance stopped succesfully");
+      return true;
     });
   }
 

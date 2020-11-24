@@ -183,23 +183,18 @@ class Interpreter {
   }
 
   /**
-   * Kill the language server and its client immediately.
+   * Shutdown the client and the corresponsing docker instance immediately.
+   * If we are waiting for a response, that response will not be completed.
    *
    * @memberof Interpreter
    */
-  killServer() {
-    // If we are waiting for a response from the server, we kill it immediately.
-    // There we are not waiting for a response, send a "KILL" packet and give it a chance to clean
-    // up after itself.
-    if (this.isWaiting) {
-      this.socket.destroy();
-      // This will fire off a "close" event for the process which is used to delete this instance of an interpreter
-    } else {
-      // Write out the kill message
-      this.socket.write(JSON.stringify({ type: "KILL" }));
-      this.socket.destroy();
+  shutdown() {
+    // TODO: What to do if there is no success?
+    let status = this.dockerInstance.stopInstance();
+    if (status !== true) {
+      return false;
     }
-    this.process.kill();
+    return true;
   }
 
   /**
