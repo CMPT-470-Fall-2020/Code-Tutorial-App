@@ -4,7 +4,6 @@ const { log } = require("util");
 const SharedLog = require("./logging");
 const logger = SharedLog.getInstance().logger;
 
-
 const { MessageQueue } = require("./message_queue");
 const { DockerInstance } = require("./docker-instance");
 
@@ -84,7 +83,7 @@ class Interpreter {
 
     // Start the docker instance
     this.dockerInstance.startInstance(() => {
-      logger.debug("CLIENT: Trying to start a connection to container!")
+      logger.debug("CLIENT: Trying to start a connection to container!");
       this.connectToServer();
     });
   }
@@ -126,7 +125,7 @@ class Interpreter {
    * @memberof Interpreter
    */
   processResponse(data) {
-  	logger.debug("CLIENT: Received a response and is about to decode it.");
+    logger.debug("CLIENT: Received a response and is about to decode it.");
     let resp = JSON.parse(data.toString("utf-8"));
     switch (resp["type"]) {
       case "SUCCESS":

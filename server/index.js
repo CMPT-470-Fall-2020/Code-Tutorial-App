@@ -1,14 +1,14 @@
-const path = require('path');
-const express = require('express');
-const cors = require('cors');
-const mongoose = require('mongoose');
-const godBolt = require('./godbolt');
-const passport = require('passport');
-const passportLocal = require('passport-local').Strategy;
+const path = require("path");
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
+const godBolt = require("./godbolt");
+const passport = require("passport");
+const passportLocal = require("passport-local").Strategy;
 // TODO: Apparently this is should not be run in prod since it leaks memory.
 //       We need to replace it with something else.
 //       Possible solution: https://stackoverflow.com/questions/44882535/warning-connect-session-memorystore-is-not-designed-for-a-production-environm
-const cookieParser = require('cookie-parser');
+const cookieParser = require("cookie-parser");
 const bcrypt = require("bcryptjs");
 const session = require("express-session");
 const bodyParser = require("body-parser");
@@ -18,24 +18,24 @@ const app = express();
 const port = process.env.PORT || 4000;
 const host = process.env.HOST || "127.0.0.1";
 
-app.use(function(req, res, next){
-    res.setTimeout(120000, function(){
-        console.log('Request has timed out.');
-            res.send(408);
-        });
-    next();
+app.use(function (req, res, next) {
+  res.setTimeout(120000, function () {
+    console.log("Request has timed out.");
+    res.send(408);
+  });
+  next();
 });
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 // This runs the server in production(on our GCP VM)
-app.use(express.static(path.join(__dirname, "..","client", "build")));
+app.use(express.static(path.join(__dirname, "..", "client", "build")));
 
 // This is our default route which serves the main index file containing
 // all of our precious little code to our snotty customers.
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, "..","client", "build", "index.html"))
-})
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
+});
 
 // You may be looking at this and wondering, why is this route the same as the above
 // but commented out?
@@ -177,21 +177,19 @@ app.get("/user", (req, res) => {
   res.send(req.user);
 });
 //-----------------------------------------------------------------------------------------
-const dashboardRouter = require('./routes/dashboard');
-const forumRouter = require('./routes/forum');
-const tutorialRouter = require('./routes/tutorial');
-const userRouter = require('./routes/user');
-const courseRouter = require('./routes/course');
+const dashboardRouter = require("./routes/dashboard");
+const forumRouter = require("./routes/forum");
+const tutorialRouter = require("./routes/tutorial");
+const userRouter = require("./routes/user");
+const courseRouter = require("./routes/course");
 
-app.use('/dashboard', dashboardRouter);
-app.use('/forum', forumRouter);
-app.use('/tutorial', tutorialRouter);
-app.use('/user', userRouter);
-app.use('/course', courseRouter);
-
+app.use("/dashboard", dashboardRouter);
+app.use("/forum", forumRouter);
+app.use("/tutorial", tutorialRouter);
+app.use("/user", userRouter);
+app.use("/course", courseRouter);
 
 // TODO: Work on login authentication
-
 
 app.listen(port, host, () => {
   console.log(`Backend server listening on port ${port} at host ${host}`);

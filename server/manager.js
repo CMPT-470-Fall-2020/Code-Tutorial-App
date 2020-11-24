@@ -85,11 +85,21 @@ class InterpreterManager {
     }
 
     if (this.interpInstanceExists(userName, interpName)) {
-      logger.info("MANAGER: return existing instance for user:", userName, "with name:", interpName);
+      logger.info(
+        "MANAGER: return existing instance for user:",
+        userName,
+        "with name:",
+        interpName
+      );
       return this.instances[userName][interpName];
     } else {
       console.log("logger is:", logger);
-      logger.info("MANAGER: return new instance for user:", userName, "with name:", interpName);
+      logger.info(
+        "MANAGER: return new instance for user:",
+        userName,
+        "with name:",
+        interpName
+      );
       return this.createInstance(userName, interpName, lang);
     }
   }
