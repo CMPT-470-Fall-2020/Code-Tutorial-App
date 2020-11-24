@@ -1,7 +1,8 @@
 const net = require("net");
 const crypto = require("crypto");
 const { log } = require("util");
-const logger = require("./logging");
+const SharedLog = require("./logging");
+const logger = SharedLog.getInstance().logger;
 
 
 const { MessageQueue } = require("./message_queue");

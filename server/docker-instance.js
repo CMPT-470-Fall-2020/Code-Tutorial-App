@@ -1,6 +1,7 @@
 const Chance = require("chance");
 const Docker = require("dockerode");
-const logger = require("./logging");
+const SharedLog = require("./logging");
+const logger = SharedLog.getInstance().logger;
 
 const chance = new Chance();
 const DOCKER_NAME_POOL =

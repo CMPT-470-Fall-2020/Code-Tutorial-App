@@ -1,7 +1,8 @@
 const { spawn } = require("child_process");
 var events = require("events");
 const { Interpreter } = require("./client");
-const logger = require("./logging");
+const SharedLog = require("./logging");
+const logger = SharedLog.getInstance().logger;
 
 // Constants used to indicate the return status of function calls
 const LANGDNE = "LANGDNE";
@@ -87,6 +88,7 @@ class InterpreterManager {
       logger.info("MANAGER: return existing instance for user:", userName, "with name:", interpName);
       return this.instances[userName][interpName];
     } else {
+      console.log("logger is:", logger);
       logger.info("MANAGER: return new instance for user:", userName, "with name:", interpName);
       return this.createInstance(userName, interpName, lang);
     }
