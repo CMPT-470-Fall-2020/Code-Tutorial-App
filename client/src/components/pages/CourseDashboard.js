@@ -98,22 +98,44 @@ export default class CourseDashboard extends Component {
 
   createCourseContainers() {
     return this.state.courses.map((course, key) => (
-      <Link
-        key={key}
-        to={{
-          pathname: "/forumList",
-          state: { course },
-        }}
-      >
-        <div style={background}>
-          <div style={courseCard}>
-            <div style={courseCode}>{course.courseCode}</div>
-            <div style={courseName}>{course.courseName}</div>
-            {/* change to only for teacher */}
-            <div style={courseName}>{course._id}</div> 
+      <div>
+          <Link
+            key={key}
+            to={{
+              pathname: "/forumList",
+              state: { course },
+            }}
+          >
+            <Button
+              variant="primary"
+              style={buttonStyle}
+              >
+                Forum
+            </Button>
+          </Link>
+          <Link
+            key={key}
+            to={{
+              pathname: "/tutorials",
+              state: { course },
+            }}
+          >
+            <Button
+              variant="primary"
+              style={buttonStyle}
+              >
+                Tutorials
+            </Button>
+          </Link>
+          <div style={background}>
+            <div style={courseCard}>
+              <div style={courseCode}>{course.courseCode}</div>
+              <div style={courseName}>{course.courseName}</div>
+              {/* change to only for teacher */}
+              <div style={courseName}>{course._id}</div> 
+            </div>
           </div>
         </div>
-      </Link>
     ));
   }
 

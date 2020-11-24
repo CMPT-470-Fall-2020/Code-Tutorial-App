@@ -14,6 +14,7 @@ export default class Post extends Component {
       forum: props.location.state.forum,
       comments: [],
       userID: '',
+      userName: '',
       commentText: '',
       editComment: '',
       editTitle: props.location.state.forum.postTitle,
@@ -29,7 +30,7 @@ export default class Post extends Component {
         withCredentials: true,
         url: "/user",
       }).then((res) => {
-        this.setState({ userID: res.data._id });
+        this.setState({ userID: res.data._id, userName: res.data.userName });
     });
 
     // get comments list object from server
@@ -41,6 +42,17 @@ export default class Post extends Component {
       .catch((error) => {
         console.log(error);
       });
+
+    // redundant but required after refresh for editting the post
+    axios
+    .get(`/forum/${this.state.forum._id}/getPost`)
+    .then((res) => {
+      console.log(res.data);
+      this.setState({ forum: res.data });
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   }
 
     onChangeText(e) {
@@ -186,6 +198,7 @@ export default class Post extends Component {
             data: {
                 userID: this.state.userID,
                 postID: this.state.forum._id,
+                userName: this.state.userName,
                 commentText: this.state.commentText
             },
             withCredentials: true,
@@ -200,6 +213,7 @@ export default class Post extends Component {
         return this.state.comments.map((comment, key) => (
                 <div style={forumCard} key={key}>
                     <div style={postText}>{comment.commentText}</div>
+                    <p>Created by: {comment.userName}</p>
                     <div>{this.showCommentButtons(comment)}</div>
                 </div>
         ));

@@ -33,9 +33,10 @@ router.route("/:classId/:postId/:commentId").get((req, res) => {
 router.route("/:classId/add").post((req, res) => {
     let courseID = req.params.classId;
     let userID = req.body.userID;
+    let userName = req.body.userName;
     let postTitle = req.body.postTitle;
     let postText = req.body.postText;
-    let newPost = new Post({userID, courseID, postTitle, postText});
+    let newPost = new Post({userID, courseID, userName, postTitle, postText});
 
     newPost.save()
         .then(() => res.json('Post added!'))
@@ -77,9 +78,10 @@ router.route("/:classId/:postId/add").post((req, res) => {
     console.log(req.body);
     let postID = req.body.postID;
     let userID = req.body.userID;
+    let userName = req.body.userName;
     let commentText = req.body.commentText;
     
-    let newComment = new Comment({postID, userID, commentText});
+    let newComment = new Comment({postID, userID, userName, commentText});
     
     newComment.save()
         .then(() => res.json('Comment added!'))

@@ -14,6 +14,7 @@ export default class CreatePost extends Component {
     this.state = {
       courseID: props.location.state.course,
       userID: props.location.state.userid,
+      userName: '',
       postTitle: '',
       postText: ''
     };
@@ -25,7 +26,7 @@ export default class CreatePost extends Component {
         withCredentials: true,
         url: "/user",
       }).then((res) => {
-        this.setState({ userID: res.data._id });
+        this.setState({ userID: res.data._id, userName: res.data.userName });
     });
   }
 
@@ -48,6 +49,7 @@ export default class CreatePost extends Component {
       data: {
         userID: this.state.userID,
         courseID: this.state.courseID,
+        userName: this.state.userName,
         postTitle: this.state.postTitle,
         postText: this.state.postText
       },

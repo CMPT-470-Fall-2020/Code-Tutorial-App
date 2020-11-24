@@ -37,19 +37,20 @@ export default class ForumList extends Component {
   createForumList() {
     return this.state.forums.map((forum, key) => (
       <div key={key}>
-        <Link
-          to={{
-            pathname: "/post",
-            state: { forum },
-          }}
-        >
           <div style={background}>
             <div style={forumCard}>
-              <div style={name}>{forum.postTitle}</div>
+              <Link
+                  to={{
+                    pathname: "/post",
+                    state: { forum },
+                  }}
+                >
+                <div style={name}>{forum.postTitle}</div>
+              </Link>
+              <p>Created by: {forum.userName}</p>
+              <div>{this.showDeleteButton(forum)}</div>
             </div>
-          </div>
-        </Link>
-        <div>{this.showDeleteButton(forum)}</div>
+          </div>         
       </div>
     ));
   }
