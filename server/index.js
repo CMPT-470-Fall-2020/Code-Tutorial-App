@@ -168,12 +168,14 @@ const forumRouter = require('./routes/forum');
 const tutorialRouter = require('./routes/tutorial');
 const userRouter = require('./routes/user');
 const courseRouter = require('./routes/course');
+const autograderRouter = require('./routes/autograder');
 
 app.use('/dashboard', dashboardRouter);
 app.use('/forum', forumRouter);
 app.use('/tutorial', tutorialRouter);
 app.use('/user', userRouter);
 app.use('/course', courseRouter);
+app.use('/autograder', autograderRouter);
 
 
 // TODO: Work on login authentication
