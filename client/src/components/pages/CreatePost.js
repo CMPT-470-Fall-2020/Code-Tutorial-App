@@ -63,24 +63,30 @@ export default class CreatePost extends Component {
   render() {
     return (
       <React.Fragment>
-        <div>
-          <h3 style={postTitle}>Forum</h3>
+        <div style={postTitle}>
+          <h3>Forum - Add Post</h3>
         </div>
 
-        <Container>
-          <InputGroup style={postTitleStyle}>
+        <main style={main}>
+
+        <div style={centerLayout}>
+          <InputGroup style={postTitleLayout}>
             <FormControl
               placeholder="Post Title"
               value={this.state.title}
               onChange={this.onChangeTitle.bind(this)}
-            ></FormControl>
+            >
+            </FormControl>
+            </InputGroup>
+
+            <InputGroup style={postBodyLayout}>
             <FormControl
               placeholder="Post Body"
               value={this.state.title}
               onChange={this.onChangeText.bind(this)}
             ></FormControl>
             </InputGroup>
-            <Link 
+            <Link
               to={{
                 pathname: "/post",
                 state: { forum: this.state }
@@ -91,18 +97,26 @@ export default class CreatePost extends Component {
                   style={buttonStyle}
                   onClick={this.saveDB.bind(this)}
                 >
-                  Add Post
+                  Submit
                 </Button>
             </Link>
-        </Container>
+        </div>
+        </main>
       </React.Fragment>
     );
   }
 }
 
-const postTitleStyle = {
+const centerLayout = {
+    margin: "2% 10%",
+};
+
+const postTitleLayout= {
     marginTop: "2%",
-    paddingLeft: "0px",
+};
+
+const postBodyLayout= {
+    marginTop: "2%",
 };
 
 const postTitle = {
@@ -117,4 +131,7 @@ const buttonStyle = {
     fontFamily: "Arial, Helvetica, sans-serif",
     backgroundColor: "#343a40",
 };
-  
+
+const main = {
+  margin: "5% 0% 0% 0%",
+}

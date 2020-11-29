@@ -50,7 +50,7 @@ export default class ForumList extends Component {
               <p>Created by: {forum.userName}</p>
               <div>{this.showDeleteButton(forum)}</div>
             </div>
-          </div>         
+          </div>
       </div>
     ));
   }
@@ -62,7 +62,7 @@ export default class ForumList extends Component {
                 <button onClick={this.deletePost.bind(this, forum)}>Delete</button>
             </div>
         )
-    } 
+    }
     return
   }
 
@@ -74,28 +74,32 @@ export default class ForumList extends Component {
       }).then((res) => {
           console.log(res);
       });
-      window.location.reload(); 
+      window.location.reload();
   }
 
   render() {
     return (
       <React.Fragment>
         <div>
-          <h3 style={postTitle}>Forum</h3>
-          <main>{this.createForumList()}</main>
+          <div style={postTitle}>
+          <Link
+            to={{
+              pathname: "/createPost",
+              state: {course: this.state.course}
+            }}>
+              <Button
+                    variant="primary"
+                    style={buttonStyle}
+                    >
+                Add Post
+              </Button>
+          </Link>
+          <h3>Forum</h3>
+          </div>
+          <main style={main}>
+            {this.createForumList()}
+          </main>
         </div>
-        <Link
-          to={{ 
-            pathname: "/createPost",
-            state: {course: this.state.course}
-          }}>
-            <Button
-                  variant="primary"
-                  style={buttonStyle}
-                  >
-              Add Post
-            </Button>
-        </Link>
       </React.Fragment>
     );
   }
@@ -130,7 +134,10 @@ const name = {
 const buttonStyle = {
   padding: "3px",
   float: "right",
-  margin: "2% 0% 0% 1%",
   fontFamily: "Arial, Helvetica, sans-serif",
   backgroundColor: "#343a40",
 };
+
+const main = {
+  margin: "5% 0% 0% 0%",
+}
