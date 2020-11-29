@@ -34,7 +34,7 @@ export default class CourseDashboard extends Component {
       }).then((res) => {
         console.log(res);
       });
-  
+
       axios({
         method: "GET",
         withCredentials: true,
@@ -43,13 +43,13 @@ export default class CourseDashboard extends Component {
         this.setState({ user: res.data });
         console.log(res);
       });
-  
+
       window.location.reload(false);
     } else {
       window.alert(this.state.newCourse + ' is and invalid course code!');
     }
 
-  } 
+  }
 
   onChangeCourseID(e) {
     this.setState({
@@ -99,6 +99,8 @@ export default class CourseDashboard extends Component {
   createCourseContainers() {
     return this.state.courses.map((course, key) => (
       <div>
+          <div style={background}>
+          <div style={courseCode}>
           <Link
             key={key}
             to={{
@@ -108,11 +110,12 @@ export default class CourseDashboard extends Component {
           >
             <Button
               variant="primary"
-              style={buttonStyle}
+              style={buttonStyleForum}
               >
                 Forum
             </Button>
           </Link>
+          {course.courseCode}
           <Link
             key={key}
             to={{
@@ -122,24 +125,25 @@ export default class CourseDashboard extends Component {
           >
             <Button
               variant="primary"
-              style={buttonStyle}
+              style={buttonStyleTutorial}
               >
                 Tutorials
             </Button>
           </Link>
-          <div style={background}>
+          </div>
+
             <div style={courseCard}>
-              <div style={courseCode}>{course.courseCode}</div>
+
               <div style={courseName}>{course.courseName}</div>
               {/* change to only for teacher */}
-              <div style={courseName}>{course._id}</div> 
+              <div style={courseName}>{course._id}</div>
             </div>
           </div>
         </div>
     ));
   }
 
-  
+
 
   render() {
     return (
@@ -147,25 +151,27 @@ export default class CourseDashboard extends Component {
         <div>
           <h3 style={dashboardTitle}>Dashboard - Courses</h3>
         </div>
-          <Container style={addCourse}>
-            <InputGroup >
-              <FormControl
-                placeholder="Course Code"
-                value={this.state.newCourse}
-                onChange={this.onChangeCourseID.bind(this)}
-              ></FormControl>
-              <InputGroup.Append>
-                <Button
-                    variant="primary"
-                    style={buttonStyle}
-                    onClick={this.addCourse.bind(this)}
-                  >
-                    Add Course
-                </Button>
-              </InputGroup.Append>
-            </InputGroup>
-        </Container>
-        <main style={main}> {this.createCourseContainers()} </main>
+        <main style={main}>
+        <div style={backgroundaddCourse}>
+          <InputGroup >
+            <FormControl
+              placeholder="Course Code"
+              value={this.state.newCourse}
+              onChange={this.onChangeCourseID.bind(this)}
+            ></FormControl>
+            <InputGroup.Append>
+              <Button
+                  variant="primary"
+                  style={buttonStyle}
+                  onClick={this.addCourse.bind(this)}
+                >
+                  Add Course
+              </Button>
+            </InputGroup.Append>
+          </InputGroup>
+      </div>
+         {this.createCourseContainers()}
+        </main>
       </React.Fragment>
     );
   }
@@ -180,10 +186,19 @@ const main = {
   margin: "5% 0% 0% 0%",
 }
 
-const addCourse = {
-  float: "right",
+
+const buttonStyleTutorial = {
   padding: "3px",
-  margin: "0% 10% 0% 0%"
+  float: "left",
+  fontFamily: "Arial, Helvetica, sans-serif",
+  backgroundColor: "#343a40",
+};
+
+const buttonStyleForum = {
+  padding: "3px",
+  float: "right",
+  fontFamily: "Arial, Helvetica, sans-serif",
+  backgroundColor: "#343a40",
 };
 
 const buttonStyle = {
@@ -196,22 +211,32 @@ const buttonStyle = {
 const background = {
   border: "1px solid black",
   margin: "2% 10%",
-  paddingTop: "5%",
+  paddingTop: "1%",
   borderRadius: "5px",
   background: "#343a40",
 };
+
+const backgroundaddCourse = {
+  border: "1px solid black",
+  margin: "2% 10%",
+  borderRadius: "5px",
+  background: "#343a40",
+};
+
 
 const courseCard = {
   padding: "1%",
   border: "1px solid black",
   background: "white",
+
 };
 
 const courseCode = {
-  color: "#343a40",
+  color: "#ffffff",
   fontFamily: "Arial, Helvetica, sans-serif",
   fontWeight: "bold",
   textAlign: "center",
+  paddingBottom: "1%",
 };
 
 const courseName = {
