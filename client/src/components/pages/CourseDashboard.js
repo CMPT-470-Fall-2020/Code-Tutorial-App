@@ -104,6 +104,20 @@ export default class CourseDashboard extends Component {
           <Link
             key={key}
             to={{
+              pathname: "/uploadtest",
+              state: { course },
+            }}
+          >
+            <Button
+              variant="primary"
+              style={buttonStyleForum}
+              >
+                Upload Test File
+            </Button>
+          </Link>
+          <Link
+            key="forumList"
+            to={{
               pathname: "/forumList",
               state: { course },
             }}

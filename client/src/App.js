@@ -13,6 +13,7 @@ import ForumList from "./components/pages/ForumList";
 import CreatePost from "./components/pages/CreatePost";
 import Post from "./components/pages/Post";
 import CreateCourse from "./components/pages/CreateCourse";
+import UploadTest from "./components/pages/UploadTest";
 
 // This is how we get the base URL. Locally, it is localhost:4000.
 // On the VM, it is the dynamic(ephemeral) IP given to use every time we start up the VM.
@@ -36,6 +37,7 @@ class App extends Component {
             <Route path="/forumList" component={ForumList}></Route>
             <Route path="/createPost" component={CreatePost}></Route>
             <Route path="/post" component={Post}></Route>
+            <Route path="/uploadtest" component={UploadTest}></Route>
 
             {/* Show blank page for users without the intended account
             Local Bug: Does not work without refreshing on first load. Need to look into.
