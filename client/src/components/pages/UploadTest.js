@@ -70,7 +70,7 @@ export default class Tutorials extends Component {
         form: data
       },
       withCredentials: true,
-      url: `/${this.state.courseID}/add`,
+      url: `/autograder/${this.state.courseID}/add`,
     }).then((res) => {
       console.log(res);
     });
