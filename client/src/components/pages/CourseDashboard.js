@@ -101,20 +101,22 @@ export default class CourseDashboard extends Component {
       <div>
           <div style={background}>
           <div style={courseCode}>
-          <Link
+          {this.state.user.accountType === "Teacher" && (
+            <Link
             key={key}
             to={{
               pathname: "/uploadtest",
               state: { course },
             }}
-          >
+            >
             <Button
               variant="primary"
               style={buttonStyleForum}
               >
                 Upload Test File
             </Button>
-          </Link>
+            </Link>
+          )}
           <Link
             key="forumList"
             to={{
