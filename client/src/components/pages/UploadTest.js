@@ -35,27 +35,6 @@ export default class Tutorials extends Component {
     });
   }
 
-  createTestFileList() {
-    return this.state.tests.map((test, key) => (
-
-    <div style={background}>
-      <div style={testCard}>
-        <div style={name}>
-          {test.testName}
-          <Button
-              variant="primary"
-              style={buttonStyleDelete}
-              onClick = {this.deleteTest.bind(this,test._id,test.fileName)}
-              >
-                del
-          </Button>
-        </div>
-        
-      </div>
-    </div>
-    ));
-  }
-
   deleteTest(testID, fileName) {
     axios({
       method: "DELETE",
@@ -63,6 +42,15 @@ export default class Tutorials extends Component {
       url: `autograder/${this.state.courseID}/${testID}/${fileName}`,
     }).then((res) => {
       console.log(res);
+      axios
+      .get(`/autograder/${this.state.courseID}`)
+      .then((res) => {
+        this.setState({ tests: res.data});
+        console.log("tests returned", res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     });
   }
 
@@ -83,6 +71,15 @@ export default class Tutorials extends Component {
       })
       .then(res => { // then print response status
         console.log(res.statusText)
+        axios
+        .get(`/autograder/${this.state.courseID}`)
+        .then((res) => {
+          this.setState({ tests: res.data});
+          console.log("tests returned", res.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     })    
   }
 
@@ -97,7 +94,22 @@ export default class Tutorials extends Component {
             <input type="file" name="file" onChange={this.onChangeHandler}/>
             <input type="button" style={buttonStyle} className="btn btn-success btn-block" onClick={this.onClickHandler} value="submit"></input> 
           </div>
-          {this.createTestFileList()}
+          {this.state.tests.map((test, key) => (
+            <div style={background}>
+              <div style={testCard}>
+                <div style={name}>
+                  {test.testName}
+                  <Button
+                      variant="primary"
+                      style={buttonStyleDelete}
+                      onClick = {this.deleteTest.bind(this,test._id,test.fileName)}
+                      >
+                        del
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ))}
         </main>
       </React.Fragment>
     );
