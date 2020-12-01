@@ -12,7 +12,7 @@ export default class Tutorials extends Component {
       courseID: props.location.state.course._id,
       code: '',
       selectedFile: "", // selected file
-      tests: ["test1", "test2", "test3"]
+      tests: []
     };
   }
 
@@ -23,6 +23,15 @@ export default class Tutorials extends Component {
       url: "/user",
     }).then((res) => {
       this.setState({ userID: res.data._id }); 
+      axios
+      .get(`/autograder/${this.state.courseID}`)
+      .then((res) => {
+        this.setState({ tests: res.data});
+        console.log("tests returned", res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     });
   }
 
@@ -32,10 +41,11 @@ export default class Tutorials extends Component {
     <div style={background}>
       <div style={testCard}>
         <div style={name}>
-          {test}
+          {test.testName}
           <Button
               variant="primary"
               style={buttonStyleDelete}
+              onClick = {this.deleteTest.bind(this,test._id,test.fileName)}
               >
                 del
           </Button>
@@ -44,6 +54,16 @@ export default class Tutorials extends Component {
       </div>
     </div>
     ));
+  }
+
+  deleteTest(testID, fileName) {
+    axios({
+      method: "DELETE",
+      withCredentials: true,
+      url: `autograder/${this.state.courseID}/${testID}/${fileName}`,
+    }).then((res) => {
+      console.log(res);
+    });
   }
 
   onChangeHandler=event=>{
@@ -63,7 +83,7 @@ export default class Tutorials extends Component {
       })
       .then(res => { // then print response status
         console.log(res.statusText)
-    })
+    })    
   }
 
   render() {
