@@ -41,8 +41,8 @@ router.route("/:classId/add").post((req, res) => {
 });
   
 // Delete a Test 
-router.route("/").delete((req, res) => {
-    let testID = req.body.testID;
+router.route("/:classId/:testId").delete((req, res) => {
+    let testID = req.params.testID;
 
     Autograder.findById(testID)
       .then(test)
@@ -56,11 +56,20 @@ router.route("/").delete((req, res) => {
 });
 
 // Get a Test 
-router.route("/").get((req, res) => {
-    let testID = req.body.testID;
-  
+router.route("/:classId/:testId").get((req, res) => {
+    let testID = req.params.testID;
+
     Autograder.findById(testID)
       .then(test => res.json(test))
+      .catch(err => res.status(400).json('Error: ' + err));
+  
+});
+
+// Get all Tests for a class
+router.route("/:classId").get((req, res) => {
+  
+    Autograder.find({'courseID': classId})
+      .then(tests => res.json(tests))
       .catch(err => res.status(400).json('Error: ' + err));
   
 });
