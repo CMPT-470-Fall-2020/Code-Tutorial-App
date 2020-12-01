@@ -29,7 +29,7 @@ router.route("/:classId/add").post((req, res) => {
       }
       // rename file name to have user id
       fs.rename(req.file.path, req.file.path.replace('userID', userID).replace('courseID', courseID), () => {
-        var fileName = req.file.path.replace('userID', userID)
+        var fileName = userID + '-' + courseID + '-' + req.file.originalname
         var testName = req.file.originalname
 
         let newTest = new Autograder({userID, courseID, fileName, testName});
@@ -43,7 +43,7 @@ router.route("/:classId/add").post((req, res) => {
 // Delete a Test 
 router.route("/").delete((req, res) => {
     let testID = req.body.testID;
-  
+
     Autograder.findById(testID)
       .then(test)
       .catch(err => res.status(400).json('Error: ' + err));
