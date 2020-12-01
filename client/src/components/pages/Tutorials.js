@@ -35,8 +35,9 @@ export default class Tutorials extends Component {
         }}
       >
         <div style={background}>
+        <div style={name}>{tutorial.tutorialName}</div>
           <div style={tutorialCard}>
-            <div style={name}>{tutorial.tutorialName}</div>
+
           </div>
         </div>
       </Link>
@@ -58,7 +59,7 @@ export default class Tutorials extends Component {
 const background = {
   border: "1px solid black",
   margin: "2% 10%",
-  paddingTop: "5%",
+  paddingTop: "1%",
   borderRadius: "5px",
   background: "#343a40",
 };
@@ -75,8 +76,9 @@ const tutorialCard = {
 };
 
 const name = {
-  color: "#343a40",
+  color: "#ffffff",
   fontFamily: "Arial, Helvetica, sans-serif",
   fontWeight: "bold",
   textAlign: "center",
+  paddingBottom: "1%",
 };

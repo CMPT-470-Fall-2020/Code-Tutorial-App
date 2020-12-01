@@ -69,13 +69,15 @@ export default class RunTutorial extends Component {
 
   render() {
     return (
-      <div>
+      <div style={centerLayout}>
         <div id="codemirror-settings-group">
           <label>Select Code Cell Theme: </label>
           <DropdownButton
             title={this.state.currentTheme}
-            id="dropdown-editor-theme-align-right"
+            id="dropdown-editor-theme"
             className="codemirror-select"
+            variant="secondary"
+            style={buttonStyle}
             onSelect={this.handleThemeSelect}
           >
             {codeMirrorThemes.map((themeName, index) => {
@@ -86,12 +88,14 @@ export default class RunTutorial extends Component {
               );
             })}
           </DropdownButton>
-          <label>Select Code Cell Keybinds</label>
+          <label> Select Code Cell Keybinds: </label>
           <DropdownButton
             title={this.state.currentKeybinds}
-            id="dropdown-editor-keybinds-align-right"
+            id="dropdown-editor-keybinds"
             className="codemirror-select"
             onSelect={this.handleKeybindSelect}
+            variant="secondary"
+            style={buttonStyle}
           >
             {codeMirrorKeyBinds.map((keyBind, index) => {
               return (
@@ -107,6 +111,7 @@ export default class RunTutorial extends Component {
             plugins={[gfm, math, emoji]}
             renderers={this.renderers}
             children={this.state.tutorialSelected}
+            variant="secondary"
           />
         </Container>
       </div>
@@ -116,4 +121,14 @@ export default class RunTutorial extends Component {
 
 const tutorialStyle = {
   margin: "2% 2%",
+};
+
+const centerLayout = {
+  margin: "2% 10%",
+};
+
+const buttonStyle = {
+  padding: "3px",
+  float: "right",
+  fontFamily: "Arial, Helvetica, sans-serif",
 };

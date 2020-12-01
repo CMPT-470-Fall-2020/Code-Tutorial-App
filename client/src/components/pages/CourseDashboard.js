@@ -109,7 +109,7 @@ export default class CourseDashboard extends Component {
             }}
           >
             <Button
-              variant="primary"
+              variant="secondary"
               style={buttonStyleForum}
               >
                 Forum
@@ -124,7 +124,7 @@ export default class CourseDashboard extends Component {
             }}
           >
             <Button
-              variant="primary"
+              variant="secondary"
               style={buttonStyleTutorial}
               >
                 Tutorials
@@ -161,7 +161,7 @@ export default class CourseDashboard extends Component {
             ></FormControl>
             <InputGroup.Append>
               <Button
-                  variant="primary"
+                  variant="secondary"
                   style={buttonStyle}
                   onClick={this.addCourse.bind(this)}
                 >
@@ -191,21 +191,18 @@ const buttonStyleTutorial = {
   padding: "3px",
   float: "left",
   fontFamily: "Arial, Helvetica, sans-serif",
-  backgroundColor: "#343a40",
 };
 
 const buttonStyleForum = {
   padding: "3px",
   float: "right",
   fontFamily: "Arial, Helvetica, sans-serif",
-  backgroundColor: "#343a40",
 };
 
 const buttonStyle = {
   padding: "3px",
   float: "right",
   fontFamily: "Arial, Helvetica, sans-serif",
-  backgroundColor: "#343a40",
 };
 
 const background = {

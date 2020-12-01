@@ -89,7 +89,7 @@ export default class Post extends Component {
                 <button onClick={this.editComment.bind(this, comment)}>Edit</button>
             </div>
         )
-    } 
+    }
     return
   }
 
@@ -101,10 +101,10 @@ export default class Post extends Component {
                     <button onClick={this.editPost.bind(this)}>Edit Post</button>
                 </div>
             )
-        } 
+        }
         return
     }
-    
+
 
 /////////////////////////////////   Edit, add, and delete functions /////////////////////////////////
     editPost() {
@@ -147,7 +147,7 @@ export default class Post extends Component {
         });
 
         console.log(this.state);
-        window.location.reload(); 
+        window.location.reload();
     }
 
     editComment(comment) {
@@ -178,7 +178,7 @@ export default class Post extends Component {
         }).then((res) => {
             console.log(res);
         });
-        window.location.reload(); 
+        window.location.reload();
     }
 
     deleteComment(comment) {
@@ -189,7 +189,7 @@ export default class Post extends Component {
         }).then((res) => {
             console.log(res);
         });
-        window.location.reload(); 
+        window.location.reload();
     }
 
     addComment() {
@@ -206,7 +206,7 @@ export default class Post extends Component {
         }).then((res) => {
             console.log(res);
         });
-        window.location.reload(); 
+        window.location.reload();
     }
 
     createCommentList() {
@@ -218,18 +218,20 @@ export default class Post extends Component {
                 </div>
         ));
     }
-      
+
   render() {
     return (
       <React.Fragment>
-        <div>
-          <h3 style={postTitle}>{this.state.forum.postTitle}</h3>
-          <p style={postText}>{this.state.forum.postText}</p>
+        <div style={centerLayout}>
+          <h3 style={postTitle}>Post</h3>
+          <main style={main}>
+          <h5><b>Title: {this.state.forum.postTitle}</b></h5>
+          <p>{this.state.forum.postText}</p>
           {this.showPostEditButton()}
-          <h3 style={postTitle}>Comments</h3> 
-          <main>{this.createCommentList()}</main>
-        </div>
-        <Container>
+          <div style={commentsSection}>
+          <h6 style={commentsTitle}>Comments</h6>
+          {this.createCommentList()}
+          <br></br><br></br>
           <InputGroup style={postTitle}>
                 <FormControl
                 placeholder="Comment"
@@ -238,13 +240,16 @@ export default class Post extends Component {
                 ></FormControl>
             </InputGroup>
             <Button
-                  variant="primary"
+                  variant="secondary"
                   style={buttonStyle}
                   onClick={this.addComment.bind(this)}
                 >
                   Add Comment
             </Button>
-        </Container>
+            <br></br>
+            </div>
+            </main>
+          </div>
       </React.Fragment>
     );
   }
@@ -256,11 +261,28 @@ const forumCard = {
     border: "1px solid black",
     background: "white",
 };
-  
+
 const postTitle = {
-  margin: "2% 10%",
   borderBottom: "1px solid black",
 };
+
+const commentsSection = {
+  marginTop: "10%",
+  marginLeft: "10%",
+  marginRight: "10%",
+};
+
+const commentsTitle = {
+  borderBottom: "1px solid black",
+};
+
+const centerLayout = {
+  margin: "2% 10%",
+};
+
+const main = {
+  margin: "5% 0% 0% 0%",
+}
 
 const postText = {
     margin: "2% 10%",
@@ -272,5 +294,4 @@ const buttonStyle = {
     float: "right",
     margin: "2% 0% 0% 1%",
     fontFamily: "Arial, Helvetica, sans-serif",
-    backgroundColor: "#343a40",
 };

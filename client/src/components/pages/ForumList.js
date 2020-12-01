@@ -38,15 +38,17 @@ export default class ForumList extends Component {
     return this.state.forums.map((forum, key) => (
       <div key={key}>
           <div style={background}>
+          <Link
+              to={{
+                pathname: "/post",
+                state: { forum },
+              }}
+            >
+            <div style={name}>{forum.postTitle}</div>
+          </Link>
             <div style={forumCard}>
-              <Link
-                  to={{
-                    pathname: "/post",
-                    state: { forum },
-                  }}
-                >
-                <div style={name}>{forum.postTitle}</div>
-              </Link>
+
+
               <p>Created by: {forum.userName}</p>
               <div>{this.showDeleteButton(forum)}</div>
             </div>
@@ -88,7 +90,7 @@ export default class ForumList extends Component {
               state: {course: this.state.course}
             }}>
               <Button
-                    variant="primary"
+                    variant="secondary"
                     style={buttonStyle}
                     >
                 Add Post
@@ -108,7 +110,7 @@ export default class ForumList extends Component {
 const background = {
   border: "1px solid black",
   margin: "2% 10%",
-  paddingTop: "5%",
+  paddingTop: "1%",
   borderRadius: "5px",
   background: "#343a40",
 };
@@ -125,17 +127,17 @@ const forumCard = {
 };
 
 const name = {
-  color: "#343a40",
+  color: "#ffffff",
   fontFamily: "Arial, Helvetica, sans-serif",
   fontWeight: "bold",
   textAlign: "center",
+  paddingBottom: "1%",
 };
 
 const buttonStyle = {
   padding: "3px",
   float: "right",
   fontFamily: "Arial, Helvetica, sans-serif",
-  backgroundColor: "#343a40",
 };
 
 const main = {
