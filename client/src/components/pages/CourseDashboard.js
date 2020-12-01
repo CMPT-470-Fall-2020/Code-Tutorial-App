@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import Header from "./../layout/Header";
 import {
-  Container,
   InputGroup,
   FormControl
 } from "react-bootstrap";
@@ -115,6 +113,20 @@ export default class CourseDashboard extends Component {
                 Forum
             </Button>
           </Link>
+          <Link
+            key={key}
+            to={{
+              pathname: "/runTest",
+              state: { course },
+            }}
+          >
+            <Button
+              variant="secondary"
+              style={buttonStyleRunTest}
+              >
+                Test Code
+            </Button>
+          </Link>
           {course.courseCode}
           <Link
             key={key}
@@ -186,8 +198,13 @@ const main = {
   margin: "5% 0% 0% 0%",
 }
 
-
 const buttonStyleTutorial = {
+  padding: "3px",
+  float: "left",
+  fontFamily: "Arial, Helvetica, sans-serif",
+};
+
+const buttonStyleRunTest = {
   padding: "3px",
   float: "left",
   fontFamily: "Arial, Helvetica, sans-serif",
@@ -219,7 +236,6 @@ const backgroundaddCourse = {
   borderRadius: "5px",
   background: "#343a40",
 };
-
 
 const courseCard = {
   padding: "1%",
