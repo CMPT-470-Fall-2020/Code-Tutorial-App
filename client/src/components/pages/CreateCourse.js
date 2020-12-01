@@ -78,7 +78,6 @@ export default class CreateCourse extends Component {
   render() {
     return (
       <React.Fragment>
-        {this.props.location.pathname !== "/login" && <Header />}
         <div>
           <h3 style={Title}>Add Course</h3>
         </div>

@@ -38,6 +38,7 @@ class App extends Component {
             <Route path="/createPost" component={CreatePost}></Route>
             <Route path="/post" component={Post}></Route>
             <Route path="/uploadtest" component={UploadTest}></Route>
+            <Route path="/createcourse" component={CreateCourse}></Route>
 
             {/* Show blank page for users without the intended account
             Local Bug: Does not work without refreshing on first load. Need to look into.
