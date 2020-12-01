@@ -56,24 +56,14 @@ export default class Tutorials extends Component {
   onClickHandler = (event) => {
     const data = new FormData() 
     data.append('file', this.state.selectedFile)
+    data.append('courseID', this.state.courseID)
+    data.append('userID', this.state.userID)
 
-    // Display the values (for debugging purposes) (REMOVE LATER)
-    for (var value of data.values()) {
-      console.log(value); 
-    }
-
-    axios({
-      method: "POST",
-      data: {
-        courseID: this.state.courseID,
-        userID: this.state.userID,
-        form: data
-      },
-      withCredentials: true,
-      url: `/autograder/${this.state.courseID}/add`,
-    }).then((res) => {
-      console.log(res);
-    });
+    axios.post(`/autograder/${this.state.courseID}/add`, data, { // receive two parameter endpoint url ,form data 
+      })
+      .then(res => { // then print response status
+        console.log(res.statusText)
+    })
   }
 
   render() {
