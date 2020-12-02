@@ -49,25 +49,32 @@ export default class Header extends Component {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="mr-auto">
-            <NavDropdown title="Tutorials" id="basic-nav-dropdown">
-              <NavDropdown.Item as={Link} to="/coursedashboard">
-                Dashboard
-              </NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/createtutorial">
-                Create Tutorial
-              </NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/createCourse">
-                Create Course
-              </NavDropdown.Item>
-            </NavDropdown>
-            <Nav.Link as={Link} to="/codeplayground">
-              Code Playground
-            </Nav.Link>
-          </Nav>
-        </Navbar.Collapse>
-        <Nav.Link as={Link} to="/" style={logoutStyle} onClick={this.onLogout.bind(this)}>
+        {this.state.user.accountType === "Student" && (
+          <React.Fragment>
+            <Navbar.Collapse id="basic-navbar-nav">
+                <Nav className="mr-auto">
+                <NavDropdown title="Tutorials" id="basic-nav-dropdown" >
+                    <NavDropdown.Item as={Link} to="/coursedashboard">Dashboard</NavDropdown.Item>
+                </NavDropdown>
+                <Nav.Link as={Link} to="/codeplayground">Code Playground</Nav.Link> 
+                </Nav>
+            </Navbar.Collapse>
+          </React.Fragment>
+        )}
+        {this.state.user.accountType === "Teacher" && (
+          <React.Fragment>
+            <Navbar.Collapse id="basic-navbar-nav">
+                <Nav className="mr-auto">
+                <NavDropdown title="Tutorials" id="basic-nav-dropdown" >
+                    <NavDropdown.Item as={Link} to="/coursedashboard">Dashboard</NavDropdown.Item>
+                    <NavDropdown.Item as={Link} to="/createtutorial">Create Tutorial</NavDropdown.Item>
+                    <NavDropdown.Item as={Link} to="/createcourse">Create Course</NavDropdown.Item>
+                </NavDropdown>
+                </Nav>
+            </Navbar.Collapse>
+          </React.Fragment>
+        )}
+        <Nav.Link as={Link} to="/login" style={logoutStyle} onClick={this.onLogout.bind(this)}>
           Logout        
         </Nav.Link>
       </Navbar>
