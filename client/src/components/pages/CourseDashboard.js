@@ -108,7 +108,7 @@ export default class CourseDashboard extends Component {
             }}
             >
             <Button
-              variant="primary"
+              variant="secondary"
               style={buttonStyleForum}
               >
                 Upload Test File

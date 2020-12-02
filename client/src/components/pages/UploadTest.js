@@ -100,7 +100,7 @@ export default class Tutorials extends Component {
                 <div style={name}>
                   {test.testName}
                   <Button
-                      variant="primary"
+                      variant="secondary"
                       style={buttonStyleDelete}
                       onClick = {this.deleteTest.bind(this,test._id,test.fileName)}
                       >
@@ -130,7 +130,7 @@ const buttonStyle = {
   padding: "3px",
   float: "left",
   fontFamily: "Arial, Helvetica, sans-serif",
-  backgroundColor: "#343a40",
+  backgroundColor: "#6c757d",
 }
 
 const main = {
@@ -152,6 +152,7 @@ const testCard = {
 };
 
 const name = {
+  padding: "10px",
   color: "#343a40",
   fontFamily: "Arial, Helvetica, sans-serif",
   fontWeight: "bold",
@@ -162,5 +163,4 @@ const buttonStyleDelete= {
   padding: "3px",
   float: "right",
   fontFamily: "Arial, Helvetica, sans-serif",
-  backgroundColor: "#343a40",
 };
