@@ -6,6 +6,11 @@ docker image rm 470-ubuntu-zsh
 docker image rm 470-ubuntu-julia
 docker image rm 470-ubuntu-python
 
+docker image rm 470-ubuntu-python-autograder
+docker image rm 470-ubuntu-bash-autograder
+docker image rm 470-ubuntu-zsh-autograder
+docker image rm 470-ubuntu-julia-autograder
+
 # Build the base container used to support all other language containers
 Write-Host "Building base ubuntu container"
 cd ./basic-ubuntu
@@ -47,3 +52,27 @@ cd ../ubuntu-python
 # since it will ask for permission before overwritting any existing files overwrite.
 copy ../../language-servers/python-server.py ./
 docker build -t 470-ubuntu-python .
+
+
+
+Write-Host "Building autograders now"
+# Build the base container for python
+Write-Host "Building base python container"
+cd ../ubuntu-python-test
+docker build -t 470-ubuntu-python-autograder .
+
+
+# Build the base container for bash
+Write-Host "Building base python container"
+cd ../ubuntu-bash-test
+docker build -t 470-ubuntu-bash-autograder .
+
+# Build the base container for zsh
+Write-Host "Building base python container"
+cd ../ubuntu-zsh-test
+docker build -t 470-ubuntu-zsh-autograder .
+
+# Build the base container for julia
+Write-Host "Building base python container"
+cd ../ubuntu-julia-test
+docker build -t 470-ubuntu-julia-autograder .
