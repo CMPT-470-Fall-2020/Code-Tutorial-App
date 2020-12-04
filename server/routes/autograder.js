@@ -28,7 +28,8 @@ router.route("/:classId/add").post((req, res) => {
   upload(req, res, function (err) {
     var courseID = req.params.classId;
     var userID = req.body.userID;
-    var testName = req.body.testName;
+//    var testName = req.body.testName;
+    var language = req.body.language;
 
     if (err instanceof multer.MulterError) {
       return res.status(500).json(err);
@@ -45,7 +46,7 @@ router.route("/:classId/add").post((req, res) => {
           .replace("courseID", courseID);
         var testName = req.file.originalname;
 
-        let newTest = new Autograder({ userID, courseID, fileName, testName });
+        let newTest = new Autograder({ userID, courseID, language, fileName, testName });
         newTest
           .save()
           .then(() => res.json("Test added!"))
