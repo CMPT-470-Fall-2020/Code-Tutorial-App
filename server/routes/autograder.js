@@ -7,6 +7,14 @@ const Autograder = require("./../models/autograder.model");
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
+  	// According to the docs, if we are using a function as the destination,
+  	// we have to create the folder ourselves. If the folder does not exist,
+  	// it is created. This is done synchronously.
+	let testDir = path.join(__dirname, '../tests');
+	if (!fs.existsSync(testDir)){
+   	 fs.mkdirSync(testDir);
+	}
+
     cb(null, "tests");
   },
   filename: function (req, file, cb) {
