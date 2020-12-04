@@ -7,7 +7,8 @@
     "start": "node index.js",
     "start-prod": "NODE_ENV=production PORT=8080 HOST=0.0.0.0 node index.js",
     "test": "jest",
-    "docker:generate-images": "cd ./Containers && ./generate-containers.sh"
+    "docker:generate-images": "cd ./Containers && ./generate-containers.sh",
+    "start-prod-local": "NODE_ENV=production PORT=8080 HOST=127.0.0.1 node index.js"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,7 @@
     "log4js": "^6.3.0",
     "markedjs": "^10.0.0",
     "mongoose": "^5.10.11",
+    "multer": "^1.4.2",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "tar-stream": "^2.1.4"
