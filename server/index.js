@@ -18,6 +18,8 @@ const app = express();
 const port = process.env.PORT || 4000;
 const host = process.env.HOST || "127.0.0.1";
 
+app.use(cors())
+/*
 app.use(function (req, res, next) {
   res.setTimeout(120000, function () {
     console.log("Request has timed out.");
@@ -25,6 +27,8 @@ app.use(function (req, res, next) {
   });
   next();
 });
+*/
+
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
@@ -216,6 +220,10 @@ app.use("/autograder", autograderRouter);
 
 // TODO: Work on login authentication
 
-app.listen(port, host, () => {
+let server = app.listen(port, host, () => {
   console.log(`Backend server listening on port ${port} at host ${host}`);
 });
+
+// Set the timeout so POST requests executing code/grading do not timeout early.
+// The default timeout seems to be only a few minutes whih might not be enough.
+server.setTimeout(500000);

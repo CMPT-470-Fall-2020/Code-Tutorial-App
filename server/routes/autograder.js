@@ -104,7 +104,8 @@ router.route("/runTest").post((req, res) => {
       "professorTest.py",
       userCode,
       (output) => {
-        res.json(output);
+      	console.log("about to end connection!")
+        res.json(output).end();
       }
     );
   });

@@ -72,7 +72,8 @@ export default class RunTest extends Component {
         //let output = document.createElement("p");
         //output.innerHTML = res.data;
         //document.getElementById("output").appendChild(output);
-      });
+      }).catch((err) => {console.log("There was an error with the post request", err)})
+
     }
 
     handleSelect = (e) => {
