@@ -188,8 +188,8 @@ class Interpreter {
    *
    * @memberof Interpreter
    */
-  shutdown() {
-    this.dockerInstance.stopInstance();
+  shutdown(callback) {
+    this.dockerInstance.stopInstance(callback);
   }
 
   /**

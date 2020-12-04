@@ -23,6 +23,7 @@ import "codemirror/theme/eclipse.css";
 export default class MarkdownCell extends Component {
   constructor(props) {
     super(props);
+
     this.codeMirrorEditConfig = {
       viewportMargin: 10,
       readOnly: false,
@@ -34,8 +35,10 @@ export default class MarkdownCell extends Component {
       tabSize: 4,
     };
 
+	
     this.codeMirrorReadOnlyConfig = {
-      viewportMargin: 10,
+      //viewportMargin: (this.props.code.match(/\n/g) || '').length + 2,
+      viewportMargin: 25,
       readOnly: "nocursor",
       lineWrapping: true,
       lineNumbers: false,
@@ -44,6 +47,7 @@ export default class MarkdownCell extends Component {
       indentUnit: 2,
       tabSize: 4,
     };
+    //console.log(this.codeMirrorReadOnlyConfig)
 
     this.state = {
       orignalCodeVal: this.props.code, // Original text incell. Used to restore cell to original text.
@@ -63,7 +67,7 @@ export default class MarkdownCell extends Component {
       currentKeymap: this.props.keymap || "default",
     };
     //this.buttonStyle = 'style={{font-size: 12px; float: right; border: solid 1px black; margin-top: 1%}}';
-    console.log(this.props.keymap);
+    //console.log(this.props.keymap);
 
     // Bind functions so they are accessible from the "render" method.
     this.runCode = this.runCode.bind(this);
@@ -86,6 +90,10 @@ export default class MarkdownCell extends Component {
 
   stopInstance(){
   	console.log("stopping instance!")
+	  // Start spinner
+      this.setState({ respCodeStatus: true });
+      // Clear code
+      this.setState({ codeOutput: '' });
       axios({
         method: "DELETE",
         data: {
@@ -97,25 +105,9 @@ export default class MarkdownCell extends Component {
       }).then((res) => {
         let retMsg = res.data.message;
         // Stop spinner
-        //this.setState({ isWaiting: false });
         console.log("Return message in markdown cell is", retMsg);
-/*
-        if (retMsg.type === "SUCCESS") {
-          this.setState({ respCodeStatus: true });
-          // Hide spinner
-          if (retMsg.stdout.length !== 0) {
-            this.setState({ codeOutput: retMsg.stdout });
-          } else {
-            this.setState({ codeOutput: retMsg.stderr });
-          }
-        } else {
-          this.setState({ respCodeStatus: false });
-          this.setState({
-            codeOutput:
-              "There is some sort of error with running your request. :(",
-          });
-        }
-*/
+        this.setState({ isWaiting: false });
+        this.setState({ codeOutput: retMsg });
       });
   }
 

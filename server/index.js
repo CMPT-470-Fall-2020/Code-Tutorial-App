@@ -59,13 +59,18 @@ app.delete("/run", (req, res) => {
       false
     );
     if (currInstance !== undefined) {
-      currInstance.shutdown();
-      interpreterManager.deleteInstance(uname, iname);
+      currInstance.shutdown((shutdownStatus) => {
+      	console.log("Called shutdown callback for", uname, iname);
+      	interpreterManager.deleteInstance(uname, iname);
+  		res.json({ message: shutdownStatus });
+      });
     }
+  }else{
+  		res.json({ message: "No instance with that name exists. You can run the current code." });
   }
   // Return a success message whether or not the instance has been started/exists or not.
   // The user should not be concerned about such things.
-  res.json({ message: "Instance Successfully Stopped!" });
+  //res.json({ message: "Instance Successfully Stopped!" });
 });
 
 app.post("/run", (req, res) => {
@@ -90,6 +95,7 @@ app.post("/run", (req, res) => {
     let currInstance = interpreterManager.getInstance(uname, iname, lang, true);
     // The language the user requested does not exist. Send out an error
     if (currInstance == interpManager.LANGDNE) {
+      console.log("Language does not exist")
       res.json({ message: "Language requested does not exist" });
     } else {
       let hash = currInstance.runCode(code);
