@@ -84,7 +84,7 @@ export default class Post extends Component {
   showCommentButtons(comment) {
     if (comment.userID === this.state.userID) {
         return (
-            <div id={comment._id}>
+            <div id={"comment-buttons" + comment._id}>
                 <button onClick={this.deleteComment.bind(this, comment)}>Delete</button>
                 <button onClick={this.editComment.bind(this, comment)}>Edit</button>
             </div>
@@ -203,25 +203,14 @@ export default class Post extends Component {
             console.log(res);
             document.getElementById(comment._id).remove();
         });
+    }
 
-        // // Update the state
-        // for (var i = this.state.comments.length - 1; i >= 0; i--) {
-        //   if (this.state.comments[i] === comment) {
-        //     this.state.comments.splice(i,1);
-        //     console.log(this.state.comments);
-
-        //   }
-        // }
-
-        // // get comments list object from server to update the state
-        // axios 
-        // .get(`/forum/${this.state.forum.courseID}/${this.state.forum._id}`)
-        // .then((res) => {
-        //   this.setState({ comments: res.data });
-        // })
-        // .catch((error) => {
-        //   console.log(error);
-        //  });
+    createCommentBlock(newComment) {
+      return (<div style={forumCard} id={newComment._id}>
+             <div style={postText}>{newComment.commentText}</div>
+             <p>Created by: {newComment.userName}</p>
+             <div>{this.showCommentButtons(newComment)}</div>
+          </div>)
     }
 
     addComment() {
@@ -238,28 +227,54 @@ export default class Post extends Component {
         }).then((res) => {
             console.log(res);
 
-            // get comments list object from server to update the state
+            // get comments list object from server to get the new comment
             axios
             .get(`/forum/${this.state.forum.courseID}/${this.state.forum._id}`)
             .then((res) => {
-              this.setState({ comments: res.data });
+              var newComment = res.data[res.data.length - 1];
 
-              // Create comment block
-              var newComment = this.state.comments[this.state.comments.length - 1];
-              var newCommentBlock = (
-                  <div style={forumCard} id={newComment._id}>
-                    <div style={postText}>{newComment.commentText}</div>
-                    <p>Created by: {newComment.userName}</p>
-                    <div>{this.showCommentButtons(newComment)}</div>
-                  </div>
-              )
-              
+              // Comment block
+              var newCommentBlock = document.createElement("div");
+              newCommentBlock.id = newComment._id;
+              //Style from forumCard below
+              newCommentBlock.style.padding = "1%";
+              newCommentBlock.style.border = "1px solid black";
+              newCommentBlock.style.background = "white";
+
+              // Comment text
+              var newCommentText = document.createElement("div");
+              newCommentText.innerHTML = newComment.commentText;
+              //Style from postText below
+              newCommentText.style.margin = "2% 10%";
+              newCommentText.style.borderBottom = "1px solid black";
+
+              var createdBy = document.createElement("p");
+              createdBy.innerHTML = "Created by: " + newComment.userName;
+
+              // Delete and edit buttons
+              var buttons = document.createElement("div");
+              buttons.id = "comment-buttons" + newComment._id;
+
+              var deleteBtn = document.createElement("button");
+              deleteBtn.addEventListener('click', this.deleteComment.bind(this, newComment));
+              deleteBtn.innerHTML = "Delete";
+
+              var editBtn = document.createElement("button");
+              editBtn.addEventListener('click', this.editComment.bind(this, newComment));
+              editBtn.innerHTML = "Edit";
+
+              // Add elements to the DOM
+              buttons.appendChild(deleteBtn);
+              buttons.appendChild(editBtn);
+              newCommentBlock.appendChild(newCommentText);
+              newCommentBlock.appendChild(createdBy);
+              newCommentBlock.appendChild(buttons);
+
               // Add to end of the list
               document.getElementById("commentList").appendChild(newCommentBlock);
                     
-              // //TODO
-              // // Clear input box
-              // document.getElementById("addCommentInput").value = "";
+              // Clear input box
+              document.getElementById("addCommentInput").value = "";
             })
             .catch((error) => {
               console.log(error);
