@@ -93,9 +93,10 @@ router.route("/runTest").post((req, res) => {
   let testObject = req.body.test;
   let testBaseFile = testObject.fileName;
   let userCode = req.body.code;
-  console.log("Output of the params", testBaseFile, userCode);
+  let lang = testObject.language;
+  console.log("Output of the params", testBaseFile, userCode, testObject);
 
-  let autograderInstance = new AutoGraderInstance("bullshit");
+  let autograderInstance = new AutoGraderInstance(lang);
   autograderInstance.startInstance(() => {
     console.log("Instance Started!");
     autograderInstance.sendArchiveToInstance(

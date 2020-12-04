@@ -11,30 +11,27 @@ const DOCKER_NAME_POOL =
   "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 const BASE_IMAGES = {
-  bash: "470-ubuntu-bash-test",
-  zsh: "470-ubuntu-zsh-test",
-  python: "470-ubuntu-python-test",
-  julia: "470-ubuntu-julia-test",
+  bash: "470-ubuntu-python-autograder",
+  zsh: "470-ubuntu-python-autograder",
+  python: "470-ubuntu-python-autograder",
+  julia: "470-ubuntu-python-autograder",
 };
 
 const COMMANDS = {
-  bash: "470-ubuntu-bash-test",
-  zsh: "470-ubuntu-zsh-test",
+  bash: ["bash", "professorTest.py"],
+  zsh: ["zsh", "professorTest.py"],
   python: ["python3", "professorTest.py"],
-  julia: "470-ubuntu-julia-test",
+  julia: ["julia", "professorTest.jl"],
 };
 
 class AutograderDockerInstance {
-  constructor(imageLang) {
-    logger.info(
-      "DOCKER: Create new instance with image name and port number:",
-      imageLang
-    );
-    //this.imgType = imageLang;
-    //this.baseImg = BASE_IMAGES[imageLang.toLowerCase()];
+  constructor(lang) {
+    this.lang = lang.toLowerCase();
+    this.baseImg = BASE_IMAGES[this.lang];
+    this.startCommand = COMMANDS[this.lang];
     this.container_name = chance.string({ pool: DOCKER_NAME_POOL });
     this.docker = new Docker(); // create new docker instance
-    // This is set after the container is started.
+    // This is set after the container is started and holds the instance to the containter.
     this.container_instance = undefined;
     this.pollId = undefined;
     // Store the output of the exec command's stdout and stderr.
@@ -45,14 +42,14 @@ class AutograderDockerInstance {
 
     logger.trace(
       "DOCKER: Constructor finished. Container name will be",
-      this.container_name
+      this.container_name, this.lang, this.baseImg, this.startCommand
     );
   }
 
   execInContainer(callback) {
     this.container_instance
       .exec({
-        Cmd: ["python3", "professorTest.py"],
+        Cmd: this.startCommand,
         attachStdout: true,
         attachStderr: true,
         WorkingDir: "/home",
@@ -153,7 +150,7 @@ class AutograderDockerInstance {
     logger.trace("DOCKER: StartInstance called");
     this.docker.createContainer(
       {
-        Image: "470-ubuntu-python-autograder",
+        Image: this.baseImg,
         name: this.container_name,
         HostConfig: {
           AutoRemove: true,

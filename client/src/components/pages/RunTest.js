@@ -40,6 +40,7 @@ export default class RunTest extends Component {
       .get(`/autograder/${this.state.course}`)
       .then((res) => {
         this.setState({ tests: res.data });
+        console.log("Tests retrieve from server", res.data);
       })
       .catch((error) => {
         console.log(error);
