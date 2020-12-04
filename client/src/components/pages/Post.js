@@ -121,6 +121,7 @@ export default class Post extends Component {
         inputBody.onchange = this.onChangePostBody.bind(this);
 
         var saveButton = document.createElement("button");
+        saveButton.id = "savePostEdit";
         saveButton.innerHTML = "Save";
         saveButton.onclick = this.updatePost.bind(this);
 
@@ -131,8 +132,6 @@ export default class Post extends Component {
     }
 
     updatePost() {
-        console.log("NEW");
-        console.log(this.state.editTitle);
         axios({
             method: "POST",
             data: {
@@ -143,11 +142,16 @@ export default class Post extends Component {
             withCredentials: true,
             url: `/forum/${this.state.forum.courseID}/${this.state.forum._id}/update`,
         }).then((res) => {
+            this.state.forum.postTitle = this.state.editTitle;
+            this.state.forum.postText = this.state.editBody;
             console.log(res);
-        });
+        }); 
 
-        console.log(this.state);
-        window.location.reload();
+        document.getElementById("title").innerHTML = `Title: ${this.state.editTitle}`;
+        document.getElementById("postText").innerHTML =`${this.state.editBody}`;
+        document.getElementById("savePostEdit").remove();
+        document.getElementById("editTitle").remove();
+        document.getElementById("editBody").remove();
     }
 
     editComment(comment) {
@@ -178,7 +182,9 @@ export default class Post extends Component {
         }).then((res) => {
             console.log(res);
         });
-        window.location.reload();
+
+        
+        // window.location.reload();
     }
 
     deleteComment(comment) {
@@ -188,8 +194,27 @@ export default class Post extends Component {
             url: `/forum/${this.state.forum.courseID}/${this.state.forum._id}/${comment._id}`,
         }).then((res) => {
             console.log(res);
+            document.getElementById(comment._id).remove();
         });
-        window.location.reload();
+
+        // // Update the state
+        // for (var i = this.state.comments.length - 1; i >= 0; i--) {
+        //   if (this.state.comments[i] === comment) {
+        //     this.state.comments.splice(i,1);
+        //     console.log(this.state.comments);
+
+        //   }
+        // }
+
+        // // get comments list object from server to update the state
+        // axios 
+        // .get(`/forum/${this.state.forum.courseID}/${this.state.forum._id}`)
+        // .then((res) => {
+        //   this.setState({ comments: res.data });
+        // })
+        // .catch((error) => {
+        //   console.log(error);
+        //  });
     }
 
     addComment() {
@@ -205,13 +230,39 @@ export default class Post extends Component {
             url: `/forum/${this.state.forum.courseID}/${this.state.forum._id}/add`,
         }).then((res) => {
             console.log(res);
+
+            // get comments list object from server to update the state
+            axios
+            .get(`/forum/${this.state.forum.courseID}/${this.state.forum._id}`)
+            .then((res) => {
+              this.setState({ comments: res.data });
+
+              // Create comment block
+              var newComment = this.state.comments[this.state.comments.length - 1];
+              var newCommentBlock = (
+                  <div style={forumCard} id={newComment._id}>
+                    <div style={postText}>{newComment.commentText}</div>
+                    <p>Created by: {newComment.userName}</p>
+                    <div>{this.showCommentButtons(newComment)}</div>
+                  </div>
+              )
+              
+              // Add to end of the list
+              document.getElementById("commentList").appendChild(newCommentBlock);
+                    
+              // //TODO
+              // // Clear input box
+              // document.getElementById("addCommentInput").value = "";
+            })
+            .catch((error) => {
+              console.log(error);
+             });
         });
-        window.location.reload();
     }
 
     createCommentList() {
         return this.state.comments.map((comment, key) => (
-                <div style={forumCard} key={key}>
+                <div style={forumCard} key={key} id={comment._id}>
                     <div style={postText}>{comment.commentText}</div>
                     <p>Created by: {comment.userName}</p>
                     <div>{this.showCommentButtons(comment)}</div>
@@ -225,15 +276,16 @@ export default class Post extends Component {
         <div style={centerLayout}>
           <h3 style={postTitle}>Post</h3>
           <main style={main}>
-          <h5><b>Title: {this.state.forum.postTitle}</b></h5>
-          <p>{this.state.forum.postText}</p>
+          <h5><b id="title">Title: {this.state.forum.postTitle}</b></h5>
+          <p id="postText">{this.state.forum.postText}</p>
           {this.showPostEditButton()}
           <div style={commentsSection}>
           <h6 style={commentsTitle}>Comments</h6>
-          {this.createCommentList()}
+          <div id="commentList">{this.createCommentList()}</div>
           <br></br><br></br>
           <InputGroup style={postTitle}>
                 <FormControl
+                id="addCommentInput"
                 placeholder="Comment"
                 value={this.state.commentText}
                 onChange={this.onChangeText.bind(this)}

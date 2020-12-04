@@ -11,6 +11,15 @@ router.route("/:classId").get((req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
+// Retrieve a list of all the posts for a certain class.
+router.route("/:forumId/getPost").get((req, res) => {
+    let forumId = req.params.forumId;
+
+    Post.findById(forumId)
+    .then(post => res.json(post))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
 // Retrieve all the comments for a post in a specific class
 router.route("/:classId/:postId").get((req, res) => {
     let postId = req.params.postId;

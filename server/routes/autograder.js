@@ -73,4 +73,13 @@ router.route("/:classId").get((req, res) => {
   
 });
 
+// Run test
+router.route("/runTest").post((req,res) => {
+  let test = req.body.test;
+  let userCode = req.body.userCode;
+
+  
+
+});
+
 module.exports = router;

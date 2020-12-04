@@ -36,7 +36,7 @@ export default class ForumList extends Component {
 
   createForumList() {
     return this.state.forums.map((forum, key) => (
-      <div key={key}>
+      <div key={key} id={forum._id}>
           <div style={background}>
           <Link
               to={{
@@ -76,7 +76,7 @@ export default class ForumList extends Component {
       }).then((res) => {
           console.log(res);
       });
-      window.location.reload();
+      document.getElementById(forum._id).remove();
   }
 
   render() {
