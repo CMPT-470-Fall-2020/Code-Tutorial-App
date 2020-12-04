@@ -162,15 +162,16 @@ export default class Post extends Component {
         input.onchange = this.onChangeComment.bind(this);
 
         var saveButton = document.createElement("button");
+        saveButton.id = "save " + comment._id;
         saveButton.innerHTML = "Save";
-        saveButton.onclick = this.updateComment.bind(this, comment._id);
+        saveButton.onclick = this.updateComment.bind(this, comment);
 
         // Add input box and button
         document.getElementById(comment._id).appendChild(input);
         document.getElementById(comment._id).appendChild(saveButton);
     }
 
-    updateComment(commentID) {
+    updateComment(comment) {
         axios({
             method: "POST",
             data: {
@@ -178,13 +179,19 @@ export default class Post extends Component {
                 commentText: this.state.editComment
               },
             withCredentials: true,
-            url: `/forum/${this.state.forum.courseID}/${this.state.forum._id}/${commentID}/update`,
+            url: `/forum/${this.state.forum.courseID}/${this.state.forum._id}/${comment._id}/update`,
         }).then((res) => {
             console.log(res);
-        });
 
-        
-        // window.location.reload();
+            // Change elements in the DOM
+            document.getElementById(comment._id).firstChild.innerHTML = this.state.editComment;
+            document.getElementById("edit " + comment._id).remove();
+            document.getElementById("save " + comment._id).remove();
+
+            // Update state
+            comment.commentText = this.state.editComment;
+            this.setState({ editComment: ""});
+        });
     }
 
     deleteComment(comment) {
