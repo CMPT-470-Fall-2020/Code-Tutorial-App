@@ -4,9 +4,11 @@ import {
     FormControl,
     DropdownButton,
     Dropdown,
+    ButtonGroup,
   } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
+import { Controlled as CodeMirror } from "react-codemirror2";
 
 export default class RunTest extends Component {
   constructor(props) {
@@ -17,8 +19,10 @@ export default class RunTest extends Component {
       userName: '',
       code: '',
       tests: '',
-      selectedTest: 'Select test'
+      selectedTest: 'Select test',
+      testResult: '',
     };
+    this.fileReader = undefined;
   }
 
   componentDidMount() {
@@ -42,11 +46,6 @@ export default class RunTest extends Component {
       });
   }
 
-    onChangeCode(e) {
-        this.setState({
-            code: e.target.value,
-        });
-    }
 
     runTest() {
       var runTest;
@@ -68,15 +67,29 @@ export default class RunTest extends Component {
         url: `/autograder/runTest`,
       }).then((res) => {
         console.log(res);
-        let output = document.createElement("p");
-        output.innerHTML = res.data;
-        document.getElementById("output").appendChild(output);
+        this.setState({testResult: res.data});
+        //let output = document.createElement("p");
+        //output.innerHTML = res.data;
+        //document.getElementById("output").appendChild(output);
       });
     }
 
     handleSelect = (e) => {
       this.setState({ selectedTest: e });
     };
+
+  handleFileRead = (e) => {
+    const content = this.fileReader.result;
+    this.setState({code: content})
+  };
+
+	onChangeHandler = (e)=>{
+  		  console.log("got a file!")
+  		let file = e.target.files[0]
+		this.fileReader = new FileReader();
+    	this.fileReader.onloadend = this.handleFileRead;
+    	this.fileReader.readAsText(file);
+ 	 }
 
   render() {
     const testDropdown = [];
@@ -90,7 +103,7 @@ export default class RunTest extends Component {
     }
 
     return (
-      <React.Fragment>
+    		<div>
           <InputGroup>
             <DropdownButton
               as={InputGroup.Append}
@@ -101,22 +114,39 @@ export default class RunTest extends Component {
             >
               {testDropdown}
             </DropdownButton>
-          </InputGroup>
-          <InputGroup style={postTitle}>
-                <FormControl
-                value={this.state.code}
-                onChange={this.onChangeCode.bind(this)}
-                ></FormControl>
-            </InputGroup>
+            <input type="file" name="file" onChange={this.onChangeHandler}/>
             <Button
                   variant="secondary"
                   style={buttonStyle}
-                  onClick={this.runTest.bind(this)}
-                >
+                  onClick={this.runTest.bind(this)}>
                   Run Test
             </Button>
-            <div id="output">Output: </div>
-      </React.Fragment>
+
+          </InputGroup>
+
+		  <div id='container' style={containerStyle}>
+          <CodeMirror
+            value={this.state.code}
+          	options={{
+			  viewportMargin: 10,
+			  readOnly: false,
+			  lineWrapping: true,
+			  lineNumbers: true,
+			  direction: "ltr",
+			  indentUnit: 2,
+			  tabSize: 4,
+			}}
+            onBeforeChange={(editor, data, value) => {
+              this.setState({ code: value });
+            }}
+            onChange={(editor, data, value) => {
+              this.setState({ code: value });
+            }}
+          />
+          	<p>Output:</p>
+            <div id="output"> {this.state.testResult} </div>
+		  </div> 
+    		</div>
     );
   }
 }
@@ -155,9 +185,12 @@ const postTitle = {
 //     borderBottom: "1px solid black",
 //   };
 
+const containerStyle = {
+}
+
 const buttonStyle = {
     padding: "3px",
     float: "right",
-    margin: "2% 0% 0% 1%",
+    //margin: "2% 0% 0% 1%",
     fontFamily: "Arial, Helvetica, sans-serif",
 };
