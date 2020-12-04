@@ -1,7 +1,7 @@
 const Chance = require("chance");
 const Docker = require("dockerode");
 const SharedLog = require("./logging");
-const {PassThrough} = require('stream')
+const { PassThrough } = require("stream");
 const fs = require("fs");
 const tar = require("tar-stream");
 const logger = SharedLog.getInstance().logger;
@@ -11,14 +11,12 @@ const DOCKER_NAME_POOL =
   "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 class AutograderDockerInstance {
-  constructor(imageLang, portNum) {
+  constructor(imageLang) {
     logger.info(
       "DOCKER: Create new instance with image name and port number:",
-      imageLang,
-      portNum
+      imageLang
     );
     //this.imgType = imageLang;
-    //this.portNum = portNum;
     //this.baseImg = BASE_IMAGES[imageLang.toLowerCase()];
     this.container_name = chance.string({ pool: DOCKER_NAME_POOL });
     this.docker = new Docker();
@@ -30,7 +28,7 @@ class AutograderDockerInstance {
     );
   }
 
-  execInContainer(command, callback) {
+  execInContainer(callback) {
     this.container_instance.exec(
       {
         Cmd: ["python3", "professorTest.py"],
@@ -39,46 +37,54 @@ class AutograderDockerInstance {
         WorkingDir: "/home",
       },
       (err, exec) => {
-      		  console.log("created exec command")
-      		 if(err){
-      		    console.log("exec got an error")
-				throw err;
-      		 }else{
-      		 	console.log("Exec command is created.")
-      		 	exec.start({}, (err, stream) => {
-					console.log("exec is starting")
-					//console.log("stdout",process.stdout)
-					let outputStdout = "";
-				 	let logStream = new PassThrough();
-				  	logStream.on('data', function(chunk){
-						outputStdout += chunk.toString('utf8');
-						console.log("data 1", outputStdout)
-				  	});
-				  	logStream.on('end', function(){
-						console.log("output from exec command end", outputStdout)
-				  	})
-				  	logStream.on('finish', function(){
-						console.log("output from exec command finish", outputStdout)
-				  	})
+        console.log("created exec command");
+        if (err) {
+          console.log("exec got an error");
+          throw err;
+        } else {
+          console.log("Exec command is created.");
+          exec.start({}, (err, stream) => {
+            console.log("exec is starting");
+            //console.log("stdout",process.stdout)
+            let outputStdout = "";
+            let logStream = new PassThrough();
+            logStream.on("data", function (chunk) {
+              outputStdout += chunk.toString("utf8");
+              console.log("data 1", outputStdout);
+              callback(outputStdout);
+            });
 
-					this.docker.modem.demuxStream(stream, logStream, process.stderr);
-      		 	})
-      		 }
+            logStream.on("end", function () {
+              console.log("output from exec command end", outputStdout);
+            });
+            logStream.on("finish", function () {
+              console.log("output from exec command finish", outputStdout);
+            });
+
+            this.docker.modem.demuxStream(stream, logStream, process.stderr);
+          });
+        }
       }
     );
   }
   // Src: https://github.com/apocas/dockerode/issues/240
   // Even though the docker API can use "gzip", for some reason the
   // container cannot unzip it.
-  sendArchiveToInstance(localFileName, instanceFileName) {
-    let zlibArchive = fs.readFile(localFileName, "utf-8", (err, data) => {
+  sendArchiveToInstance(
+    localFileName,
+    instanceFileName,
+    studentCode,
+    responseCallback
+  ) {
+    let professorFile = fs.readFile(localFileName, "utf-8", (err, data) => {
       // Bind this to self variable so there is no name clash inside of callbacks.
       let self = this;
       console.log("err file", err);
-      console.log("READ FILE", data);
+      console.log("SENDARCHIVE:", data, "AND STUDENT CODE:", studentCode);
 
       let pack = tar.pack();
       pack.entry({ name: instanceFileName }, data);
+      pack.entry({ name: "studentCode.py" }, studentCode);
       pack.finalize();
 
       var chunks = [];
@@ -87,20 +93,19 @@ class AutograderDockerInstance {
       });
       pack.on("end", function () {
         var buffer = Buffer.concat(chunks);
-        self.container_instance.putArchive(buffer, { path: "/home" }, function (
-          error,
-          response
-        ) {
-          if (error) {
-            console.log("Error transporting file", error); 
-          } else {
-            console.log("Finished transport. Exec command now.");
+        self.container_instance.putArchive(
+          buffer,
+          { path: "/home" },
+          function (error, response) {
+            if (error) {
+              console.log("Error transporting file", error);
+            } else {
+              console.log("Finished transport. Exec command now.");
 
-			self.execInContainer("something")
-
-
+              self.execInContainer(responseCallback);
+            }
           }
-        });
+        );
       });
     });
   }
@@ -155,12 +160,14 @@ class AutograderDockerInstance {
   isAlive() {}
 }
 
+/*
 let a = new AutograderDockerInstance("a", 44);
 a.startInstance(() => {
   console.log("Instance Started!");
   a.sendArchiveToInstance("./profTest.py", "professorTest.py");
 });
+*/
 
-//module.exports = {
-//  DockerInstance: DockerInstance,
-//};
+module.exports = {
+  AutoGraderInstance: AutograderDockerInstance,
+};
