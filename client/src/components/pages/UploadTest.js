@@ -1,7 +1,11 @@
 import React, { Component } from "react";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
-
+import {
+  InputGroup,
+  DropdownButton,
+  Dropdown,
+} from "react-bootstrap";
 //const BASE_API_URL = process.env.REACT_APP_PROD_BASE_URL || process.env.REACT_APP_DEV_BASE_URL;
 
 export default class Tutorials extends Component {
@@ -12,7 +16,9 @@ export default class Tutorials extends Component {
       courseID: props.location.state.course._id,
       code: '',
       selectedFile: "", // selected file
-      tests: []
+      tests: [],
+      language: "Language",
+      languages: ["bash", "python", "julia", "zsh"]
     };
   }
 
@@ -66,6 +72,7 @@ export default class Tutorials extends Component {
     data.append('file', this.state.selectedFile)
     data.append('courseID', this.state.courseID)
     data.append('userID', this.state.userID)
+    data.append('language', this.state.language)
 
     axios.post(`/autograder/${this.state.courseID}/add`, data, { // receive two parameter endpoint url ,form data 
       })
@@ -83,17 +90,45 @@ export default class Tutorials extends Component {
     })    
   }
 
+  handleSelect = (e) => {
+    for (let idx in this.state.languages) {
+      if (this.state.languages[idx] === e) {
+        this.setState({ language: this.state.languages[idx] });
+      }
+    }
+    this.setState({ language: e });
+  };
+
   render() {
+    const languageDropdown = [];
+    for (let idx in this.state.languages) {
+      const lang = this.state.languages[idx];
+      languageDropdown.push(
+        <Dropdown.Item eventKey={lang} key={lang}>
+          {lang}
+        </Dropdown.Item>
+      );
+    }
     return (
       <React.Fragment>
         <div>
-          <h3 style={uploadTestTitle}> Upload a Test File</h3>          
+          <h3 style={uploadTestTitle}> Upload a Test File</h3>
         </div>
         <main style={main}>
-          <div style={uploadTestStyle}>
-            <input type="file" name="file" onChange={this.onChangeHandler}/>
+          
+          <InputGroup style={uploadTestStyle}>
+            <DropdownButton
+            as={InputGroup.Append}
+            variant="outline-secondary"
+            title={this.state.language}
+            id="dropdown-basic-button"
+            onSelect={this.handleSelect}
+            >
+                {languageDropdown}
+            </DropdownButton>
+            <input type="file" name="file" style={fileButtonStyle} onChange={this.onChangeHandler}/>
             <input type="button" style={buttonStyle} className="btn btn-success btn-block" onClick={this.onClickHandler} value="submit"></input> 
-          </div>
+          </InputGroup>
           {this.state.tests.map((test, key) => (
             <div style={background}>
               <div style={testCard}>
@@ -123,10 +158,15 @@ const uploadTestTitle = {
 
 const uploadTestStyle = {
   margin: "2% 10%",
-  paddingBottom: "5%"
+  paddingBottom: "5%",
+}
+
+const fileButtonStyle = {
+  margin: "1%"
 }
 
 const buttonStyle = {
+  marginTop: "1%",
   padding: "3px",
   float: "left",
   fontFamily: "Arial, Helvetica, sans-serif",
