@@ -108,6 +108,14 @@ export default class Post extends Component {
 
 /////////////////////////////////   Edit, add, and delete functions /////////////////////////////////
     editPost() {
+        var titleLabel = document.createElement("p");
+        titleLabel.id = "title-label";
+        titleLabel.innerHTML = "Title: ";
+
+        var contentLabel = document.createElement("p");
+        contentLabel.id = "content-label";
+        contentLabel.innerHTML = "Content: ";
+
         var inputTitle = document.createElement("input");
         inputTitle.id = "editTitle";
         inputTitle.type = "text";
@@ -126,7 +134,9 @@ export default class Post extends Component {
         saveButton.onclick = this.updatePost.bind(this);
 
         // Add input box and button
+        document.getElementById("editPost").appendChild(titleLabel);
         document.getElementById("editPost").appendChild(inputTitle);
+        document.getElementById("editPost").appendChild(contentLabel);
         document.getElementById("editPost").appendChild(inputBody);
         document.getElementById("editPost").appendChild(saveButton);
     }
@@ -149,9 +159,13 @@ export default class Post extends Component {
 
         document.getElementById("title").innerHTML = `Title: ${this.state.editTitle}`;
         document.getElementById("postText").innerHTML =`${this.state.editBody}`;
+
+        // Get rid of post edit elements
         document.getElementById("savePostEdit").remove();
         document.getElementById("editTitle").remove();
         document.getElementById("editBody").remove();
+        document.getElementById("title-label").remove();
+        document.getElementById("content-label").remove();
     }
 
     editComment(comment) {
