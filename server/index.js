@@ -87,7 +87,7 @@ app.post("/run", (req, res) => {
       }
     );
   } else {
-    let currInstance = interpreterManager.getInstance(uname, iname, lang);
+    let currInstance = interpreterManager.getInstance(uname, iname, lang, true);
     // The language the user requested does not exist. Send out an error
     if (currInstance == interpManager.LANGDNE) {
       res.json({ message: "Language requested does not exist" });

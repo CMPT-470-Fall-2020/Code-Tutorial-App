@@ -58,6 +58,13 @@ class DockerInstance {
         this.container_instance = container;
         container.start((err, data) => {
           if (err) {
+          throw err;
+          logger.trace(
+            "DOCKER: container started  error",
+            err,
+            "Calling callback"
+          );
+
             return 1;
           }
           logger.trace(

@@ -50,7 +50,7 @@ export default class MarkdownCell extends Component {
       modifiedCodeVal: this.props.code, // Current text in cell.
       lang: this.props.lang,
       interpName: this.props.iname,
-      uid: this.props.userid,
+      uid: this.props.uid,
 
       writeMode: this.props.shouldRun, // Used to disable running cells while tutorial is being written.
       codeOutput: "", // Stores the output returned by API
@@ -106,6 +106,7 @@ export default class MarkdownCell extends Component {
       this.setEditorReadOnly();
       this.setState({ respCodeStatus: undefined });
       this.setState({ isWaiting: true });
+      console.log("SENDING A REQUEST WITH THIS STATE", this.state);
       axios({
         method: "POST",
         data: {

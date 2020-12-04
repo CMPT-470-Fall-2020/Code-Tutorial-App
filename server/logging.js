@@ -21,7 +21,7 @@ let SharedLog = (function () {
           maxLogSize: 2048,
         },
       },
-      categories: { default: { appenders: ["code-exec"], level: "debug" } },
+      categories: { default: { appenders: ["code-exec"], level: "all" } },
     });
     // Create an instance as configured
     _logger = log4js.getLogger("code-exec");
