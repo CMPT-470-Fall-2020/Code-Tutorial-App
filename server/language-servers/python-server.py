@@ -28,7 +28,7 @@ SOCKET = socket.socket(
     socket.AF_INET, socket.SOCK_STREAM)
 
 # get local machine name
-HOSTNAME = '127.0.0.1'
+HOSTNAME = '0.0.0.0'
 PORTNUM = int(sys.argv[1])
 # bind to the port
 SOCKET.bind((HOSTNAME, PORTNUM))

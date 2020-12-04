@@ -1,0 +1,199 @@
+const Chance = require("chance");
+const Docker = require("dockerode");
+const SharedLog = require("./logging");
+const { PassThrough } = require("stream");
+const fs = require("fs");
+const tar = require("tar-stream");
+const logger = SharedLog.getInstance().logger;
+
+const chance = new Chance();
+const DOCKER_NAME_POOL =
+  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+const BASE_IMAGES = {
+  bash: "470-ubuntu-bash-test",
+  zsh: "470-ubuntu-zsh-test",
+  python: "470-ubuntu-python-test",
+  julia: "470-ubuntu-julia-test",
+};
+
+const COMMANDS = {
+  bash: "470-ubuntu-bash-test",
+  zsh: "470-ubuntu-zsh-test",
+  python: ["python3", "professorTest.py"],
+  julia: "470-ubuntu-julia-test",
+};
+
+class AutograderDockerInstance {
+  constructor(imageLang) {
+    logger.info(
+      "DOCKER: Create new instance with image name and port number:",
+      imageLang
+    );
+    //this.imgType = imageLang;
+    //this.baseImg = BASE_IMAGES[imageLang.toLowerCase()];
+    this.container_name = chance.string({ pool: DOCKER_NAME_POOL });
+    this.docker = new Docker(); // create new docker instance
+    // This is set after the container is started.
+    this.container_instance = undefined;
+    this.pollId = undefined;
+    // Store the output of the exec command's stdout and stderr.
+    this.execStdout = "";
+    this.execStderr = "";
+    // Holds the callback function used send data back to client.
+    this.respCallback = undefined;
+
+    logger.trace(
+      "DOCKER: Constructor finished. Container name will be",
+      this.container_name
+    );
+  }
+
+  execInContainer(callback) {
+    this.container_instance
+      .exec({
+        Cmd: ["python3", "professorTest.py"],
+        attachStdout: true,
+        attachStderr: true,
+        WorkingDir: "/home",
+      })
+      .then((execObject) => {
+        execObject.start({ hijack: true, stdin: false }, (err, stream) => {
+          console.log("EXEC: Command is starting.");
+          // Store the refernce to this class in a new variable so it does not get overwritten
+          // by the events used to collect output.
+          let self = this;
+          let stdout = new PassThrough();
+          let stderr = new PassThrough();
+
+          // Set events for errors
+          stderr.on("data", function (chunk) {
+            self.execStderr += chunk.toString("utf8");
+          });
+
+          stdout.on("data", function (chunk) {
+            self.execStdout += chunk.toString("utf8");
+          });
+
+          this.docker.modem.demuxStream(stream, stdout, stderr);
+
+          this.pollId = setInterval(() => {
+            execObject.inspect().then((resp) => {
+              // If the process we are trying to execute has stopped running, we can send back
+              // the response to the user.
+              if (resp.Running === false) {
+                console.log("EXEC: Instance Died x(");
+                // If the object is dead, we want to send back the data and kill the container.
+                self.respCallback(self.execStdout);
+                clearInterval(self.pollId);
+                self.stopInstance();
+              }
+            });
+          }, 3000);
+        });
+      })
+      .catch((err) => {
+        console.log("error when creating exec object", err);
+      });
+  }
+
+  // Src: https://github.com/apocas/dockerode/issues/240
+  // Even though the docker API can use "gzip", for some reason the
+  // container cannot unzip it.
+  sendArchiveToInstance(
+    localFileName,
+    instanceFileName,
+    studentCode,
+    responseCallback
+  ) {
+    // Store the callback used to send code back to the user.
+    this.respCallback = responseCallback;
+
+    let professorFile = fs.readFile(localFileName, "utf-8", (err, data) => {
+      // Bind this to self variable so there is no name clash inside of callbacks.
+      let self = this;
+      console.log("err file", err);
+      console.log(
+        "SENDARCHIVE TEACHER CODE:\n",
+        data,
+        "AND STUDENT CODE:\n",
+        studentCode,
+        "end\n"
+      );
+
+      // Create a new tarfile
+      let pack = tar.pack();
+      pack.entry({ name: instanceFileName }, data);
+      // TODO: Set file ending based on the type of file(.py, .sh, .zsh....)
+      pack.entry({ name: "studentCode.py" }, studentCode);
+      pack.finalize();
+
+      var tarFileChunks = [];
+      // The tarfile is a stream of data.
+      // Each time a new chunk of data is created, we append it to the pack
+      pack.on("data", function (chunk) {
+        tarFileChunks.push(chunk);
+      });
+      pack.on("end", function () {
+        var buffer = Buffer.concat(tarFileChunks);
+        self.container_instance
+          .putArchive(buffer, { path: "/home" })
+          .then(() => {
+            console.log("Success transporting file");
+            self.execInContainer(responseCallback);
+          })
+          .catch((err) => {
+            console.log("Error transporting file");
+          });
+      });
+    });
+  }
+
+  startInstance(callback) {
+    logger.trace("DOCKER: StartInstance called");
+    this.docker.createContainer(
+      {
+        Image: "470-ubuntu-python-autograder",
+        name: this.container_name,
+        HostConfig: {
+          AutoRemove: true,
+        },
+      },
+      (err, container) => {
+        if (err) {
+          // TODO: Use a constant to indicate a status and check the type of error.
+          logger.error("DOCKER: Container could not be created.", err.message);
+          return 1;
+        }
+
+        logger.trace("DOCKER: Container created. Starting container...");
+        this.container_instance = container;
+        container.start((err, data) => {
+          if (err) {
+            return 1;
+          }
+          logger.trace(
+            "DOCKER: container started without error",
+            data,
+            "Calling callback"
+          );
+          callback();
+          return 0;
+        });
+      }
+    );
+  }
+
+  stopInstance() {
+    this.container_instance.stop((err, data) => {
+      if (err) {
+        logger.error("Instance stopped with an error:", err);
+      }
+      logger.info("Instance stopped succesfully");
+    });
+  }
+}
+
+module.exports = {
+  AutoGraderInstance: AutograderDockerInstance,
+};

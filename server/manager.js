@@ -1,14 +1,18 @@
 const { spawn } = require("child_process");
 var events = require("events");
-const { Interpreter } = require("./client.js");
+const { Interpreter } = require("./client");
+const SharedLog = require("./logging");
+const logger = SharedLog.getInstance().logger;
 
 // Constants used to indicate the return status of function calls
-const USERDNE = "USERDNE";
-const USEREXISTS = "USEREXISTS";
-const SUCCESS = "SUCCESS";
-const INTERPDNE = "INTERPDNE";
-const INTERPEXISTS = "INTERPEXISTS";
-const LANGDNE = "LANGDNE"
+const LANGDNE = "LANGDNE";
+
+const BASH = "bash";
+const ZSH = "zsh";
+const PYTHON = "python";
+const JULIA = "julia";
+
+const PERMITTED_LANGUAGES = [BASH, ZSH, PYTHON, JULIA];
 
 class InterpreterManager {
   constructor(emitter) {
@@ -38,114 +42,77 @@ class InterpreterManager {
     return false;
   }
 
-  getInterp(userName, instanceName) {
-    if (this.userExists(userName)) {
-      if (this.interpInstanceExists(userName, instanceName)) {
-        return this.instances[userName][instanceName];
-      } else {
-        return INTERPDNE;
-      }
-    }
-    return USERDNE;
-  }
-
   createUser(userName) {
     if (userName in this.instances) {
-      return USEREXISTS;
+      return false;
     }
 
     this.instances[userName] = {};
-    return SUCCESS;
+    return true;
   }
 
-  createInterp(userName, interpName, interpType) {
-    if (!this.userExists()) {
+  removeUser(userName) {
+    delete this.instances[userName];
+  }
+
+  isPermittedLanguage(lang) {
+    if (PERMITTED_LANGUAGES.includes(lang.toLowerCase())) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  createInstance(userName, interpName, lang) {
+    // Retrieve the port number for the server
+    let portNum = this.ports.pop();
+
+    let newInterp = new Interpreter(portNum, interpName, lang, this.emitter);
+
+    // Add interpreter to instances
+    this.instances[userName][interpName] = newInterp;
+    return newInterp;
+  }
+
+  getInstance(userName, interpName, lang, createIfNone) {
+    if (!this.isPermittedLanguage(lang)) {
+      return LANGDNE;
+    }
+
+    // Create a new user if they do not exist
+    if (!this.userExists(userName)) {
       this.createUser(userName);
     }
 
     if (this.interpInstanceExists(userName, interpName)) {
-      console.log("MANAGER: Return an already existing interpreter");
-      // console.log(this.instances[userName]);
+      logger.info(
+        "MANAGER: return existing instance for user:",
+        userName,
+        "with name:",
+        interpName
+      );
       return this.instances[userName][interpName];
-    }
-
-    // Retrieve the port number for the server
-    let portNum = this.ports.pop();
-    let languageServer;
-
-    switch (interpType.toLowerCase()) {
-      case "python":
-        console.log("trying python spawn", portNum)
-        languageServer = spawn("python3", ["python-server.py", portNum]);
-        break;
-      case "bash":
-        languageServer = spawn("./bash-server.js", [portNum]);
-        break;
-      case "zsh":
-        languageServer = spawn("./zsh-server.js", [portNum]);
-        break;
-      case "julia":
-        languageServer = spawn("./julia-server.js", [portNum]);
-        break;
-      case "ruby":
-        // Ruby is not supported yet
-        //languageServer = spawn("ruby", ["ruby-server.rb", portNum]);
-        console.log("Ruby does not work yet")
-        break;
-      default:
-        return LANGDNE;
-    }
-
-    // Set handlers for when the language server crashes
-    languageServer.on("error", (code, signal) => {
-      console.log(
-        "MANAGER: Language server process died due to an error.",
-        code,
-        signal,
-        "Returning port number and removing instance."
+    } else {
+      console.log("logger is:", logger);
+      logger.info(
+        "MANAGER: return new instance for user:",
+        userName,
+        "with name:",
+        interpName
       );
-      // Return the port number on exit
-      this.ports.push(portNum);
-      // Delete the interpreter instance
-      delete this.instances[userName][interpName];
-    });
+      if (createIfNone) {
+        return this.createInstance(userName, interpName, lang);
+      }
+      return undefined;
+    }
+  }
 
-    languageServer.on("close", (code, signal) => {
-      console.log(
-        "MANAGER: Language server process close",
-        code,
-        signal,
-        "Returning port number and removing instance."
-      );
-      // Return the port number on exit
-      this.ports.push(portNum);
-      // Delete interpreter instance
-      delete this.instances[userName][interpName];
-    });
-
-    console.log("MANAGER: Creating new interpreter instance.");
-    let newInterp = new Interpreter(
-      portNum,
-      interpName,
-      this.emitter,
-      languageServer
-    );
-
-    console.log("MANAGER: Adding the new instance!");
-    // Add the interpreter instance
-    this.instances[userName][interpName] = newInterp;
-
-    // Return the interpreter instance to caller to run code.
-    return newInterp;
+  deleteInstance(userName, interpName) {
+    delete this.instances[userName][interpName];
   }
 }
 
 module.exports = {
   InterpreterManager: InterpreterManager,
-  USERDNE: USERDNE,
-  USEREXISTS: USEREXISTS,
-  SUCCESS: SUCCESS,
-  INTERPDNE: INTERPDNE,
-  INTERPEXISTS: INTERPEXISTS,
-  LANGDNE: LANGDNE
+  LANGDNE: LANGDNE,
 };
