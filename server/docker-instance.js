@@ -50,6 +50,7 @@ class DockerInstance {
       (err, container) => {
         if (err) {
           // TODO: Use a constant to indicate a status and check the type of error.
+          throw err
           logger.error("DOCKER: Container could not be created.", err.message);
           return 1;
         }
@@ -82,11 +83,10 @@ class DockerInstance {
   stopInstance() {
     this.container_instance.stop((err, data) => {
       if (err) {
+        throw err
         logger.error("Instance stopped with an error:", err);
-        return false;
       }
       logger.info("Instance stopped succesfully");
-      return true;
     });
   }
 

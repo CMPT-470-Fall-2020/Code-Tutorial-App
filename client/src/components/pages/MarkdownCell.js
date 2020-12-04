@@ -68,6 +68,7 @@ export default class MarkdownCell extends Component {
     // Bind functions so they are accessible from the "render" method.
     this.runCode = this.runCode.bind(this);
     this.resetCellContents = this.resetCellContents.bind(this);
+    this.stopInstance = this.stopInstance.bind(this);
     this.setEditorReadOnly = this.setEditorReadOnly.bind(this);
     this.setEditorEditMode = this.setEditorEditMode.bind(this);
   }
@@ -81,6 +82,41 @@ export default class MarkdownCell extends Component {
     if (prevProps.keymap !== this.props.keymap) {
       this.setState({ currentKeymap: this.props.keymap });
     }
+  }
+
+  stopInstance(){
+  	console.log("stopping instance!")
+      axios({
+        method: "DELETE",
+        data: {
+          uname: this.state.uid, 
+          iname: this.state.interpName,
+          lang: this.state.lang,
+        },
+        url: `/run`,
+      }).then((res) => {
+        let retMsg = res.data.message;
+        // Stop spinner
+        //this.setState({ isWaiting: false });
+        console.log("Return message in markdown cell is", retMsg);
+/*
+        if (retMsg.type === "SUCCESS") {
+          this.setState({ respCodeStatus: true });
+          // Hide spinner
+          if (retMsg.stdout.length !== 0) {
+            this.setState({ codeOutput: retMsg.stdout });
+          } else {
+            this.setState({ codeOutput: retMsg.stderr });
+          }
+        } else {
+          this.setState({ respCodeStatus: false });
+          this.setState({
+            codeOutput:
+              "There is some sort of error with running your request. :(",
+          });
+        }
+*/
+      });
   }
 
   resetCellContents() {
@@ -186,7 +222,7 @@ export default class MarkdownCell extends Component {
               >
                 Restore Original
               </Button>
-              <Button variant="primary" className="mr-2">
+              <Button variant="primary" className="mr-2" onClick={this.stopInstance}>
                 Stop
               </Button>
             </ButtonToolbar>
@@ -197,3 +233,6 @@ export default class MarkdownCell extends Component {
     );
   }
 }
+
+// This counts the number of lines.
+//console.log("CODE PASSED",this.props.code, "number of lines", (this.props.code.match(/\n/g) || '').length + 2)

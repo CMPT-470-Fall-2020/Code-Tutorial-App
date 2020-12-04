@@ -189,12 +189,7 @@ class Interpreter {
    * @memberof Interpreter
    */
   shutdown() {
-    // TODO: What to do if there is no success?
-    let status = this.dockerInstance.stopInstance();
-    if (status !== true) {
-      return false;
-    }
-    return true;
+    this.dockerInstance.stopInstance();
   }
 
   /**
