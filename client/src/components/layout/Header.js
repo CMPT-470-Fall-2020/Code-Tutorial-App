@@ -56,7 +56,6 @@ export default class Header extends Component {
                 <NavDropdown title="Tutorials" id="basic-nav-dropdown" >
                     <NavDropdown.Item as={Link} to="/coursedashboard">Dashboard</NavDropdown.Item>
                 </NavDropdown>
-                <Nav.Link as={Link} to="/codeplayground">Code Playground</Nav.Link> 
                 </Nav>
             </Navbar.Collapse>
           </React.Fragment>
@@ -65,17 +64,15 @@ export default class Header extends Component {
           <React.Fragment>
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="mr-auto">
-                <NavDropdown title="Tutorials" id="basic-nav-dropdown" >
-                    <NavDropdown.Item as={Link} to="/coursedashboard">Dashboard</NavDropdown.Item>
-                    <NavDropdown.Item as={Link} to="/createtutorial">Create Tutorial</NavDropdown.Item>
-                    <NavDropdown.Item as={Link} to="/createcourse">Create Course</NavDropdown.Item>
-                </NavDropdown>
+                    <Nav.Item as={Link} to="/coursedashboard" style={textStyle}>Dashboard</Nav.Item>&nbsp;
+                    <Nav.Item as={Link} to="/createtutorial" style={textStyle}>Create Tutorial</Nav.Item>&nbsp;
+                    <Nav.Item as={Link} to="/createcourse" style={textStyle}>Create Course</Nav.Item>&nbsp;
                 </Nav>
             </Navbar.Collapse>
           </React.Fragment>
         )}
         <Nav.Link as={Link} to="/login" style={logoutStyle} onClick={this.onLogout.bind(this)}>
-          Logout        
+          Logout
         </Nav.Link>
       </Navbar>
     );
@@ -86,4 +83,11 @@ const logoutStyle = {
   background: "none",
   border: "none",
   color: "rgba(255,255,255,.5)",
+};
+
+const textStyle = {
+  color: "#ffffff",
+  fontFamily: "Arial, Helvetica, sans-serif",
+  textAlign: "center",
+  marginRight: "25px",
 };

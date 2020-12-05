@@ -128,6 +128,10 @@ export default class CreateTutorial extends Component {
 
     return (
       <React.Fragment>
+      <div>
+        <h3 style={tutorialTitle}>Tutorial Creation Tool</h3>
+      </div>
+      <div style={backgroundaddCourse}>
         <Container>
           <InputGroup className="mb-3" style={tutorialTitleStyle}>
             <FormControl
@@ -151,7 +155,7 @@ export default class CreateTutorial extends Component {
               <section style={sectionStyle}>
                 <h1 style={headerStyle}>Markdown Editor</h1>
                 <Button
-                  variant="primary"
+                  variant="secondary"
                   style={buttonStyle}
                   onClick={this.saveDB.bind(this)}
                 >
@@ -182,6 +186,7 @@ export default class CreateTutorial extends Component {
             </div>
           </div>
         </Container>
+        </div>
       </React.Fragment>
     );
   }
@@ -214,6 +219,17 @@ const buttonStyle = {
 const options = {
   mode: "markdown",
   lineNumbers: true,
+};
+
+const tutorialTitle = {
+  margin: "2% 10%",
+  borderBottom: "1px solid black",
+};
+
+const backgroundaddCourse = {
+  paddingTop: "1%",
+  margin: "2% 10%",
+  borderRadius: "5px",
 };
 
 /*

@@ -85,8 +85,12 @@ export default class Post extends Component {
     if (comment.userID === this.state.userID) {
         return (
             <div id={"comment-buttons" + comment._id}>
-                <button onClick={this.deleteComment.bind(this, comment)}>Delete</button>
-                <button onClick={this.editComment.bind(this, comment)}>Edit</button>
+                <Button onClick={this.deleteComment.bind(this, comment)}
+                variant="secondary"
+                style={buttonStyleDefault}>Delete</Button>&nbsp;
+                <Button onClick={this.editComment.bind(this, comment)}
+                variant="secondary"
+                style={buttonStyleDefault}>Edit</Button>
             </div>
         )
     }
@@ -98,7 +102,9 @@ export default class Post extends Component {
         if (this.state.userID === this.state.forum.userID) {
             return (
                 <div id="editPost">
-                    <button onClick={this.editPost.bind(this)}>Edit Post</button>
+                    <Button onClick={this.editPost.bind(this)}
+                    variant="secondary"
+                    style={buttonStyleDefault}>Edit Post</Button>
                 </div>
             )
         }
@@ -155,7 +161,7 @@ export default class Post extends Component {
             this.state.forum.postTitle = this.state.editTitle;
             this.state.forum.postText = this.state.editBody;
             console.log(res);
-        }); 
+        });
 
         document.getElementById("title").innerHTML = `Title: ${this.state.editTitle}`;
         document.getElementById("postText").innerHTML =`${this.state.editBody}`;
@@ -286,7 +292,7 @@ export default class Post extends Component {
 
               // Add to end of the list
               document.getElementById("commentList").appendChild(newCommentBlock);
-                    
+
               // Clear input box
               document.getElementById("addCommentInput").value = "";
             })
@@ -382,4 +388,9 @@ const buttonStyle = {
     float: "right",
     margin: "2% 0% 0% 1%",
     fontFamily: "Arial, Helvetica, sans-serif",
+};
+
+const buttonStyleDefault = {
+  padding: "3px",
+  fontFamily: "Arial, Helvetica, sans-serif",
 };
