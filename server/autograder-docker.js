@@ -81,7 +81,7 @@ class AutograderDockerInstance {
               if (resp.Running === false) {
                 console.log("EXEC: Instance Died x(");
                 // If the object is dead, we want to send back the data and kill the container.
-                self.respCallback(self.execStdout);
+                self.respCallback(self.execStdout, self.execStderr);
                 clearInterval(self.pollId);
                 self.stopInstance();
               }
