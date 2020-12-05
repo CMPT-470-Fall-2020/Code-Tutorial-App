@@ -15,7 +15,7 @@ const BASE_IMAGES = {
 };
 
 class DockerInstance {
-  constructor(imageLang, portNum) {
+  constructor(imageLang, portNum, callback) {
     console.log(
       "DOCKER: Create new instance with image name and port number:",
       imageLang,
@@ -23,19 +23,33 @@ class DockerInstance {
     );
     this.imgType = imageLang;
     this.portNum = portNum;
+    this.connectCallback = callback;
     this.baseImg = BASE_IMAGES[imageLang.toLowerCase()];
     this.container_name = chance.string({ pool: DOCKER_NAME_POOL });
     this.docker = new Docker();
+    this.pollId = undefined;
     this.container_instance = undefined;
 
-    logger.trace(
+    console.log(
       "DOCKER: Constructor finished. Container name will be",
       this.container_name
     );
   }
 
-  startInstance(callback) {
-    logger.trace("DOCKER: StartInstance called");
+  pollIfAlive(){
+	this.container_instance.inspect().then(resp => {
+		console.log("POLL: Container resp",resp)
+		if(resp.State.Running === true){
+			this.connectCallback()
+             clearInterval(this.pollId);
+		}
+		// callback here
+	}
+	)
+  }
+
+  startInstance() {
+    console.log("DOCKER: StartInstance called");
     this.docker.createContainer(
       {
         Image: this.baseImg,
@@ -55,12 +69,15 @@ class DockerInstance {
           return 1;
         }
 
-        logger.trace("DOCKER: Container created. Starting container...");
+        console.log("DOCKER: Container created. Starting container...");
         this.container_instance = container;
+          this.pollId = setInterval(() => {
+          	this.pollIfAlive();
+          }, 1000);
         container.start((err, data) => {
           if (err) {
           throw err;
-          logger.trace(
+          console.log(
             "DOCKER: container started  error",
             err,
             "Calling callback"
@@ -68,12 +85,11 @@ class DockerInstance {
 
             return 1;
           }
-          logger.trace(
+          console.log(
             "DOCKER: container started without error",
             data,
             "Calling callback"
           );
-          callback();
           return 0;
         });
       }

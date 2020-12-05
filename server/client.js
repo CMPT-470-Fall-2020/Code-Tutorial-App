@@ -38,7 +38,6 @@ class Interpreter {
     this.currentHash = "";
     // The socket used to make a connection
     this.socket = new net.Socket();
-    this.dockerInstance = new DockerInstance(this.lang, this.portNum);
 
     // FLAGS
     // Indicate that the socket is still open
@@ -82,10 +81,13 @@ class Interpreter {
       this.processResponse(data);
     });
 
+    this.dockerInstance = new DockerInstance(this.lang, this.portNum, () => {
+    	this.socket.connect(this.portNum, "127.0.0.1");
+    });
     // Start the docker instance
     this.dockerInstance.startInstance(() => {
-      console.log("CLIENT: Trying to start a connection to container!");
-      this.connectToServer();
+      //console.log("CLIENT: Trying to start a connection to container!");
+      //this.connectToServer();
     });
   }
 
