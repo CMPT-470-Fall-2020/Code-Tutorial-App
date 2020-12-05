@@ -50,9 +50,10 @@ class Interpreter {
     // Max number of attempts tried
     this.maxRetryAttempt = 10;
 
+	console.log("host",process.env.HOST)
     this.socket.on("connect", () => {
       this.connStatus = true;
-      logger.info(`CLIENT: Connected to server on port ${portNum}!`);
+      console.log(`CLIENT: Connected to server on port ${portNum}!, ${process.env.HOST}`);
       this.sendMsg();
     });
 
@@ -61,7 +62,7 @@ class Interpreter {
     this.socket.on("error", () => {
       // If we are not connected to a server, attempt to connect again
       if (!this.connStatus && this.retryAttempNum < this.maxRetryAttempt) {
-        logger.info(
+        console.log(
           `CLIENT: Trying to reconnect. Retry #: ${this.retryAttempNum}`
         );
         this.retryAttempNum += 1;
@@ -77,19 +78,19 @@ class Interpreter {
     });
 
     this.socket.on("data", (data) => {
-      logger.debug("CLIENT: Received response from language server.");
+      console.log("CLIENT: Received response from language server.");
       this.processResponse(data);
     });
 
     // Start the docker instance
     this.dockerInstance.startInstance(() => {
-      logger.debug("CLIENT: Trying to start a connection to container!");
+      console.log("CLIENT: Trying to start a connection to container!");
       this.connectToServer();
     });
   }
 
   connectToServer() {
-    logger.info(
+    console.log(
       "CLIENT: Client trying to connect with port num:",
       this.portNum
     );
@@ -102,19 +103,19 @@ class Interpreter {
    * @memberof Interpreter
    */
   sendMsg() {
-    logger.debug("CLIENT: Message queue called in sendMsg");
+    console.log("CLIENT: Message queue called in sendMsg");
     if (!this.msgQueue.isEmpty()) {
       // Retrieve next message
       let [hash, msg] = this.msgQueue.getMessage();
-      logger.debug("CLIENT: Sending a new message to client", msg);
+      console.log("CLIENT: Sending a new message to client", msg);
 
       this.isWaiting = true;
       this.currentHash = hash;
       let msgStatus = this.socket.write(JSON.stringify(msg));
-      logger.debug("CLIENT: sendMsg sent a message with status", msgStatus);
+      console.log("CLIENT: sendMsg sent a message with status", msgStatus);
       return;
     }
-    logger.debug("CLIENT: Message queue had other messages in sendMsg");
+    console.log("CLIENT: Message queue had other messages in sendMsg");
   }
 
   /**
@@ -125,12 +126,12 @@ class Interpreter {
    * @memberof Interpreter
    */
   processResponse(data) {
-    logger.debug("CLIENT: Received a response and is about to decode it.");
+    console.log("CLIENT: Received a response and is about to decode it.");
     let resp = JSON.parse(data.toString("utf-8"));
     switch (resp["type"]) {
       case "SUCCESS":
         // Reset the hash. In case there is a crash, we do not want to send a packet to an outdated hash.
-        logger.debug(
+        console.log(
           "CLIENT: Received response from server. About to emit event",
           resp
         );
@@ -143,7 +144,7 @@ class Interpreter {
         this.killServer();
         break;
       default:
-        logger.error("This should not happen!");
+        console.log("This should not happen!");
     }
     if (this.msgQueue.isEmpty()) {
       this.isWaiting = false;
@@ -206,11 +207,11 @@ class Interpreter {
     // append the new message to the message queue.
     this.msgQueue.addMessage([codeHash, codeObj]);
     if (!this.connStatus || this.isWaiting) {
-      logger.debug("CLIENT: adding message to queue in runCode", codeObj);
+      console.log("CLIENT: adding message to queue in runCode", codeObj);
       // this.msgQueue.addMessage([codeHash, codeObj]);
     } else {
       // If not busy, send off code object to server and return code hash
-      logger.debug("CLIENT: Sending message directly in runCode", codeObj);
+      console.log("CLIENT: Sending message directly in runCode", codeObj);
       this.sendMsg();
     }
     return codeHash;

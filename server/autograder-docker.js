@@ -159,7 +159,7 @@ class AutograderDockerInstance {
       (err, container) => {
         if (err) {
           // TODO: Use a constant to indicate a status and check the type of error.
-          logger.error("DOCKER: Container could not be created.", err.message);
+          console.log("DOCKER: Container could not be created.", err.message);
           return 1;
         }
 
@@ -184,9 +184,9 @@ class AutograderDockerInstance {
   stopInstance() {
     this.container_instance.stop((err, data) => {
       if (err) {
-        logger.error("Instance stopped with an error:", err);
+        console.log("Instance stopped with an error:", err);
       }
-      logger.info("Instance stopped succesfully");
+      console.log("Instance stopped succesfully");
     });
   }
 }

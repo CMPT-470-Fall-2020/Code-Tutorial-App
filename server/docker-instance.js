@@ -16,7 +16,7 @@ const BASE_IMAGES = {
 
 class DockerInstance {
   constructor(imageLang, portNum) {
-    logger.info(
+    console.log(
       "DOCKER: Create new instance with image name and port number:",
       imageLang,
       portNum
@@ -51,7 +51,7 @@ class DockerInstance {
         if (err) {
           // TODO: Use a constant to indicate a status and check the type of error.
           throw err
-          logger.error("DOCKER: Container could not be created.", err.message);
+          console.log("DOCKER: Container could not be created.", err.message);
           return 1;
         }
 
@@ -84,9 +84,9 @@ class DockerInstance {
     this.container_instance.stop((err, data) => {
       if (err) {
         throw err
-        logger.error("Instance stopped with an error:", err);
+        console.log("Instance stopped with an error:", err);
       }
-      logger.info("Instance stopped succesfully");
+      console.log("Instance stopped succesfully");
       callback("Instance stopped succesfully")
 
     });
