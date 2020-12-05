@@ -20,7 +20,9 @@ export default class RunTest extends Component {
       code: '',
       tests: '',
       selectedTest: 'Select test',
-      testResult: '',
+      //testResult: '',
+      stdOut: '',
+      stdErr: '',
     };
     this.fileReader = undefined;
   }
@@ -68,7 +70,9 @@ export default class RunTest extends Component {
         url: `/autograder/runTest`,
       }).then((res) => {
         console.log(res);
-        this.setState({testResult: res.data});
+        this.setState({stdOut: res.data.stdout})
+        this.setState({stdErr: res.data.stderr})
+        //this.setState({testResult: res.data});
         //let output = document.createElement("p");
         //output.innerHTML = res.data;
         //document.getElementById("output").appendChild(output);
@@ -145,8 +149,16 @@ export default class RunTest extends Component {
               this.setState({ code: value });
             }}
           />
-          	<p>Output:</p>
-            <div id="output"> {this.state.testResult} </div>
+            <div id="output"> 
+          	<p>Standard Output:</p>
+          	<p>
+			{this.state.stdOut}
+          	</p>
+          	<p>Standard Error:</p>
+          	<p>
+			{this.state.stdErr}
+          	</p>
+            </div>
 		  </div> 
     		</div>
     );
