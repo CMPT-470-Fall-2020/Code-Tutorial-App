@@ -11,10 +11,10 @@ const DOCKER_NAME_POOL =
   "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 const BASE_IMAGES = {
-  bash: "470-ubuntu-python-autograder",
+  bash: "470-ubuntu-bash-autograder",
   zsh: "470-ubuntu-zsh-autograder",
-  python: "470-ubuntu-julia-autograder",
-  julia: "470-ubuntu-bash-autograder",
+  python: "470-ubuntu-python-autograder",
+  julia: "470-ubuntu-julia-autograder",
 };
 
 const COMMANDS = {
@@ -42,7 +42,7 @@ class AutograderDockerInstance {
     this.fileEnding = ''
     switch(this.lang){
 		case 'julia':
-			this.fileEnding = '.js';
+			this.fileEnding = '.jl';
 			break;
 		case 'python':
 			this.fileEnding = '.py';

@@ -1,4 +1,4 @@
-include ("studentCode.jl")
+include("studentCode.jl")
 
 # n = 0
 if factorial(0) == 0
