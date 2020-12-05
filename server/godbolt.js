@@ -57,5 +57,4 @@ function getBytecode(lang, code, succCallback, errCalback) {
     });
 }
 
-getBytecode("python", "print(4+4)", (out) => {console.log("success", out)}, (err)=>{console.log("error", err)})
 module.exports = { getBytecode: getBytecode };
