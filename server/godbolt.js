@@ -25,8 +25,9 @@ function unifyGodboltOutput(output, callback) {
 }
 
 function getBytecode(lang, code, succCallback, errCalback) {
+  console.log("Contents", lang, code)
   compilerId = compilers[lang];
-  console.log(compilerId);
+  console.log("Godbold compiler id",compilerId);
   if (compilerId === undefined) {
     errCalback(
       "This language either does not exist or is not supported by GodBolt!"
@@ -43,6 +44,7 @@ function getBytecode(lang, code, succCallback, errCalback) {
       })
     )
     .then(function (response) {
+      console.log("godbolt response success",response.data['asm'] );
       unifyGodboltOutput(response.data["asm"], succCallback);
     })
     .catch(function (error) {
@@ -55,4 +57,5 @@ function getBytecode(lang, code, succCallback, errCalback) {
     });
 }
 
+getBytecode("python", "print(4+4)", (out) => {console.log("success", out)}, (err)=>{console.log("error", err)})
 module.exports = { getBytecode: getBytecode };

@@ -85,14 +85,17 @@ app.post("/run", (req, res) => {
   let lang = req.body.lang;
 
   if (lang.trim().toLowerCase().startsWith("godbolt")) {
+      let languageName = lang.trim().toLowerCase().split(":")
+      console.log("Language  name is", languageName, languageName[1]);
     godBolt.getBytecode(
-      lang.trim().toLowerCase().split(":")[1],
+      languageName[1],
       code,
       (response) => {
-        res.json({ message: response });
+      	console.log("godbolg response callback", response);
+        res.json({message:{type:"SUCCESS", stdout: response }});
       },
       (response) => {
-        res.json({ message: response });
+        res.json({message:{type:"FAILURE", stdout: response }});
       }
     );
   } else {
