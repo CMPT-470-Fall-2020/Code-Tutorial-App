@@ -17,6 +17,7 @@ export default class Tutorials extends Component {
       code: '',
       selectedFile: "", // selected file
       tests: [],
+      warning: false,
       language: "Language",
       languages: ["bash", "python", "julia", "zsh"]
     };
@@ -68,6 +69,10 @@ export default class Tutorials extends Component {
   }
 
   onClickHandler = (event) => {
+  	if (this.state.language == "Language"){
+		this.setState({warning:true})
+  	}else{
+		this.setState({warning:false})
     const data = new FormData() 
     data.append('file', this.state.selectedFile)
     data.append('courseID', this.state.courseID)
@@ -88,6 +93,8 @@ export default class Tutorials extends Component {
           console.log(error);
         });
     })    
+
+  	}
   }
 
   handleSelect = (e) => {
@@ -128,6 +135,7 @@ export default class Tutorials extends Component {
             </DropdownButton>
             <input type="file" name="file" style={fileButtonStyle} onChange={this.onChangeHandler}/>
             <input type="button" style={buttonStyle} className="btn btn-success btn-block" onClick={this.onClickHandler} value="submit"></input> 
+			{this.state.warning == true && <p>You must select a test language from the dropdown</p>}
           </InputGroup>
           {this.state.tests.map((test, key) => (
             <div style={background}>
