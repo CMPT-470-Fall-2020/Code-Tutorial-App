@@ -1,0 +1,15 @@
+{
+  "name": "cmpt470-learning-platform",
+  "version": "1.0.0",
+  "description": "This repostory will contain all code for our semester long project.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://csil-git1.cs.surrey.sfu.ca/ykonstan/cmpt470-learning-platform.git"
+  },
+  "author": "",
+  "license": "ISC"
+}
