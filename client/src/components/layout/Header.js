@@ -56,7 +56,6 @@ export default class Header extends Component {
                 <NavDropdown title="Tutorials" id="basic-nav-dropdown" >
                     <NavDropdown.Item as={Link} to="/coursedashboard">Dashboard</NavDropdown.Item>
                 </NavDropdown>
-                <Nav.Link as={Link} to="/codeplayground">Code Playground</Nav.Link> 
                 </Nav>
             </Navbar.Collapse>
           </React.Fragment>
@@ -75,7 +74,7 @@ export default class Header extends Component {
           </React.Fragment>
         )}
         <Nav.Link as={Link} to="/login" style={logoutStyle} onClick={this.onLogout.bind(this)}>
-          Logout        
+          Logout
         </Nav.Link>
       </Navbar>
     );

@@ -61,7 +61,9 @@ export default class ForumList extends Component {
     if (forum.userID === this.state.userID) {
         return (
             <div>
-                <button onClick={this.deletePost.bind(this, forum)}>Delete</button>
+                <Button onClick={this.deletePost.bind(this, forum)}
+                variant="secondary"
+                style={buttonStyleDefault}>Delete</Button>
             </div>
         )
     }
@@ -137,6 +139,11 @@ const name = {
 const buttonStyle = {
   padding: "3px",
   float: "right",
+  fontFamily: "Arial, Helvetica, sans-serif",
+};
+
+const buttonStyleDefault = {
+  padding: "3px",
   fontFamily: "Arial, Helvetica, sans-serif",
 };
 
