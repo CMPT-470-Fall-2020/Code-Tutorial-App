@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { 
+import {
     InputGroup,
     FormControl,
     DropdownButton,
@@ -109,27 +109,29 @@ export default class RunTest extends Component {
 
     return (
     		<div>
-          <InputGroup>
+        <h3 style={runTestTitle}>Tests</h3>
+        <main style={main}>
+        <div style={backgroundaddCourse}>
             <DropdownButton
               as={InputGroup.Append}
-              variant="outline-secondary"
+              variant="secondary"
               title={this.state.selectedTest}
               id="dropdown-basic-button"
               onSelect={this.handleSelect}
-            >
-              {testDropdown}
-            </DropdownButton>
-            <input type="file" name="file" onChange={this.onChangeHandler}/>
-            <Button
-                  variant="secondary"
-                  style={buttonStyle}
-                  onClick={this.runTest.bind(this)}>
-                  Run Test
-            </Button>
+              style={dropdownStyle}
+            >{testDropdown}
+          </DropdownButton>
+          <input type="file" name="file" variant="secondary" onChange={this.onChangeHandler}/>
+          <Button
+                variant="secondary"
+                style={buttonStyle}
+                onClick={this.runTest.bind(this)}>
+                Run Test
+          </Button>
 
-          </InputGroup>
 
-		  <div id='container'>
+		  <div id='container' style={main}>
+
           <CodeMirror
             value={this.state.code}
           	options={{
@@ -155,7 +157,10 @@ export default class RunTest extends Component {
             <p>Errors:</p>
             <div id="output" style={newline}> {this.state.testResult.stderr} </div>
           </div>
-		  </div> 
+          </div>
+
+		  </div>
+      </main>
     		</div>
     );
   }
@@ -179,3 +184,23 @@ const buttonStyle = {
     float: "right",
     fontFamily: "Arial, Helvetica, sans-serif",
 };
+
+const dropdownStyle = {
+  padding: "3px",
+  float: "left",
+  marginRight: "5%"
+};
+
+const runTestTitle = {
+  margin: "2% 10%",
+  borderBottom: "1px solid black",
+};
+
+const backgroundaddCourse = {
+  margin: "2% 10%",
+  borderRadius: "5px",
+};
+
+const main = {
+  margin: "5% 0% 0% 0%",
+}
