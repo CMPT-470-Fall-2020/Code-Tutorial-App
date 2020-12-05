@@ -65,9 +65,12 @@ router.route("/:classId/:testId/tests/:fileName").delete((req, res) => {
     .then(() => res.json("Test deleted."))
     .catch((err) => res.status(400).json("Error: " + err));
   let filepath = path.join(__dirname, "../tests/", fileName);
-  fs.unlink(filepath, function (err) {
-    if (err) throw err;
-  });
+  	// Check if the file exists. If it does, delete it.
+	if (fs.existsSync(filepath)){
+		  fs.unlink(filepath, function (err) {
+			if (err) throw err;
+		  });
+	}
 });
 
 // Get a Test
