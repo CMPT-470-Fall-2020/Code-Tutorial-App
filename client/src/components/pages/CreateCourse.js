@@ -81,8 +81,9 @@ export default class CreateCourse extends Component {
         <div>
           <h3 style={Title}>Add Course</h3>
         </div>
-
-        <Container style={formStyle}>
+        <main style={main}>
+        <div style={backgroundaddCourse}>
+        <p style={courseCode}>Course Information</p>
           <InputGroup style={inputStyle}>
             <FormControl
               placeholder="Course Name"
@@ -104,28 +105,28 @@ export default class CreateCourse extends Component {
               onChange={this.onChangeTerm.bind(this)}
             ></FormControl>
             </InputGroup>
-            <Link 
+            <Link
               to={{
                 pathname: "/coursedashboard",
                 state: { forum: this.state }
               }}
             >
               <Button
-                  variant="primary"
+                  variant="secondary"
                   style={buttonStyle}
                   onClick={this.saveDB.bind(this)}
                 >
                   Add Course
                 </Button>
             </Link>
-        </Container>
+        </div>
+        </main>
       </React.Fragment>
     );
   }
 }
 
 const formStyle = {
-    margin: "1% 20% 15% 20%",
     padding: "1%",
     border: "2px solid black",
     background: "#343a40",
@@ -145,8 +146,34 @@ const Title = {
 const buttonStyle = {
     padding: "3px",
     float: "right",
-    margin: "3% 0% 0% 1%",
     fontFamily: "Arial, Helvetica, sans-serif",
-    backgroundColor: "#343a40",
+    margin: "3% 0% 0% 1%",
 };
-  
+
+const background = {
+  border: "1px solid black",
+  margin: "2% 10%",
+  paddingTop: "1%",
+  borderRadius: "5px",
+  background: "#343a40",
+};
+
+const main = {
+  margin: "5% 0% 0% 0%",
+}
+
+const courseCode = {
+  color: "#ffffff",
+  fontFamily: "Arial, Helvetica, sans-serif",
+  fontWeight: "bold",
+  textAlign: "center",
+  paddingBottom: "1%",
+};
+
+const backgroundaddCourse = {
+  border: "1px solid black",
+  margin: "2% 10%",
+  borderRadius: "5px",
+  background: "#343a40",
+  padding: "1%",
+};
