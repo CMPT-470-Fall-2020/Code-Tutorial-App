@@ -20,9 +20,10 @@ export default class RunTest extends Component {
       code: '',
       tests: '',
       selectedTest: 'Select test',
-      //testResult: '',
-      stdOut: '',
-      stdErr: '',
+      testResult: {
+        stdout: '',
+        stderr: '',
+      },
     };
     this.fileReader = undefined;
   }
@@ -70,9 +71,7 @@ export default class RunTest extends Component {
         url: `/autograder/runTest`,
       }).then((res) => {
         console.log(res);
-        this.setState({stdOut: res.data.stdout})
-        this.setState({stdErr: res.data.stderr})
-        //this.setState({testResult: res.data});
+        this.setState({testResult: {stdout: res.data.stdout, stderr: res.data.stderr}});
         //let output = document.createElement("p");
         //output.innerHTML = res.data;
         //document.getElementById("output").appendChild(output);
@@ -130,7 +129,7 @@ export default class RunTest extends Component {
 
           </InputGroup>
 
-		  <div id='container' style={containerStyle}>
+		  <div id='container'>
           <CodeMirror
             value={this.state.code}
           	options={{
@@ -149,62 +148,34 @@ export default class RunTest extends Component {
               this.setState({ code: value });
             }}
           />
-            <div id="output"> 
-          	<p>Standard Output:</p>
-          	<p>
-			{this.state.stdOut}
-          	</p>
-          	<p>Standard Error:</p>
-          	<p>
-			{this.state.stdErr}
-          	</p>
-            </div>
+          <div style={outputStyle}>
+          	<p>Output:</p>
+            <div id="output" style={newline}> {this.state.testResult.stdout} </div>
+            <br></br>
+            <p>Errors:</p>
+            <div id="output" style={newline}> {this.state.testResult.stderr} </div>
+          </div>
 		  </div> 
     		</div>
     );
   }
 }
 
-
-// const forumCard = {
-//     padding: "1%",
-//     border: "1px solid black",
-//     background: "white",
-// };
+const newline = {
+  whiteSpace: "pre-wrap",
+};
 
 const postTitle = {
   borderBottom: "1px solid black",
 };
 
-// const commentsSection = {
-//   marginTop: "10%",
-//   marginLeft: "10%",
-//   marginRight: "10%",
-// };
-
-// const commentsTitle = {
-//   borderBottom: "1px solid black",
-// };
-
-// const centerLayout = {
-//   margin: "2% 10%",
-// };
-
-// const main = {
-//   margin: "5% 0% 0% 0%",
-// }
-
-// const postText = {
-//     margin: "2% 10%",
-//     borderBottom: "1px solid black",
-//   };
-
-const containerStyle = {
+const outputStyle = {
+  margin: "2%",
 }
+
 
 const buttonStyle = {
     padding: "3px",
     float: "right",
-    //margin: "2% 0% 0% 1%",
     fontFamily: "Arial, Helvetica, sans-serif",
 };

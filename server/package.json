@@ -38,5 +38,9 @@
   "devDependencies": {
     "jest": "^26.6.3",
     "nodemon": "^2.0.6"
+  },
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
   }
 }
