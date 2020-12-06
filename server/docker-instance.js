@@ -40,8 +40,12 @@ class DockerInstance {
 	this.container_instance.inspect().then(resp => {
 		console.log("POLL: Container resp",resp)
 		if(resp.State.Running === true){
+			setTimeout(()=>{
+
+
 			this.connectCallback()
              clearInterval(this.pollId);
+			},1000);
 		}
 		// callback here
 	}
