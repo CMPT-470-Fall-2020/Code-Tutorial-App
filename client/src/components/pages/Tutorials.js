@@ -35,10 +35,8 @@ export default class Tutorials extends Component {
         }}
       >
         <div style={background}>
-        <div style={name}>{tutorial.tutorialName}</div>
-          <div style={tutorialCard}>
-
-          </div>
+          <div style={name}>{tutorial.tutorialName}</div>
+          <div style={tutorialCard}></div>
         </div>
       </Link>
     ));

@@ -1,10 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import {
-    InputGroup,
-    FormControl
-  } from "react-bootstrap";
+import { InputGroup, FormControl } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 
 export default class CreatePost extends Component {
@@ -13,34 +10,33 @@ export default class CreatePost extends Component {
     this.state = {
       courseID: props.location.state.course,
       userID: props.location.state.userid,
-      userName: '',
-      postTitle: '',
-      postText: ''
+      userName: "",
+      postTitle: "",
+      postText: "",
     };
   }
 
   componentDidMount() {
     axios({
-        method: "GET",
-        withCredentials: true,
-        url: "/user",
-      }).then((res) => {
-        this.setState({ userID: res.data._id, userName: res.data.userName });
+      method: "GET",
+      withCredentials: true,
+      url: "/user",
+    }).then((res) => {
+      this.setState({ userID: res.data._id, userName: res.data.userName });
     });
   }
 
-    onChangeTitle(e) {
-        this.setState({
-            postTitle: e.target.value,
-        });
-    }
+  onChangeTitle(e) {
+    this.setState({
+      postTitle: e.target.value,
+    });
+  }
 
-    onChangeText(e) {
-        this.setState({
-            postText: e.target.value,
-        });
-    }
-
+  onChangeText(e) {
+    this.setState({
+      postText: e.target.value,
+    });
+  }
 
   saveDB() {
     axios({
@@ -50,7 +46,7 @@ export default class CreatePost extends Component {
         courseID: this.state.courseID,
         userName: this.state.userName,
         postTitle: this.state.postTitle,
-        postText: this.state.postText
+        postText: this.state.postText,
       },
       withCredentials: true,
       url: `/forum/${this.state.courseID}/add`,
@@ -67,39 +63,37 @@ export default class CreatePost extends Component {
         </div>
 
         <main style={main}>
-
-        <div style={centerLayout}>
-          <InputGroup style={postTitleLayout}>
-            <FormControl
-              placeholder="Post Title"
-              value={this.state.title}
-              onChange={this.onChangeTitle.bind(this)}
-            >
-            </FormControl>
+          <div style={centerLayout}>
+            <InputGroup style={postTitleLayout}>
+              <FormControl
+                placeholder="Post Title"
+                value={this.state.title}
+                onChange={this.onChangeTitle.bind(this)}
+              ></FormControl>
             </InputGroup>
 
             <InputGroup style={postBodyLayout}>
-            <FormControl
-              placeholder="Post Body"
-              value={this.state.title}
-              onChange={this.onChangeText.bind(this)}
-            ></FormControl>
+              <FormControl
+                placeholder="Post Body"
+                value={this.state.title}
+                onChange={this.onChangeText.bind(this)}
+              ></FormControl>
             </InputGroup>
             <Link
               to={{
                 pathname: "/post",
-                state: { forum: this.state }
+                state: { forum: this.state },
               }}
             >
               <Button
-                  variant="primary"
-                  style={buttonStyle}
-                  onClick={this.saveDB.bind(this)}
-                >
-                  Submit
-                </Button>
+                variant="primary"
+                style={buttonStyle}
+                onClick={this.saveDB.bind(this)}
+              >
+                Submit
+              </Button>
             </Link>
-        </div>
+          </div>
         </main>
       </React.Fragment>
     );
@@ -107,15 +101,15 @@ export default class CreatePost extends Component {
 }
 
 const centerLayout = {
-    margin: "2% 10%",
+  margin: "2% 10%",
 };
 
-const postTitleLayout= {
-    marginTop: "2%",
+const postTitleLayout = {
+  marginTop: "2%",
 };
 
-const postBodyLayout= {
-    marginTop: "2%",
+const postBodyLayout = {
+  marginTop: "2%",
 };
 
 const postTitle = {
@@ -124,13 +118,13 @@ const postTitle = {
 };
 
 const buttonStyle = {
-    padding: "3px",
-    float: "right",
-    margin: "2% 0% 0% 1%",
-    fontFamily: "Arial, Helvetica, sans-serif",
-    backgroundColor: "#343a40",
+  padding: "3px",
+  float: "right",
+  margin: "2% 0% 0% 1%",
+  fontFamily: "Arial, Helvetica, sans-serif",
+  backgroundColor: "#343a40",
 };
 
 const main = {
   margin: "5% 0% 0% 0%",
-}
+};

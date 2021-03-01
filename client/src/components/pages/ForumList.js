@@ -9,17 +9,17 @@ export default class ForumList extends Component {
     this.state = {
       course: props.location.state.course._id,
       forums: [],
-      userID: ''
+      userID: "",
     };
   }
 
   componentDidMount() {
     axios({
-        method: "GET",
-        withCredentials: true,
-        url: "/user",
-      }).then((res) => {
-        this.setState({ userID: res.data._id });
+      method: "GET",
+      withCredentials: true,
+      url: "/user",
+    }).then((res) => {
+      this.setState({ userID: res.data._id });
     });
 
     // get forum list object from server
@@ -37,48 +37,50 @@ export default class ForumList extends Component {
   createForumList() {
     return this.state.forums.map((forum, key) => (
       <div key={key} id={forum._id}>
-          <div style={background}>
+        <div style={background}>
           <Link
-              to={{
-                pathname: "/post",
-                state: { forum },
-              }}
-            >
+            to={{
+              pathname: "/post",
+              state: { forum },
+            }}
+          >
             <div style={name}>{forum.postTitle}</div>
           </Link>
-            <div style={forumCard}>
-
-
-              <p>Created by: {forum.userName}</p>
-              <div>{this.showDeleteButton(forum)}</div>
-            </div>
+          <div style={forumCard}>
+            <p>Created by: {forum.userName}</p>
+            <div>{this.showDeleteButton(forum)}</div>
           </div>
+        </div>
       </div>
     ));
   }
 
   showDeleteButton(forum) {
     if (forum.userID === this.state.userID) {
-        return (
-            <div>
-                <Button onClick={this.deletePost.bind(this, forum)}
-                variant="secondary"
-                style={buttonStyleDefault}>Delete</Button>
-            </div>
-        )
+      return (
+        <div>
+          <Button
+            onClick={this.deletePost.bind(this, forum)}
+            variant="secondary"
+            style={buttonStyleDefault}
+          >
+            Delete
+          </Button>
+        </div>
+      );
     }
-    return
+    return;
   }
 
   deletePost(forum) {
-      axios({
-          method: "DELETE",
-          withCredentials: true,
-          url: `/forum/${forum.courseID}/${forum._id}`,
-      }).then((res) => {
-          console.log(res);
-      });
-      document.getElementById(forum._id).remove();
+    axios({
+      method: "DELETE",
+      withCredentials: true,
+      url: `/forum/${forum.courseID}/${forum._id}`,
+    }).then((res) => {
+      console.log(res);
+    });
+    document.getElementById(forum._id).remove();
   }
 
   render() {
@@ -86,23 +88,19 @@ export default class ForumList extends Component {
       <React.Fragment>
         <div>
           <div style={postTitle}>
-          <Link
-            to={{
-              pathname: "/createPost",
-              state: {course: this.state.course}
-            }}>
-              <Button
-                    variant="secondary"
-                    style={buttonStyle}
-                    >
+            <Link
+              to={{
+                pathname: "/createPost",
+                state: { course: this.state.course },
+              }}
+            >
+              <Button variant="secondary" style={buttonStyle}>
                 Add Post
               </Button>
-          </Link>
-          <h3>Forum</h3>
+            </Link>
+            <h3>Forum</h3>
           </div>
-          <main style={main}>
-            {this.createForumList()}
-          </main>
+          <main style={main}>{this.createForumList()}</main>
         </div>
       </React.Fragment>
     );
@@ -149,4 +147,4 @@ const buttonStyleDefault = {
 
 const main = {
   margin: "5% 0% 0% 0%",
-}
+};

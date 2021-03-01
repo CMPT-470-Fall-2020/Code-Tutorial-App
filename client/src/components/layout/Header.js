@@ -29,16 +29,17 @@ export default class Header extends Component {
   }
 
   componentWillUnmount() {
-    this.setState = (state,callback)=>{
+    this.setState = (state, callback) => {
       return;
-  }}
+    };
+  }
 
   onLogout(e) {
     axios({
       method: "GET",
       withCredentials: true,
       url: "/logout",
-    })
+    });
   }
 
   render() {
@@ -52,26 +53,42 @@ export default class Header extends Component {
         {this.state.user.accountType === "Student" && (
           <React.Fragment>
             <Navbar.Collapse id="basic-navbar-nav">
-                <Nav className="mr-auto">
-                <NavDropdown title="Tutorials" id="basic-nav-dropdown" >
-                    <NavDropdown.Item as={Link} to="/coursedashboard">Dashboard</NavDropdown.Item>
+              <Nav className="mr-auto">
+                <NavDropdown title="Tutorials" id="basic-nav-dropdown">
+                  <NavDropdown.Item as={Link} to="/coursedashboard">
+                    Dashboard
+                  </NavDropdown.Item>
                 </NavDropdown>
-                </Nav>
+              </Nav>
             </Navbar.Collapse>
           </React.Fragment>
         )}
         {this.state.user.accountType === "Teacher" && (
           <React.Fragment>
             <Navbar.Collapse id="basic-navbar-nav">
-                <Nav className="mr-auto">
-                    <Nav.Item as={Link} to="/coursedashboard" style={textStyle}>Dashboard</Nav.Item>&nbsp;
-                    <Nav.Item as={Link} to="/createtutorial" style={textStyle}>Create Tutorial</Nav.Item>&nbsp;
-                    <Nav.Item as={Link} to="/createcourse" style={textStyle}>Create Course</Nav.Item>&nbsp;
-                </Nav>
+              <Nav className="mr-auto">
+                <Nav.Item as={Link} to="/coursedashboard" style={textStyle}>
+                  Dashboard
+                </Nav.Item>
+                &nbsp;
+                <Nav.Item as={Link} to="/createtutorial" style={textStyle}>
+                  Create Tutorial
+                </Nav.Item>
+                &nbsp;
+                <Nav.Item as={Link} to="/createcourse" style={textStyle}>
+                  Create Course
+                </Nav.Item>
+                &nbsp;
+              </Nav>
             </Navbar.Collapse>
           </React.Fragment>
         )}
-        <Nav.Link as={Link} to="/login" style={logoutStyle} onClick={this.onLogout.bind(this)}>
+        <Nav.Link
+          as={Link}
+          to="/login"
+          style={logoutStyle}
+          onClick={this.onLogout.bind(this)}
+        >
           Logout
         </Nav.Link>
       </Navbar>
