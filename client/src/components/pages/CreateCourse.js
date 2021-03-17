@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import Header from "../layout/Header";
 import axios from "axios";
 import { Container, InputGroup, FormControl } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
+import Footer from "./Footer";
 
 export default class CreateCourse extends Component {
   constructor(props) {
@@ -73,11 +73,13 @@ export default class CreateCourse extends Component {
 
   render() {
     return (
-      <React.Fragment>
+      <div className="min-vh-100">
         <div>
-          <h3 style={Title}>Add Course</h3>
+          <h3 style={Title} className="text-center">
+            Create Course
+          </h3>
         </div>
-        <main style={main}>
+        <main style={main} className="min-vh-100">
           <div style={backgroundaddCourse}>
             <p style={courseCode}>Course Information</p>
             <InputGroup style={inputStyle}>
@@ -117,7 +119,8 @@ export default class CreateCourse extends Component {
             </Link>
           </div>
         </main>
-      </React.Fragment>
+        <Footer />
+      </div>
     );
   }
 }

@@ -4,6 +4,7 @@ import axios from "axios";
 import InputGroup from "react-bootstrap/InputGroup";
 import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
+import Footer from "./Footer";
 
 export default class CourseDashboard extends Component {
   constructor(props) {
@@ -155,7 +156,7 @@ export default class CourseDashboard extends Component {
           <div style={courseCard}>
             <div style={courseName}>{course.courseName}</div>
             {/* change to only for teacher */}
-            <div style={courseName}>{course._id}</div>
+            <div style={courseName}>{"ID: ".concat(course._id)}</div>
           </div>
         </div>
       </div>
@@ -164,11 +165,11 @@ export default class CourseDashboard extends Component {
 
   render() {
     return (
-      <React.Fragment>
+      <div className="min-vh-100">
         <h3 style={dashboardTitle} className="text-center">
           Dashboard - Courses
         </h3>
-        <main style={main}>
+        <main style={main} className="min-vh-100">
           <div style={backgroundaddCourse}>
             <InputGroup>
               <FormControl
@@ -188,8 +189,12 @@ export default class CourseDashboard extends Component {
             </InputGroup>
           </div>
           {this.createCourseContainers()}
+          <p className="text-center font-weight-bold">
+            There are no more courses available!
+          </p>
         </main>
-      </React.Fragment>
+        <Footer />
+      </div>
     );
   }
 }
@@ -201,6 +206,7 @@ const dashboardTitle = {
 
 const main = {
   marginTop: "1rem",
+  minHeight: "100%",
 };
 
 const buttonStyleTutorial = {

@@ -10,10 +10,8 @@ import { Controlled as CodeMirror } from "react-codemirror2";
 import Button from "react-bootstrap/Button";
 import "codemirror/mode/markdown/markdown.js";
 import "codemirror/lib/codemirror.css";
-//import './../scss/MarkdownEditor.scss';
 import "../css/CreateTutorial.css";
 import axios from "axios";
-//import { v4 as uuid } from 'uuid'; //TODO: Why is this needed?
 // Markdown rendering stuff
 
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -157,7 +155,7 @@ export default class CreateTutorial extends Component {
                   <h1 style={headerStyle}>Markdown Editor</h1>
                   <Button
                     variant="secondary"
-                    style={buttonStyle}
+                    // style={buttonStyle}
                     onClick={this.saveDB.bind(this)}
                   >
                     Save
