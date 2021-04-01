@@ -1,77 +1,58 @@
-# CMPT 470 Learning Project - Fall 2020
-This repostory will contain all code for our semester long project. 
+# About this repository
 
-# Setting up the project after cloning
-Whenever we install a library with `npm`, the code for the library is saved in a folder called `node-modules`. That folder has a large size and is almost always not included within the git repo to save space and make it faster to clone. When you clone this repository, you will need to run the command `npm install` within the root folder of the project(i.e. the folder which contains this README). This will install all libraries necessary(`React`, `mongoose`, `express` and so on...) and create a new folder called `node-modules`.
+## Project Overview
+This repostory will contain all code for our semester long project created during our CMPT 470 - Web Development class.
 
-# Readme Contents
-I have created the basic files using `Create-React-App`. There are several commands in the README. Please take a look at them. The most important one seems to be `npm start`. Additionally, `Create-React-App` uses `yarn` instead of `npm` by default. `yarn`  is an alternative to `npm` and it accomplishes the same job. Since we are all somewhat familiar with `npm`, I have converted the project from using `yarn` by default to `npm`.
+A lot of beginner programmers seem to face two consistent problems:
+1. Setting up a programming environment:
+   1. Installing interpreters/compilers
+   2. Making sure that their environment matches that of the instructor(students use Windows/Mac while instructor might be using Linux)
+   3. Making sure that their assignments are portable(Ex: Code written on Windows but has to run on Linux)
+2. Feeling overwhelmed by large blocks of code
+   -  Large blocks of code might make beginners nervous and apprehensive about diving into the code. While it is necessary to learn to handle large blocks of code in the long run, beginner programmers can be eased into it by being presented small chunks of code that have been annotated(like a Jupyter Notebook).
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+For our project, we chose to create a full-stack web application which can be used to aid the learning of programming through interactive tutorials. The application provides [literate programming](https://en.wikipedia.org/wiki/Literate_programming) features and has a user interface similar to Jupyter Notebooks.
 
-## Available Scripts
+Each interactive tutorial can be made up of:
+   - Explanatory text written using markdown(with support for LaTex formulas and emojis).
+   - Chunks of code which are written by the tutorial author. These chunks of code can then be ran remotely(on the applications server) and the result returned and shown to the reader. Tutorial readers can additionally modify these cells and re-run them in order to understand the code better through experimentation.
 
-In the project directory, you can run:
+### Comparison to alternatives
+#### [Jupyter Notebooks](https://jupyter.org/index.html)
+##### Pros
+- Jupyter Notebooks have support for more languages than our tutorial application.
+- Jupyter Notebooks are more popular and have more support/plugins available.
+##### Cons
+- Jupyter notebooks are extremely popular in various scientific/industrial fields(Data Science, Machine Learning, Physics...) but they require the user to install all necessary interpreters and configure the Jupyter kernel to detect them. Our tutorial application requires no setup for students besides creating an account.
+- Jupyter Notebook files require all Jupyter files to be distributed to each user(Dropbox, Github/Gitlab...). Our application provides automatic hosting for every file created. The only barrier to accessing a file is simply having the permission to do so. There is no need to download anything.
+- Jupyter Notebook files are difficult to read without using a Jupyter Notebook as the front-end interface. All tutorials for our application are written in plain markdown and can be distributed as raw files if necessary.
+#### [repl.it](https://replit.com/)
+##### Pros
+- `repl.it` has support for more languages than our tutorial application.
+- `repl.it` allows users to run full environments where they can install additional libraries.
+- `repl.it` has a more attractive/powerful UI/UX.
+##### Cons
+- `repl.it` can only run interpreted code(Ruby, Python, Javascript...) in "one shot". Each time a project is executed, it is executed from the start to the end. The interpreter used to run the project is closed after the last line of code. Users do not have the ability to run only certain parts of a program over and over again.
+- `repl.it` does not provide any way of annotating code outside of comments within the source code or additional files explaining the code. This makes it difficult to annotate and break up a source file into smaller chunks which are easier to understand and digest by students.
 
-### `npm start`
+## How it works
+TODO
+## Project File Layout
+- `client`: Contains all code for the frontend of the application. The frontend is built using `React` and `Bootstrap`.
+- `server`: Contains all code for the backend of our application. The backend is built using `express.js`, `MongoDB` and `node.js`.
+  - `containers`: Contains all docker files use to create interpreter environments and isolate each user from all others.
+  - `language-servers` Contains all code for each of the language servers which are used to maintain each supported language and its associated interpreter.
+  - `models`: Contains all database models.
+  - `routes`: Contains all API routes.
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Running the application
+TODO
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+## Authors
+- Emily Chen
+- Akashdeep Dhami
+- Kira Nishi-Beckingham
+- Guian Gumpac
+- Yavor Konstantinov
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm build`
-
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `yarn build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#yarn-run-build-fails-to-minify
