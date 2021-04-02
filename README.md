@@ -66,7 +66,26 @@ Detailed information on how code cells/instructor tests are executed in the back
   - `routes`: Contains all API routes.
 
 ## Running the application locally
-TODO
+The project is a bit difficult to setup locally. Unfortunately, we ran out of free Google Cloud Platform credits so we cannot host the project there anymore
+
+**NOTE**: All commands from step 3 and onwards are executed from the project root.
+1. `git clone https://github.com/CMPT-470-Fall-2020/Code-Tutorial-App.git`
+2. `cd Code-Tutorial-App`
+3. `cd client && npm install`
+4. `cd server && npm install`
+5. Make sure that the docker daemon is started. After this is done,
+6. Download the [Ubuntu 20.04 image from dockerhub](https://hub.docker.com/_/ubuntu?tab=description&page=1&ordering=last_updated)
+7. `cd server/Containers`. If you are running on Linux/MacOS, execute the `generate-containers.sh` file. If you are running on Windows, execute the `generate-containers.ps1` file. This will create all the docker images necessary to run the project. Note: This might take some time.
+8. Create a MongoDB Atlas instance and grab its URL.
+9. `cd server && touch .env`
+10. Within the `/server/.env` file, add three items:
+```
+ATLAS_URI = MONGODB_ATLAS_URI_HERE
+SESSION_SECRET= SOME_RANDOM_SECRET_CODE_HERE
+COOKIE_PARSER_SECRET= SOME_RANDOM_SECRET_CODE_HERE
+```
+11. `cd server && npm start`
+12. Open another terminal, navigate to the root of the project and run the following: `cd client && npm start`.
 
 ## Authors
 - [Emily Chen](https://github.com/emilychen98)
