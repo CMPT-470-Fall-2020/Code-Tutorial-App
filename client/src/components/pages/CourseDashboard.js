@@ -1,12 +1,10 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import {
-  InputGroup,
-  FormControl
-} from "react-bootstrap";
+import InputGroup from "react-bootstrap/InputGroup";
+import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
-
+import Footer from "./Footer";
 
 export default class CourseDashboard extends Component {
   constructor(props) {
@@ -20,7 +18,7 @@ export default class CourseDashboard extends Component {
   }
 
   addCourse() {
-    if(this.state.courseList.includes(this.state.newCourse)) {
+    if (this.state.courseList.includes(this.state.newCourse)) {
       axios({
         method: "POST",
         data: {
@@ -44,22 +42,17 @@ export default class CourseDashboard extends Component {
 
       window.location.reload(false);
     } else {
-      window.alert(this.state.newCourse + ' is and invalid course code!');
+      window.alert(this.state.newCourse + " is and invalid course code!");
     }
-
   }
 
   onChangeCourseID(e) {
     this.setState({
-        newCourse: e.target.value,
+      newCourse: e.target.value,
     });
-}
+  }
 
   componentDidMount() {
-    console.log(
-      "The state in the component before fetching data is:",
-      this.state
-    );
     // get user object from server
     axios({
       method: "GET",
@@ -79,128 +72,129 @@ export default class CourseDashboard extends Component {
         });
     });
 
-        // get user object from server
+    // get user object from server
     axios({
       method: "GET",
       withCredentials: true,
       url: "/course/courseList",
-    }).then((res) => {
-      this.setState({ courseList: res.data });
-      console.log(res);
     })
+      .then((res) => {
+        this.setState({ courseList: res.data });
+        console.log(res);
+      })
       .catch((error) => {
         console.log(error);
-    });
-
+      });
   }
 
   createCourseContainers() {
     return this.state.courses.map((course, key) => (
       <div>
-          <div style={background}>
+        <div style={background}>
           <div style={courseCode}>
-          {this.state.user.accountType === "Teacher" && (
-            <Link
-            key={key}
-            to={{
-              pathname: "/uploadtest",
-              state: { course },
-            }}
-            >
-            <Button
-              variant="secondary"
-              style={buttonStyleForum}
+            {this.state.user.accountType === "Teacher" && (
+              <Link
+                key={key}
+                to={{
+                  pathname: "/uploadtest",
+                  state: { course },
+                }}
               >
-                Upload Test File
-            </Button>
-            </Link>
-          )}
-          <Link
-            key="forumList"
-            to={{
-              pathname: "/forumList",
-              state: { course },
-            }}
-          >
-            <Button
-              variant="secondary"
-              style={buttonStyleForum}
+                <Button
+                  variant="secondary"
+                  style={{ ...buttonStyleForum, marginRight: "0.3rem" }}
+                >
+                  Upload Test File
+                </Button>
+              </Link>
+            )}
+            <Link
+              key="forumList"
+              to={{
+                pathname: "/forumList",
+                state: { course },
+              }}
+            >
+              <Button
+                variant="secondary"
+                style={{ ...buttonStyleForum, marginRight: "0.3rem" }}
               >
                 Forum
-            </Button>
-          </Link>
-          <Link
-            key={key}
-            to={{
-              pathname: "/runTest",
-              state: { course },
-            }}
-          >
-            <Button
-              variant="secondary"
-              style={buttonStyleRunTest}
+              </Button>
+            </Link>
+            <Link
+              key={key}
+              to={{
+                pathname: "/runTest",
+                state: { course },
+              }}
+            >
+              <Button
+                variant="secondary"
+                style={{ ...buttonStyleRunTest, marginLeft: "0.3rem" }}
               >
                 Test Code
-            </Button>
-          </Link>
-          {course.courseCode}
-          <Link
-            key={key}
-            to={{
-              pathname: "/tutorials",
-              state: { course },
-            }}
-          >
-            <Button
-              variant="secondary"
-              style={buttonStyleTutorial}
+              </Button>
+            </Link>
+            {course.courseCode}
+            <Link
+              key={key}
+              to={{
+                pathname: "/tutorials",
+                state: { course },
+              }}
+            >
+              <Button
+                variant="secondary"
+                style={{ ...buttonStyleTutorial, marginLeft: "0.3rem" }}
               >
                 Tutorials
-            </Button>
-          </Link>
+              </Button>
+            </Link>
           </div>
 
-            <div style={courseCard}>
-
-              <div style={courseName}>{course.courseName}</div>
-              {/* change to only for teacher */}
-              <div style={courseName}>{course._id}</div>
-            </div>
+          <div style={courseCard}>
+            <div style={courseName}>{course.courseName}</div>
+            {/* change to only for teacher */}
+            <div style={courseName}>{"ID: ".concat(course._id)}</div>
           </div>
         </div>
+      </div>
     ));
   }
 
-
-
   render() {
     return (
-      <React.Fragment>
-        <div>
-          <h3 style={dashboardTitle}>Dashboard - Courses</h3>
-        </div>
-        <main style={main}>
-        <div style={backgroundaddCourse}>
-          <InputGroup >
-            <FormControl
-              placeholder="Course Code"
-              value={this.state.newCourse}
-              onChange={this.onChangeCourseID.bind(this)}
-            ></FormControl>
-            <InputGroup.Append>
-              <Button
+      <div className="min-vh-100">
+        <h3 style={dashboardTitle} className="text-center">
+          Dashboard - Courses
+        </h3>
+        <main style={main} className="min-vh-100">
+          <div style={backgroundaddCourse}>
+            <InputGroup>
+              <FormControl
+                placeholder="Course Code..."
+                value={this.state.newCourse}
+                onChange={this.onChangeCourseID.bind(this)}
+              ></FormControl>
+              <InputGroup.Append>
+                <Button
                   variant="secondary"
                   style={buttonStyle}
                   onClick={this.addCourse.bind(this)}
                 >
                   Add Course
-              </Button>
-            </InputGroup.Append>
-          </InputGroup>
-      </div>
-         {this.createCourseContainers()}
+                </Button>
+              </InputGroup.Append>
+            </InputGroup>
+          </div>
+          {this.createCourseContainers()}
+          <p className="text-center font-weight-bold">
+            There are no more courses available!
+          </p>
         </main>
-      </React.Fragment>
+        <Footer />
+      </div>
     );
   }
 }
@@ -211,8 +205,9 @@ const dashboardTitle = {
 };
 
 const main = {
-  margin: "5% 0% 0% 0%",
-}
+  marginTop: "1rem",
+  minHeight: "100%",
+};
 
 const buttonStyleTutorial = {
   padding: "3px",
@@ -255,9 +250,9 @@ const backgroundaddCourse = {
 
 const courseCard = {
   padding: "1%",
+  marginTop: "1rem",
   border: "1px solid black",
   background: "white",
-
 };
 
 const courseCode = {

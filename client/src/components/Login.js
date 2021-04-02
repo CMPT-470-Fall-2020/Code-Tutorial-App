@@ -78,7 +78,7 @@ export default class Login extends Component {
           url: "/login",
         }).then((res) => {
           if (res.data === "Authentication: Success") {
-              this.props.history.push("/coursedashboard");
+            this.props.history.push("/coursedashboard");
           }
         });
       }
@@ -189,7 +189,7 @@ const loginStyle = {
   position: "fixed",
   top: "50%",
   left: "50%",
-  transform: "translate(-50%, -50%)"
+  transform: "translate(-50%, -50%)",
 };
 
 const labelStyle = {

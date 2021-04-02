@@ -25,26 +25,29 @@ class App extends Component {
   render() {
     return (
       <main>
-          <Route path="/" render={ ( props ) => ( props.location.pathname !== "/login") && <Header /> }></Route>
-          <Switch>
-            <Route exact path="/" component={() => <Redirect to="/login" />} />
-            <Route exact path="/login" component={Login} />
-            <Route path="/coursedashboard" component={CourseDashboard}></Route>
-            <Route path="/tutorials" component={Tutorials}></Route>
-            <Route path="/runtutorial" component={RunTutorial}></Route>
-            <Route path="/createtutorial" component={CreateTutorial}></Route>
-            <Route path="/forumList" component={ForumList}></Route>
-            <Route path="/createPost" component={CreatePost}></Route>
-            <Route path="/post" component={Post}></Route>
-            <Route path="/runTest" component={RunTest}></Route>
-            <Route path="/uploadtest" component={UploadTest}></Route>
-            <Route path="/createcourse" component={CreateCourse}></Route>
+        <Route
+          path="/"
+          render={(props) => props.location.pathname !== "/login" && <Header />}
+        ></Route>
+        <Switch>
+          <Route exact path="/" component={() => <Redirect to="/login" />} />
+          <Route exact path="/login" component={Login} />
+          <Route path="/coursedashboard" component={CourseDashboard}></Route>
+          <Route path="/tutorials" component={Tutorials}></Route>
+          <Route path="/runtutorial" component={RunTutorial}></Route>
+          <Route path="/createtutorial" component={CreateTutorial}></Route>
+          <Route path="/forumList" component={ForumList}></Route>
+          <Route path="/createPost" component={CreatePost}></Route>
+          <Route path="/post" component={Post}></Route>
+          <Route path="/runTest" component={RunTest}></Route>
+          <Route path="/uploadtest" component={UploadTest}></Route>
+          <Route path="/createcourse" component={CreateCourse}></Route>
 
-            {/* Show blank page for users without the intended account
+          {/* Show blank page for users without the intended account
             Local Bug: Does not work without refreshing on first load. Need to look into.
             On production, accessing a restricted site will show a cannot get /url so maybe
             the code below is not needed at all. Note to use this code: http call will need to be made to access user account*/}
-            {/* {console.log("App.js account: " + this.state.user.accountType)}
+          {/* {console.log("App.js account: " + this.state.user.accountType)}
             {this.state.user.accountType === "Teacher"  && (
                 <Route exact path="/createtutorial" component={CreateTutorial}></Route>
                 <Route path="/createCourse" component={CreateCourse}></Route>
@@ -52,7 +55,7 @@ class App extends Component {
             {this.state.user.accountType === "Student" && (
                 <Route exact path="/codeplayground" component={CodePlayground}></Route>
             )} */}
-          </Switch>
+        </Switch>
       </main>
     );
   }

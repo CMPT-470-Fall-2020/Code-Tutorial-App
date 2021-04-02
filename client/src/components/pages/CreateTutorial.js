@@ -10,10 +10,8 @@ import { Controlled as CodeMirror } from "react-codemirror2";
 import Button from "react-bootstrap/Button";
 import "codemirror/mode/markdown/markdown.js";
 import "codemirror/lib/codemirror.css";
-//import './../scss/MarkdownEditor.scss';
 import "../css/CreateTutorial.css";
 import axios from "axios";
-//import { v4 as uuid } from 'uuid'; //TODO: Why is this needed?
 // Markdown rendering stuff
 
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -88,14 +86,15 @@ export default class CreateTutorial extends Component {
 
   // Save markup text to db
   saveDB() {
-  	console.log("The state", this.state);
+    console.log("The state", this.state);
     axios({
       method: "POST",
       data: {
         tutorialName: this.state.title,
         userID: this.state.user._id,
         codeText: this.state.rawCode,
-        htmlText: "FAKE HTML TO STOP US FROM GETTING AN ERROR SINCE WE DO NOT USE THIS ANYMORE", // TODO: Remove this field
+        htmlText:
+          "FAKE HTML TO STOP US FROM GETTING AN ERROR SINCE WE DO NOT USE THIS ANYMORE", // TODO: Remove this field
       },
       withCredentials: true,
       url: `/tutorial/${this.state.courseID}/add`,
@@ -128,64 +127,64 @@ export default class CreateTutorial extends Component {
 
     return (
       <React.Fragment>
-      <div>
-        <h3 style={tutorialTitle}>Tutorial Creation Tool</h3>
-      </div>
-      <div style={backgroundaddCourse}>
-        <Container>
-          <InputGroup className="mb-3" style={tutorialTitleStyle}>
-            <FormControl
-              placeholder="Tutorial Title"
-              value={this.state.title}
-              onChange={this.onChangeTitle.bind(this)}
-            ></FormControl>
-            <DropdownButton
-              as={InputGroup.Append}
-              variant="outline-secondary"
-              title={this.state.course}
-              id="dropdown-basic-button"
-              onSelect={this.handleSelect}
-            >
-              {coursesDropdown}
-            </DropdownButton>
-          </InputGroup>
+        <div>
+          <h3 style={tutorialTitle}>Tutorial Creation Tool</h3>
+        </div>
+        <div style={backgroundaddCourse}>
+          <Container>
+            <InputGroup className="mb-3" style={tutorialTitleStyle}>
+              <FormControl
+                placeholder="Tutorial Title"
+                value={this.state.title}
+                onChange={this.onChangeTitle.bind(this)}
+              ></FormControl>
+              <DropdownButton
+                as={InputGroup.Append}
+                variant="outline-secondary"
+                title={this.state.course}
+                id="dropdown-basic-button"
+                onSelect={this.handleSelect}
+              >
+                {coursesDropdown}
+              </DropdownButton>
+            </InputGroup>
 
-          <div id="writing-area">
-            <div id="markdown-editor">
-              <section style={sectionStyle}>
-                <h1 style={headerStyle}>Markdown Editor</h1>
-                <Button
-                  variant="secondary"
-                  style={buttonStyle}
-                  onClick={this.saveDB.bind(this)}
-                >
-                  Save
-                </Button>
-              </section>
-              <CodeMirror
-                value={this.state.rawCode}
-                options={options}
-                mode="markdown"
-                onBeforeChange={(editor, data, value) => {
-                  this.setState({ rawCode: value });
-                  //this.setState({htmlCode: marked(value)});
-                }}
-                onChange={(editor, data, value) => {
-                  this.setState({ rawCode: value });
-                  //this.setState({htmlCode: marked(value)});
-                }}
-              />
+            <div id="writing-area">
+              <div id="markdown-editor">
+                <section style={sectionStyle}>
+                  <h1 style={headerStyle}>Markdown Editor</h1>
+                  <Button
+                    variant="secondary"
+                    // style={buttonStyle}
+                    onClick={this.saveDB.bind(this)}
+                  >
+                    Save
+                  </Button>
+                </section>
+                <CodeMirror
+                  value={this.state.rawCode}
+                  options={options}
+                  mode="markdown"
+                  onBeforeChange={(editor, data, value) => {
+                    this.setState({ rawCode: value });
+                    //this.setState({htmlCode: marked(value)});
+                  }}
+                  onChange={(editor, data, value) => {
+                    this.setState({ rawCode: value });
+                    //this.setState({htmlCode: marked(value)});
+                  }}
+                />
+              </div>
+              <div id="markdown-preview">
+                <h1 style={headerStyle}>Markdown Preview</h1>
+                <ReactMarkdown
+                  plugins={[gfm, math, emoji]}
+                  renderers={renderers}
+                  children={this.state.rawCode}
+                />
+              </div>
             </div>
-            <div id="markdown-preview">
-              <h1 style={headerStyle}>Markdown Preview</h1>
-              <ReactMarkdown
-                plugins={[gfm, math, emoji]}
-                renderers={renderers}
-                children={this.state.rawCode}
-              />
-            </div>
-          </div>
-        </Container>
+          </Container>
         </div>
       </React.Fragment>
     );

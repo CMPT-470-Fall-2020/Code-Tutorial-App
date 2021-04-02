@@ -35,7 +35,6 @@ export default class MarkdownCell extends Component {
       tabSize: 4,
     };
 
-	
     this.codeMirrorReadOnlyConfig = {
       //viewportMargin: (this.props.code.match(/\n/g) || '').length + 2,
       viewportMargin: 25,
@@ -88,27 +87,27 @@ export default class MarkdownCell extends Component {
     }
   }
 
-  stopInstance(){
-  	console.log("stopping instance!")
-	  // Start spinner
-      this.setState({ respCodeStatus: true });
-      // Clear code
-      this.setState({ codeOutput: '' });
-      axios({
-        method: "DELETE",
-        data: {
-          uname: this.state.uid, 
-          iname: this.state.interpName,
-          lang: this.state.lang,
-        },
-        url: `/run`,
-      }).then((res) => {
-        let retMsg = res.data.message;
-        // Stop spinner
-        console.log("Return message in markdown cell is", retMsg);
-        this.setState({ isWaiting: false });
-        this.setState({ codeOutput: retMsg });
-      });
+  stopInstance() {
+    console.log("stopping instance!");
+    // Start spinner
+    this.setState({ respCodeStatus: true });
+    // Clear code
+    this.setState({ codeOutput: "" });
+    axios({
+      method: "DELETE",
+      data: {
+        uname: this.state.uid,
+        iname: this.state.interpName,
+        lang: this.state.lang,
+      },
+      url: `/run`,
+    }).then((res) => {
+      let retMsg = res.data.message;
+      // Stop spinner
+      console.log("Return message in markdown cell is", retMsg);
+      this.setState({ isWaiting: false });
+      this.setState({ codeOutput: retMsg });
+    });
   }
 
   resetCellContents() {
@@ -214,7 +213,11 @@ export default class MarkdownCell extends Component {
               >
                 Restore Original
               </Button>
-              <Button variant="primary" className="mr-2" onClick={this.stopInstance}>
+              <Button
+                variant="primary"
+                className="mr-2"
+                onClick={this.stopInstance}
+              >
                 Stop
               </Button>
             </ButtonToolbar>
