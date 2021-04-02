@@ -1,6 +1,6 @@
 const Chance = require("chance");
 const Docker = require("dockerode");
-const SharedLog = require("./logging");
+const SharedLog = require("../server_logging/logging");
 const logger = SharedLog.getInstance().logger;
 
 const chance = new Chance();
@@ -36,20 +36,17 @@ class DockerInstance {
     );
   }
 
-  pollIfAlive(){
-	this.container_instance.inspect().then(resp => {
-		console.log("POLL: Container resp",resp)
-		if(resp.State.Running === true){
-			setTimeout(()=>{
-
-
-			this.connectCallback()
-             clearInterval(this.pollId);
-			},1000);
-		}
-		// callback here
-	}
-	)
+  pollIfAlive() {
+    this.container_instance.inspect().then((resp) => {
+      console.log("POLL: Container resp", resp);
+      if (resp.State.Running === true) {
+        setTimeout(() => {
+          this.connectCallback();
+          clearInterval(this.pollId);
+        }, 1000);
+      }
+      // callback here
+    });
   }
 
   startInstance() {
@@ -68,24 +65,24 @@ class DockerInstance {
       (err, container) => {
         if (err) {
           // TODO: Use a constant to indicate a status and check the type of error.
-          throw err
+          throw err;
           console.log("DOCKER: Container could not be created.", err.message);
           return 1;
         }
 
         console.log("DOCKER: Container created. Starting container...");
         this.container_instance = container;
-          this.pollId = setInterval(() => {
-          	this.pollIfAlive();
-          }, 1000);
+        this.pollId = setInterval(() => {
+          this.pollIfAlive();
+        }, 1000);
         container.start((err, data) => {
           if (err) {
-          throw err;
-          console.log(
-            "DOCKER: container started  error",
-            err,
-            "Calling callback"
-          );
+            throw err;
+            console.log(
+              "DOCKER: container started  error",
+              err,
+              "Calling callback"
+            );
 
             return 1;
           }
@@ -103,12 +100,11 @@ class DockerInstance {
   stopInstance(callback) {
     this.container_instance.stop((err, data) => {
       if (err) {
-        throw err
+        throw err;
         console.log("Instance stopped with an error:", err);
       }
       console.log("Instance stopped succesfully");
-      callback("Instance stopped succesfully")
-
+      callback("Instance stopped succesfully");
     });
   }
 

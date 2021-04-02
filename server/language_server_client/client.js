@@ -1,7 +1,7 @@
 const net = require("net");
 const crypto = require("crypto");
 const { log } = require("util");
-const SharedLog = require("./logging");
+const SharedLog = require("../server_logging/logging");
 const logger = SharedLog.getInstance().logger;
 
 const { MessageQueue } = require("./message_queue");
@@ -49,10 +49,12 @@ class Interpreter {
     // Max number of attempts tried
     this.maxRetryAttempt = 10;
 
-	console.log("host",process.env.HOST)
+    console.log("host", process.env.HOST);
     this.socket.on("connect", () => {
       this.connStatus = true;
-      console.log(`CLIENT: Connected to server on port ${portNum}!, ${process.env.HOST}`);
+      console.log(
+        `CLIENT: Connected to server on port ${portNum}!, ${process.env.HOST}`
+      );
       this.sendMsg();
     });
 
@@ -82,7 +84,7 @@ class Interpreter {
     });
 
     this.dockerInstance = new DockerInstance(this.lang, this.portNum, () => {
-    	this.socket.connect(this.portNum, "127.0.0.1");
+      this.socket.connect(this.portNum, "127.0.0.1");
     });
     // Start the docker instance
     this.dockerInstance.startInstance(() => {

@@ -1,6 +1,6 @@
 const Chance = require("chance");
 const Docker = require("dockerode");
-const SharedLog = require("./logging");
+const SharedLog = require("../server_logging/logging");
 const { PassThrough } = require("stream");
 const fs = require("fs");
 const tar = require("tar-stream");
@@ -39,29 +39,32 @@ class AutograderDockerInstance {
     this.execStderr = "";
     // Holds the callback function used send data back to client.
     this.respCallback = undefined;
-    this.fileEnding = ''
-    switch(this.lang){
-		case 'julia':
-			this.fileEnding = '.jl';
-			break;
-		case 'python':
-			this.fileEnding = '.py';
-			break;
-		case 'zsh':
-			this.fileEnding = '.sh';
-			break;
-		case 'bash':
-			this.fileEnding = '.sh';
-			break;
-		default:
-			console.log("could not recognize name!")
-			break;
+    this.fileEnding = "";
+    switch (this.lang) {
+      case "julia":
+        this.fileEnding = ".jl";
+        break;
+      case "python":
+        this.fileEnding = ".py";
+        break;
+      case "zsh":
+        this.fileEnding = ".sh";
+        break;
+      case "bash":
+        this.fileEnding = ".sh";
+        break;
+      default:
+        console.log("could not recognize name!");
+        break;
     }
 
-	console.log(this.fileEnding)
+    console.log(this.fileEnding);
     logger.trace(
       "DOCKER: Constructor finished. Container name will be",
-      this.container_name, this.lang, this.baseImg, this.startCommand
+      this.container_name,
+      this.lang,
+      this.baseImg,
+      this.startCommand
     );
   }
 
@@ -139,7 +142,7 @@ class AutograderDockerInstance {
 
       // Create a new tarfile
       let pack = tar.pack();
-      pack.entry({ name: "professorTest" + this.fileEnding}, data);
+      pack.entry({ name: "professorTest" + this.fileEnding }, data);
       // TODO: Set file ending based on the type of file(.py, .sh, .zsh....)
       pack.entry({ name: "studentCode" + this.fileEnding }, studentCode);
       pack.finalize();

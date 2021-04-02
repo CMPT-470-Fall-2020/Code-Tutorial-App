@@ -2,18 +2,20 @@ const router = require("express").Router();
 var multer = require("multer");
 var fs = require("fs");
 var path = require("path");
-const { AutoGraderInstance } = require("../autograder-docker");
+const {
+  AutoGraderInstance,
+} = require("../autograder_client/autograder_client");
 const Autograder = require("./../models/autograder.model");
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-  	// According to the docs, if we are using a function as the destination,
-  	// we have to create the folder ourselves. If the folder does not exist,
-  	// it is created. This is done synchronously.
-	let testDir = path.join(__dirname, '../tests');
-	if (!fs.existsSync(testDir)){
-   	 fs.mkdirSync(testDir);
-	}
+    // According to the docs, if we are using a function as the destination,
+    // we have to create the folder ourselves. If the folder does not exist,
+    // it is created. This is done synchronously.
+    let testDir = path.join(__dirname, "../tests");
+    if (!fs.existsSync(testDir)) {
+      fs.mkdirSync(testDir);
+    }
 
     cb(null, "tests");
   },
@@ -28,7 +30,7 @@ router.route("/:classId/add").post((req, res) => {
   upload(req, res, function (err) {
     var courseID = req.params.classId;
     var userID = req.body.userID;
-//    var testName = req.body.testName;
+    //    var testName = req.body.testName;
     var language = req.body.language;
 
     if (err instanceof multer.MulterError) {
@@ -46,7 +48,13 @@ router.route("/:classId/add").post((req, res) => {
           .replace("courseID", courseID);
         var testName = req.file.originalname;
 
-        let newTest = new Autograder({ userID, courseID, language, fileName, testName });
+        let newTest = new Autograder({
+          userID,
+          courseID,
+          language,
+          fileName,
+          testName,
+        });
         newTest
           .save()
           .then(() => res.json("Test added!"))
@@ -65,12 +73,12 @@ router.route("/:classId/:testId/tests/:fileName").delete((req, res) => {
     .then(() => res.json("Test deleted."))
     .catch((err) => res.status(400).json("Error: " + err));
   let filepath = path.join(__dirname, "../tests/", fileName);
-  	// Check if the file exists. If it does, delete it.
-	if (fs.existsSync(filepath)){
-		  fs.unlink(filepath, function (err) {
-			if (err) throw err;
-		  });
-	}
+  // Check if the file exists. If it does, delete it.
+  if (fs.existsSync(filepath)) {
+    fs.unlink(filepath, function (err) {
+      if (err) throw err;
+    });
+  }
 });
 
 // Get a Test
@@ -107,8 +115,8 @@ router.route("/runTest").post((req, res) => {
       "professorTest.py",
       userCode,
       (stdoutString, stderrString) => {
-      	console.log("about to end connection!")
-        res.json({stdout: stdoutString, stderr:stderrString}).end();
+        console.log("about to end connection!");
+        res.json({ stdout: stdoutString, stderr: stderrString }).end();
       }
     );
   });

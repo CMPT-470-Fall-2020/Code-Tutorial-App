@@ -3,7 +3,7 @@ const path = require("path");
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const godBolt = require("./godbolt");
+const godBolt = require("./godbolt_api/godbolt");
 const passport = require("passport");
 const passportLocal = require("passport-local").Strategy;
 // TODO: Apparently this is should not be run in prod since it leaks memory.
@@ -14,22 +14,12 @@ const bcrypt = require("bcryptjs");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const events = require("events");
-const interpManager = require("./manager.js");
+const interpManager = require("./interpreter_manager/manager.js");
 const app = express();
 const port = process.env.PORT || 4000;
 const host = process.env.HOST || "127.0.0.1";
 
-app.use(cors())
-/*
-app.use(function (req, res, next) {
-  res.setTimeout(120000, function () {
-    console.log("Request has timed out.");
-    res.send(408);
-  });
-  next();
-});
-*/
-
+app.use(cors());
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
@@ -65,13 +55,16 @@ app.delete("/run", (req, res) => {
     );
     if (currInstance !== undefined) {
       currInstance.shutdown((shutdownStatus) => {
-      	console.log("Called shutdown callback for", uname, iname);
-      	interpreterManager.deleteInstance(uname, iname);
-  		res.json({ message: shutdownStatus });
+        console.log("Called shutdown callback for", uname, iname);
+        interpreterManager.deleteInstance(uname, iname);
+        res.json({ message: shutdownStatus });
       });
     }
-  }else{
-  		res.json({ message: "No instance with that name exists. You can run the current code." });
+  } else {
+    res.json({
+      message:
+        "No instance with that name exists. You can run the current code.",
+    });
   }
   // Return a success message whether or not the instance has been started/exists or not.
   // The user should not be concerned about such things.
@@ -86,24 +79,24 @@ app.post("/run", (req, res) => {
   let lang = req.body.lang;
 
   if (lang.trim().toLowerCase().startsWith("godbolt")) {
-      let languageName = lang.trim().toLowerCase().split(":")
-      console.log("Language  name is", languageName, languageName[1]);
+    let languageName = lang.trim().toLowerCase().split(":");
+    console.log("Language  name is", languageName, languageName[1]);
     godBolt.getBytecode(
       languageName[1],
       code,
       (response) => {
-      	console.log("godbolg response callback", response);
-        res.json({message:{type:"SUCCESS", stdout: response }});
+        console.log("godbolg response callback", response);
+        res.json({ message: { type: "SUCCESS", stdout: response } });
       },
       (response) => {
-        res.json({message:{type:"FAILURE", stdout: response }});
+        res.json({ message: { type: "FAILURE", stdout: response } });
       }
     );
   } else {
     let currInstance = interpreterManager.getInstance(uname, iname, lang, true);
     // The language the user requested does not exist. Send out an error
     if (currInstance == interpManager.LANGDNE) {
-      console.log("Language does not exist")
+      console.log("Language does not exist");
       res.json({ message: "Language requested does not exist" });
     } else {
       let hash = currInstance.runCode(code);
@@ -228,4 +221,5 @@ let server = app.listen(port, host, () => {
 
 // Set the timeout so POST requests executing code/grading do not timeout early.
 // The default timeout seems to be only a few minutes whih might not be enough.
+// TODO: Is there a nicer way of doing this?
 server.setTimeout(500000);

@@ -1,7 +1,7 @@
 const { spawn } = require("child_process");
 var events = require("events");
-const { Interpreter } = require("./client");
-const SharedLog = require("./logging");
+const { Interpreter } = require("../language_server_client/client");
+const SharedLog = require("../server_logging/logging");
 const logger = SharedLog.getInstance().logger;
 
 // Constants used to indicate the return status of function calls
