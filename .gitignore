@@ -32,4 +32,6 @@ client/src/components/layout/Header.js
 client/src/components/pages/CourseDashboard.js
 client/src/components/pages/CreateTutorial.js
 client/src/components/pages/Tutorials.js
+
 server/server-logs/*
+server/.env

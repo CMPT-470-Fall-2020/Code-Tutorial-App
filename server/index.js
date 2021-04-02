@@ -1,3 +1,4 @@
+require("dotenv").config();
 const path = require("path");
 const express = require("express");
 const cors = require("cors");
@@ -123,7 +124,6 @@ const Comment = require("./models/comments.model");
 const Course = require("./models/courses.model");
 const Tutorial = require("./models/tutorial.model");
 
-require("dotenv").config();
 app.use(
   cors({
     origin: "http://localhost:3000", //  Need to change origin for when it is hosted
@@ -148,13 +148,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(
   session({
-    secret: "secretcode",
+    secret: process.env.SESSION_SECRET,
     resave: true,
     saveUninitialized: true,
   })
 );
-
-app.use(cookieParser("secretcode"));
+app.use(cookieParser(process.env.COOKIE_PARSER_SECRET));
 app.use(passport.initialize());
 app.use(passport.session());
 require("./passportConfig")(passport);
