@@ -55,7 +55,7 @@ Each interactive tutorial can be made up of:
 - `repl.it` does not provide any way of annotating code outside of comments within the source code or additional files explaining the code. This makes it difficult to annotate and break up a source file into smaller chunks which are easier to understand and digest by students.
 
 ## How Code Execution works
-TODO
+Detailed information on how code cells/instructor tests are executed in the backend can be found within the [docs/executing-code.md](https://github.com/CMPT-470-Fall-2020/Code-Tutorial-App/blob/master/docs/executing-code.md) file.
 
 ## Project File Layout
 - `client`: Contains all code for the frontend of the application. The frontend is built using `React` and `Bootstrap`.
@@ -65,7 +65,7 @@ TODO
   - `models`: Contains all database models.
   - `routes`: Contains all API routes.
 
-## Running the application
+## Running the application locally
 TODO
 
 ## Authors
