@@ -84,8 +84,8 @@ ATLAS_URI = MONGODB_ATLAS_URI_HERE
 SESSION_SECRET= SOME_RANDOM_SECRET_CODE_HERE
 COOKIE_PARSER_SECRET= SOME_RANDOM_SECRET_CODE_HERE
 ```
-11. `cd server && npm start`
-12. Open another terminal, navigate to the root of the project and run the following: `cd client && npm start`.
+11. `cd server && npm start` to start the back-end application server on port 4000.
+12. Open another terminal, navigate to the root of the project and run the following: `cd client && npm start` to start the application front-end on port 3000.
 
 - To remove all running docker instances if they are not stopped through the applications front-end, you can run the command `docker rm $(docker ps -aq)` from a terminal.
 - To remove all docker images created, you can executed the `/server/docker_container_setup/delete-images.sh`(Linux/MacOS) file or `/server/docker_container_setup/delete-images.ps1` file if you are on windows.
