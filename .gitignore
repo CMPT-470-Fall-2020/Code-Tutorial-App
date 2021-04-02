@@ -34,4 +34,3 @@ client/src/components/pages/CreateTutorial.js
 client/src/components/pages/Tutorials.js
 
 server/server-logs/*
-server/.env
